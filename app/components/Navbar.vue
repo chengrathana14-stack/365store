@@ -38,10 +38,12 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
+  <header
+    class="sticky top-0 z-50 w-full border-b border-black/10 bg-white/95 backdrop-blur"
+  >
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div
-        class="flex h-20 items-center justify-between gap-4 sm:gap-6 lg:gap-8"
+        class="flex h-16 items-center justify-between gap-4 sm:gap-6 lg:gap-8"
       >
         <!-- ===================================== -->
         <!-- Logo -->
@@ -49,7 +51,9 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
         <NuxtLink to="/" class="flex items-center">
           <h1 class="flex items-baseline font-black italic leading-none">
-            <span class="text-5xl tracking-tighter text-lime-500"> 365 </span>
+            <span class="text-4xl tracking-tighter text-lime-500 sm:text-5xl">
+              365
+            </span>
 
             <span class="ml-1 text-2xl tracking-tight text-black">
               Sports
@@ -67,8 +71,8 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <li>
             <NuxtLink
               to="/"
-              class="font-medium text-gray-800 transition duration-300 hover:text-amber-500"
-              active-class="bg-black text-white px-5 py-2 rounded-lg"
+              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
+              active-class="bg-black text-white hover:bg-black hover:text-white"
             >
               Home
             </NuxtLink>
@@ -79,8 +83,8 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <li>
             <NuxtLink
               to="/Product"
-              class="font-medium text-gray-800 transition duration-300 hover:text-amber-500"
-              active-class="bg-black text-white px-5 py-2 rounded-lg"
+              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
+              active-class="bg-black text-white hover:bg-black hover:text-white"
             >
               Product
             </NuxtLink>
@@ -91,8 +95,8 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <li>
             <NuxtLink
               to="/About"
-              class="font-medium text-gray-800 transition duration-300 hover:text-amber-500"
-              active-class="bg-black text-white px-5 py-2 rounded-lg"
+              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
+              active-class="bg-black text-white hover:bg-black hover:text-white"
             >
               About
             </NuxtLink>
@@ -103,8 +107,8 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <li>
             <NuxtLink
               to="/Contact"
-              class="font-medium text-gray-800 transition duration-300 hover:text-amber-500"
-              active-class="bg-black text-white px-5 py-2 rounded-lg"
+              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
+              active-class="bg-black text-white hover:bg-black hover:text-white"
             >
               Contact
             </NuxtLink>
@@ -280,7 +284,7 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <NuxtLink
             v-else
             to="/Auth/Login"
-            class="rounded-lg bg-black px-5 py-2 font-medium text-white transition duration-300 hover:bg-amber-500 hover:text-black"
+            class="rounded-full bg-black px-5 py-2.5 font-semibold text-white transition duration-300 hover:bg-lime-400 hover:text-black"
           >
             Login
           </NuxtLink>

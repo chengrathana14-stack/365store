@@ -1,6 +1,6 @@
 <template>
   <div
-    class="group relative w-full overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+    class="group relative w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
   >
     <!-- Discount -->
 
@@ -69,7 +69,7 @@
 
       <NuxtLink :to="`/Product/${product.id}`">
         <h2
-          class="line-clamp-2 min-h-12 text-lg font-bold text-gray-900 transition hover:text-blue-600"
+          class="line-clamp-2 min-h-12 text-lg font-bold text-gray-900 transition hover:text-lime-700"
         >
           {{ product.name }}
         </h2>
@@ -141,7 +141,7 @@
         <button
           :disabled="product.stock === 0"
           @click="goToProductDetail"
-          class="flex-1 rounded-xl bg-black px-4 py-3 font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300"
+          class="flex-1 rounded-xl bg-black px-4 py-3 font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-lime-400 hover:text-black disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           🔍 View Details
         </button>
@@ -151,7 +151,7 @@
         <button
           :disabled="product.stock === 0"
           @click="goToProductDetail"
-          class="rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+          class="rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:border-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Buy
         </button>

@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+:root {
+  --sport-lime: #b7f34a;
+  --sport-ink: #101310;
+  --sport-muted: #667067;
+  --sport-surface: #f4f6ef;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--sport-surface);
+  color: var(--sport-ink);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}

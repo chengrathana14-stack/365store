@@ -22,9 +22,28 @@ const discountProducts = products
     <!-- ================= HERO ================= -->
     <Hero />
 
+    <section class="border-b border-black/10 bg-black text-white">
+      <div
+        class="mx-auto grid max-w-7xl gap-5 px-6 py-5 text-sm sm:grid-cols-3 lg:px-8"
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-xl text-lime-400">01</span>
+          <span class="font-semibold">Performance-first gear</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xl text-lime-400">02</span>
+          <span class="font-semibold">Fast delivery on every order</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xl text-lime-400">03</span>
+          <span class="font-semibold">Easy returns within 30 days</span>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= POPULAR PRODUCTS ================= -->
-    <section class="bg-gray-100 py-14">
-      <div class="mx-10 px-4 sm:px-6 lg:px-8">
+    <section class="bg-[#f4f6ef] py-16">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Section Header -->
         <div class="mb-8 flex items-end justify-between">
           <div>
@@ -70,8 +89,8 @@ const discountProducts = products
     </section>
 
     <!-- ================= DISCOUNT PRODUCTS ================= -->
-    <section class="bg-white py-14">
-      <div class="mx-10 px-4 sm:px-6 lg:px-8">
+    <section class="bg-white py-16">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Section Header -->
         <div class="mb-8 flex items-end justify-between">
           <div>
