@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { products } from "~/data/product";
 import { orderSeedData } from "~/data/admin";
+import type { Order, OrderStatus, PaymentStatus } from "~/type/product";
 definePageMeta({
   layout: "admin",
 });
@@ -170,7 +171,7 @@ const deleteOrder = () => {
       <div class="flex gap-3">
         <button
           type="button"
-          class="rounded-xl border bg-white px-4 py-3 text-sm font-semibold hover:bg-gray-50"
+           class="rounded-xl border border-black/10 bg-black/5 py-2 pl-5 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
           @click="clearFilters"
         >
           Reset Filters
@@ -180,7 +181,7 @@ const deleteOrder = () => {
 
     <!-- MAIN STATS -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <div class="rounded-2xl bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Total Orders</p>
 
@@ -194,7 +195,7 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">All orders</p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <div class="rounded-2xl bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Revenue</p>
 
@@ -208,7 +209,7 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">Excluding cancelled orders</p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <div class="rounded-2xl bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Pending</p>
 
@@ -222,7 +223,7 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">Waiting for confirmation</p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <div class="rounded-2xl bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Completed</p>
 
@@ -239,7 +240,7 @@ const deleteOrder = () => {
 
     <!-- ORDER STATUS SUMMARY -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-2xl border bg-white p-5">
+      <div class="rounded-2xl bg-white p-5">
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
 
@@ -251,7 +252,7 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5">
+      <div class="rounded-2xl bg-white p-5">
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-blue-500"></span>
 
@@ -263,7 +264,7 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5">
+      <div class="rounded-2xl bg-white p-5">
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-green-500"></span>
 
@@ -275,7 +276,7 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl border bg-white p-5">
+      <div class="rounded-2xl bg-white p-5">
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-red-500"></span>
 
@@ -289,7 +290,7 @@ const deleteOrder = () => {
     </div>
 
     <!-- FILTERS -->
-    <div class="rounded-2xl border bg-white p-5 shadow-sm">
+    <div class="rounded-2xl bg-white p-5 shadow-sm">
       <div class="grid gap-4 lg:grid-cols-4">
         <!-- Search -->
         <div class="lg:col-span-2">
@@ -306,7 +307,7 @@ const deleteOrder = () => {
               v-model="search"
               type="text"
               placeholder="Order ID, customer, email or product..."
-              class="w-full rounded-xl border py-3 pl-11 pr-4 outline-none transition focus:border-black"
+              class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
             />
           </div>
         </div>
@@ -317,7 +318,7 @@ const deleteOrder = () => {
 
           <select
             v-model="selectedStatus"
-            class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+            class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
           >
             <option>All</option>
             <option>Pending</option>
@@ -333,7 +334,7 @@ const deleteOrder = () => {
 
           <select
             v-model="selectedPayment"
-            class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+            class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
           >
             <option>All</option>
             <option>Paid</option>
@@ -356,7 +357,7 @@ const deleteOrder = () => {
 
         <select
           v-model="selectedSort"
-          class="rounded-xl border px-4 py-2.5 text-sm outline-none"
+          class="rounded-xl border border-black/10 bg-black/5 py-2 pl-5 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
         >
           <option>Newest</option>
           <option>Oldest</option>
@@ -368,8 +369,8 @@ const deleteOrder = () => {
     </div>
 
     <!-- TABLE -->
-    <div class="overflow-hidden rounded-2xl border bg-white shadow-sm">
-      <div class="border-b px-6 py-4">
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
+      <div class="px-6 py-4">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="font-bold">Order List</h2>
@@ -409,7 +410,7 @@ const deleteOrder = () => {
             </tr>
           </thead>
 
-          <tbody class="divide-y">
+          <tbody>
             <tr
               v-for="order in filteredOrders"
               :key="order.id"
@@ -566,7 +567,7 @@ const deleteOrder = () => {
         <div class="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            class="rounded-xl border px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+            class="rounded-xl px-5 py-3 text-sm font-semibold hover:bg-gray-50"
             @click="closeDeleteModal"
           >
             Cancel
