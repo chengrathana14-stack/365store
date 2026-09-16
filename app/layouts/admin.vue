@@ -1,110 +1,8 @@
 <script setup lang="ts">
+import { adminNavigation } from "~/data/storefront";
+
 const sidebarOpen = ref(false);
-
-const navigation = [
-  {
-    title: "Overview",
-    items: [
-      {
-        name: "Dashboard",
-        icon: "📊",
-        path: "/admin",
-      },
-    ],
-  },
-
-  {
-    title: "Shop Management",
-    items: [
-      {
-        name: "Products",
-        icon: "👟",
-        path: "/admin/products",
-      },
-      {
-        name: "Brands",
-        icon: "🏷️",
-        path: "/admin/brands",
-      },
-      {
-        name: "Categories",
-        icon: "📂",
-        path: "/admin/categories",
-      },
-      {
-        name: "Inventory",
-        icon: "📦",
-        path: "/admin/inventory",
-      },
-    ],
-  },
-
-  {
-    title: "Sales",
-    items: [
-      {
-        name: "Orders",
-        icon: "🛒",
-        path: "/admin/orders",
-        badge: 8,
-      },
-    ],
-  },
-
-  {
-    title: "Customers",
-    items: [
-      {
-        name: "Users",
-        icon: "👥",
-        path: "/admin/users",
-      },
-      {
-        name: "Reviews",
-        icon: "⭐",
-        path: "/admin/reviews",
-      },
-    ],
-  },
-
-  {
-    title: "Marketing",
-    items: [
-      {
-        name: "Discounts",
-        icon: "🔥",
-        path: "/admin/discounts",
-      },
-      {
-        name: "Notifications",
-        icon: "🔔",
-        path: "/admin/notifications",
-      },
-    ],
-  },
-
-  {
-    title: "Analytics",
-    items: [
-      {
-        name: "Reports",
-        icon: "📈",
-        path: "/admin/reports",
-      },
-    ],
-  },
-
-  {
-    title: "System",
-    items: [
-      {
-        name: "Settings",
-        icon: "⚙️",
-        path: "/admin/settings",
-      },
-    ],
-  },
-];
+const navigation = adminNavigation;
 </script>
 
 <template>
@@ -143,9 +41,9 @@ const navigation = [
           </div>
 
           <div class="min-w-0">
-            <p class="truncate text-sm font-semibold">Admin</p>
+            <p class="truncate text-sm font-semibold">Administrator</p>
 
-            <p class="text-xs text-gray-400">Administrator</p>
+            <p class="text-xs text-gray-500">Store Manager</p>
           </div>
         </div>
       </div>

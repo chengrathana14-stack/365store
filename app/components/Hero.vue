@@ -82,34 +82,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import { heroSlideSeedData } from "~/data/storefront";
 
 const currentSlide = ref(0);
 
-const slides = [
-  {
-    title: "Move With Power",
-    subtitle: "365 Sport",
-    description:
-      "Discover premium sportswear designed to help you perform at your best.",
-    image:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    title: "Run Your Game",
-    subtitle: "New Collection",
-    description: "Performance running shoes and gear built for every step.",
-    image:
-      "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    title: "Play Without Limits",
-    subtitle: "Basketball",
-    description:
-      "Upgrade your basketball game with the latest performance collection.",
-    image:
-      "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1600&q=80",
-  },
-];
+const slides = heroSlideSeedData;
 
 let slideInterval: ReturnType<typeof setInterval>;
 

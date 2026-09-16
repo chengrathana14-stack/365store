@@ -1,85 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-
+import { products } from "~/data/product";
+import { categorySeedData } from "~/data/admin";
 definePageMeta({
   layout: "admin",
 });
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  products: number;
-  status: "Active" | "Inactive";
-  created: string;
-}
-
-const categories = ref<Category[]>([
-  {
-    id: 1,
-    name: "Football Boots",
-    description: "Football shoes and professional soccer boots.",
-    products: 85,
-    status: "Active",
-    created: "January 10, 2026",
-  },
-  {
-    id: 2,
-    name: "Football Jersey",
-    description: "Official and training football jerseys.",
-    products: 42,
-    status: "Active",
-    created: "January 15, 2026",
-  },
-  {
-    id: 3,
-    name: "Football Clothing",
-    description: "Football shirts, shorts, pants and training clothes.",
-    products: 36,
-    status: "Active",
-    created: "January 20, 2026",
-  },
-  {
-    id: 4,
-    name: "Football Bags",
-    description: "Sports bags, backpacks and football equipment bags.",
-    products: 18,
-    status: "Active",
-    created: "February 2, 2026",
-  },
-  {
-    id: 5,
-    name: "Football Accessories",
-    description: "Shin guards, socks, gloves and other accessories.",
-    products: 51,
-    status: "Active",
-    created: "February 10, 2026",
-  },
-  {
-    id: 6,
-    name: "Goalkeeper",
-    description: "Goalkeeper gloves, jerseys and goalkeeper equipment.",
-    products: 24,
-    status: "Active",
-    created: "February 18, 2026",
-  },
-  {
-    id: 7,
-    name: "Running",
-    description: "Running shoes and running accessories.",
-    products: 31,
-    status: "Active",
-    created: "March 4, 2026",
-  },
-  {
-    id: 8,
-    name: "Training",
-    description: "Training equipment and workout products.",
-    products: 27,
-    status: "Inactive",
-    created: "March 12, 2026",
-  },
-]);
+const categories = ref<Category[]>(
+  categorySeedData.map((category) => ({ ...category })),
+);
 
 /* --------------------------------
    Search / Filter / Sort
@@ -145,7 +74,8 @@ const filteredCategories = computed(() => {
 const totalCategories = computed(() => categories.value.length);
 
 const activeCategories = computed(
-  () => categories.value.filter((category) => category.status === "Active").length,
+  () =>
+    categories.value.filter((category) => category.status === "Active").length,
 );
 
 const inactiveCategories = computed(
@@ -192,8 +122,7 @@ const deleteCategory = () => {
 -------------------------------- */
 
 const toggleStatus = (category: Category) => {
-  category.status =
-    category.status === "Active" ? "Inactive" : "Active";
+  category.status = category.status === "Active" ? "Inactive" : "Active";
 };
 
 /* --------------------------------
@@ -209,7 +138,6 @@ const clearFilters = () => {
 
 <template>
   <div class="space-y-6">
-
     <!-- Header -->
     <div
       class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
@@ -223,13 +151,9 @@ const clearFilters = () => {
           </div>
 
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-              Categories
-            </h1>
+            <h1 class="text-2xl font-bold text-gray-900">Categories</h1>
 
-            <p class="text-sm text-gray-500">
-              Manage your product categories
-            </p>
+            <p class="text-sm text-gray-500">Manage your product categories</p>
           </div>
         </div>
       </div>
@@ -245,13 +169,10 @@ const clearFilters = () => {
 
     <!-- Statistics -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
-              Total Categories
-            </p>
+            <p class="text-sm text-gray-500">Total Categories</p>
 
             <h2 class="mt-2 text-2xl font-bold">
               {{ totalCategories }}
@@ -269,9 +190,7 @@ const clearFilters = () => {
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
-              Active
-            </p>
+            <p class="text-sm text-gray-500">Active</p>
 
             <h2 class="mt-2 text-2xl font-bold text-green-600">
               {{ activeCategories }}
@@ -289,9 +208,7 @@ const clearFilters = () => {
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
-              Inactive
-            </p>
+            <p class="text-sm text-gray-500">Inactive</p>
 
             <h2 class="mt-2 text-2xl font-bold text-red-600">
               {{ inactiveCategories }}
@@ -309,9 +226,7 @@ const clearFilters = () => {
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500">
-              Total Products
-            </p>
+            <p class="text-sm text-gray-500">Total Products</p>
 
             <h2 class="mt-2 text-2xl font-bold">
               {{ totalProducts }}
@@ -325,19 +240,14 @@ const clearFilters = () => {
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Filters -->
     <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center">
-
         <!-- Search -->
         <div class="relative flex-1">
-          <span
-            class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-          >
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             🔍
           </span>
 
@@ -354,17 +264,11 @@ const clearFilters = () => {
           v-model="statusFilter"
           class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
         >
-          <option value="All">
-            All Status
-          </option>
+          <option value="All">All Status</option>
 
-          <option value="Active">
-            Active
-          </option>
+          <option value="Active">Active</option>
 
-          <option value="Inactive">
-            Inactive
-          </option>
+          <option value="Inactive">Inactive</option>
         </select>
 
         <!-- Sort -->
@@ -372,29 +276,17 @@ const clearFilters = () => {
           v-model="sortBy"
           class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
         >
-          <option value="Newest">
-            Newest
-          </option>
+          <option value="Newest">Newest</option>
 
-          <option value="Oldest">
-            Oldest
-          </option>
+          <option value="Oldest">Oldest</option>
 
-          <option value="A-Z">
-            A-Z
-          </option>
+          <option value="A-Z">A-Z</option>
 
-          <option value="Z-A">
-            Z-A
-          </option>
+          <option value="Z-A">Z-A</option>
 
-          <option value="Most Products">
-            Most Products
-          </option>
+          <option value="Most Products">Most Products</option>
 
-          <option value="Least Products">
-            Least Products
-          </option>
+          <option value="Least Products">Least Products</option>
         </select>
 
         <!-- View -->
@@ -430,7 +322,6 @@ const clearFilters = () => {
         >
           Clear
         </button>
-
       </div>
     </div>
 
@@ -450,16 +341,13 @@ const clearFilters = () => {
       v-if="viewMode === 'grid' && filteredCategories.length"
       class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
     >
-
       <div
         v-for="category in filteredCategories"
         :key="category.id"
         class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
       >
-
         <!-- Top -->
         <div class="flex items-start justify-between">
-
           <div
             class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-2xl"
           >
@@ -472,12 +360,10 @@ const clearFilters = () => {
           >
             🗑️
           </button>
-
         </div>
 
         <!-- Content -->
         <div class="mt-5">
-
           <div class="flex items-center gap-2">
             <h3 class="text-lg font-bold text-gray-900">
               {{ category.name }}
@@ -498,7 +384,6 @@ const clearFilters = () => {
           <p class="mt-2 min-h-[40px] text-sm leading-5 text-gray-500">
             {{ category.description }}
           </p>
-
         </div>
 
         <!-- Stats -->
@@ -506,9 +391,7 @@ const clearFilters = () => {
           class="mt-5 flex items-center justify-between border-t border-gray-100 pt-4"
         >
           <div>
-            <p class="text-xs text-gray-400">
-              Products
-            </p>
+            <p class="text-xs text-gray-400">Products</p>
 
             <p class="mt-1 font-bold">
               {{ category.products }}
@@ -516,9 +399,7 @@ const clearFilters = () => {
           </div>
 
           <div class="text-right">
-            <p class="text-xs text-gray-400">
-              Created
-            </p>
+            <p class="text-xs text-gray-400">Created</p>
 
             <p class="mt-1 text-xs font-medium">
               {{ category.created }}
@@ -528,7 +409,6 @@ const clearFilters = () => {
 
         <!-- Actions -->
         <div class="mt-5 grid grid-cols-2 gap-2">
-
           <NuxtLink
             :to="`/admin/categories/${category.id}`"
             class="rounded-xl border border-gray-200 px-4 py-2.5 text-center text-sm font-semibold hover:bg-gray-50"
@@ -542,11 +422,8 @@ const clearFilters = () => {
           >
             Edit
           </NuxtLink>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- LIST VIEW -->
@@ -554,45 +431,50 @@ const clearFilters = () => {
       v-if="viewMode === 'list' && filteredCategories.length"
       class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
     >
-
       <div class="overflow-x-auto">
         <table class="w-full min-w-[800px] text-left">
-
           <thead class="border-b border-gray-200 bg-gray-50">
             <tr>
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Category
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Products
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Status
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Created
               </th>
 
-              <th class="px-6 py-4 text-right text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold uppercase text-gray-500"
+              >
                 Actions
               </th>
             </tr>
           </thead>
 
           <tbody class="divide-y divide-gray-100">
-
             <tr
               v-for="category in filteredCategories"
               :key="category.id"
               class="hover:bg-gray-50"
             >
-
               <td class="px-6 py-5">
                 <div class="flex items-center gap-4">
-
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100"
                   >
@@ -608,7 +490,6 @@ const clearFilters = () => {
                       {{ category.description }}
                     </p>
                   </div>
-
                 </div>
               </td>
 
@@ -617,7 +498,6 @@ const clearFilters = () => {
               </td>
 
               <td class="px-6 py-5">
-
                 <button
                   class="rounded-full px-3 py-1 text-xs font-semibold"
                   :class="
@@ -629,7 +509,6 @@ const clearFilters = () => {
                 >
                   {{ category.status }}
                 </button>
-
               </td>
 
               <td class="px-6 py-5 text-sm text-gray-500">
@@ -638,7 +517,6 @@ const clearFilters = () => {
 
               <td class="px-6 py-5">
                 <div class="flex justify-end gap-2">
-
                   <NuxtLink
                     :to="`/admin/categories/${category.id}`"
                     class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
@@ -659,17 +537,12 @@ const clearFilters = () => {
                   >
                     Delete
                   </button>
-
                 </div>
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
       </div>
-
     </div>
 
     <!-- Empty -->
@@ -677,13 +550,9 @@ const clearFilters = () => {
       v-if="!filteredCategories.length"
       class="rounded-2xl border border-dashed border-gray-300 bg-white py-16 text-center"
     >
-      <div class="text-5xl">
-        📂
-      </div>
+      <div class="text-5xl">📂</div>
 
-      <h3 class="mt-4 text-lg font-bold">
-        No categories found
-      </h3>
+      <h3 class="mt-4 text-lg font-bold">No categories found</h3>
 
       <p class="mt-2 text-sm text-gray-500">
         Try changing your search or filters.
@@ -702,27 +571,23 @@ const clearFilters = () => {
       v-if="showDeleteModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
     >
-
       <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-
-        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl"
+        >
           🗑️
         </div>
 
-        <h3 class="mt-5 text-xl font-bold">
-          Delete Category?
-        </h3>
+        <h3 class="mt-5 text-xl font-bold">Delete Category?</h3>
 
         <p class="mt-2 text-sm leading-6 text-gray-500">
           Are you sure you want to delete
           <span class="font-semibold text-gray-900">
-            {{ categoryToDelete?.name }}
-          </span>?
-          This action cannot be undone.
+            {{ categoryToDelete?.name }} </span
+          >? This action cannot be undone.
         </p>
 
         <div class="mt-6 flex justify-end gap-3">
-
           <button
             class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold hover:bg-gray-50"
             @click="showDeleteModal = false"
@@ -736,12 +601,8 @@ const clearFilters = () => {
           >
             Delete
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

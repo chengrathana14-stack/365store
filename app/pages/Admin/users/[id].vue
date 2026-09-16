@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { userActivitySeedData, userOrderSummarySeedData } from "~/data/admin";
+import type { UserActivity, UserOrderSummary } from "~/type/admin";
 
 definePageMeta({
   layout: "admin",
@@ -33,67 +35,15 @@ const user = ref({
 // ORDER DATA
 // =====================================================
 
-const orders = ref([
-  {
-    id: "#ORD-1001",
-    date: "2026-08-28",
-    items: 2,
-    total: 319,
-    status: "Delivered",
-  },
-  {
-    id: "#ORD-1002",
-    date: "2026-08-20",
-    items: 1,
-    total: 151.97,
-    status: "Processing",
-  },
-  {
-    id: "#ORD-1003",
-    date: "2026-08-15",
-    items: 3,
-    total: 420,
-    status: "Delivered",
-  },
-  {
-    id: "#ORD-1004",
-    date: "2026-08-10",
-    items: 1,
-    total: 55,
-    status: "Cancelled",
-  },
-]);
+const orders = ref<UserOrderSummary[]>(
+  userOrderSummarySeedData.map((order) => ({ ...order })),
+);
 
 // =====================================================
 // ACTIVITY DATA
 // =====================================================
 
-const activities = [
-  {
-    title: "Placed an order",
-    description: "Order #ORD-1001 was created.",
-    date: "2 days ago",
-    icon: "🛒",
-  },
-  {
-    title: "Updated profile",
-    description: "User changed their phone number.",
-    date: "5 days ago",
-    icon: "✏️",
-  },
-  {
-    title: "Placed an order",
-    description: "Order #ORD-1002 was created.",
-    date: "14 days ago",
-    icon: "🛒",
-  },
-  {
-    title: "Created account",
-    description: "Customer account was created.",
-    date: "January 12, 2026",
-    icon: "👤",
-  },
-];
+const activities: UserActivity[] = userActivitySeedData;
 
 // =====================================================
 // USER STATUS CLASS
@@ -112,10 +62,7 @@ const statusClass = computed(() => {
 // =====================================================
 
 const toggleStatus = () => {
-  user.value.status =
-    user.value.status === "Active"
-      ? "Blocked"
-      : "Active";
+  user.value.status = user.value.status === "Active" ? "Blocked" : "Active";
 };
 
 // =====================================================
@@ -132,7 +79,7 @@ const editUser = () => {
 
 const deleteUser = () => {
   const confirmed = confirm(
-    `Are you sure you want to delete ${user.value.name}?`
+    `Are you sure you want to delete ${user.value.name}?`,
   );
 
   if (!confirmed) {
@@ -182,32 +129,24 @@ const formatPrice = (price: number) => {
 
 <template>
   <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
 
     <div class="mb-8">
-
       <!-- Back Button -->
       <NuxtLink
         to="/admin/users"
         class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100 hover:text-black"
       >
-        <span class="text-lg leading-none">
-          ←
-        </span>
+        <span class="text-lg leading-none"> ← </span>
 
         Back to Users
       </NuxtLink>
 
       <!-- Breadcrumb -->
       <div class="mt-5 flex items-center gap-2 text-sm text-gray-500">
-
-        <NuxtLink
-          to="/admin/users"
-          class="transition hover:text-black"
-        >
+        <NuxtLink to="/admin/users" class="transition hover:text-black">
           Users
         </NuxtLink>
 
@@ -216,18 +155,14 @@ const formatPrice = (price: number) => {
         <span class="font-medium text-gray-700">
           {{ user.name }}
         </span>
-
       </div>
 
       <!-- Page Title -->
       <div
         class="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
       >
-
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">
-            User Profile
-          </h1>
+          <h1 class="text-2xl font-bold text-gray-900">User Profile</h1>
 
           <p class="mt-1 text-sm text-gray-500">
             View customer information, orders, and activity.
@@ -236,7 +171,6 @@ const formatPrice = (price: number) => {
 
         <!-- Header Actions -->
         <div class="flex flex-wrap gap-3">
-
           <button
             type="button"
             class="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
@@ -252,11 +186,8 @@ const formatPrice = (price: number) => {
           >
             Delete
           </button>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -264,18 +195,15 @@ const formatPrice = (price: number) => {
     <!-- ================================================= -->
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-
       <!-- ================================================= -->
       <!-- LEFT COLUMN -->
       <!-- ================================================= -->
 
       <div class="space-y-6">
-
         <!-- Profile Card -->
         <div
           class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm"
         >
-
           <!-- Avatar -->
           <img
             :src="user.avatar"
@@ -295,7 +223,6 @@ const formatPrice = (price: number) => {
 
           <!-- Role & Status -->
           <div class="mt-4 flex justify-center gap-2">
-
             <span
               class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700"
             >
@@ -308,7 +235,6 @@ const formatPrice = (price: number) => {
             >
               {{ user.status }}
             </span>
-
           </div>
 
           <!-- Toggle Status -->
@@ -317,31 +243,18 @@ const formatPrice = (price: number) => {
             class="mt-6 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
             @click="toggleStatus"
           >
-            {{
-              user.status === "Active"
-                ? "Block User"
-                : "Activate User"
-            }}
+            {{ user.status === "Active" ? "Block User" : "Activate User" }}
           </button>
-
         </div>
 
         <!-- Contact Information -->
-        <div
-          class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-        >
-
-          <h3 class="font-bold text-gray-900">
-            Contact Information
-          </h3>
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 class="font-bold text-gray-900">Contact Information</h3>
 
           <div class="mt-5 space-y-5">
-
             <!-- Email -->
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">
-                Email
-              </p>
+              <p class="text-xs uppercase tracking-wide text-gray-400">Email</p>
 
               <p class="mt-1 break-all text-sm font-medium text-gray-900">
                 {{ user.email }}
@@ -350,9 +263,7 @@ const formatPrice = (price: number) => {
 
             <!-- Phone -->
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">
-                Phone
-              </p>
+              <p class="text-xs uppercase tracking-wide text-gray-400">Phone</p>
 
               <p class="mt-1 text-sm font-medium text-gray-900">
                 {{ user.phone }}
@@ -380,11 +291,8 @@ const formatPrice = (price: number) => {
                 {{ user.joined }}
               </p>
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       <!-- ================================================= -->
@@ -392,81 +300,62 @@ const formatPrice = (price: number) => {
       <!-- ================================================= -->
 
       <div class="space-y-6 xl:col-span-2">
-
         <!-- ================================================= -->
         <!-- STATISTICS -->
         <!-- ================================================= -->
 
         <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-
           <!-- Total Orders -->
           <div
             class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
           >
-            <p class="text-sm text-gray-500">
-              Total Orders
-            </p>
+            <p class="text-sm text-gray-500">Total Orders</p>
 
             <p class="mt-2 text-2xl font-bold text-gray-900">
               {{ user.orders }}
             </p>
 
-            <p class="mt-1 text-xs text-gray-400">
-              All orders
-            </p>
+            <p class="mt-1 text-xs text-gray-400">All orders</p>
           </div>
 
           <!-- Completed -->
           <div
             class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
           >
-            <p class="text-sm text-gray-500">
-              Completed
-            </p>
+            <p class="text-sm text-gray-500">Completed</p>
 
             <p class="mt-2 text-2xl font-bold text-green-600">
               {{ user.completedOrders }}
             </p>
 
-            <p class="mt-1 text-xs text-gray-400">
-              Successful orders
-            </p>
+            <p class="mt-1 text-xs text-gray-400">Successful orders</p>
           </div>
 
           <!-- Cancelled -->
           <div
             class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
           >
-            <p class="text-sm text-gray-500">
-              Cancelled
-            </p>
+            <p class="text-sm text-gray-500">Cancelled</p>
 
             <p class="mt-2 text-2xl font-bold text-red-600">
               {{ user.cancelledOrders }}
             </p>
 
-            <p class="mt-1 text-xs text-gray-400">
-              Cancelled orders
-            </p>
+            <p class="mt-1 text-xs text-gray-400">Cancelled orders</p>
           </div>
 
           <!-- Total Spent -->
           <div
             class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
           >
-            <p class="text-sm text-gray-500">
-              Total Spent
-            </p>
+            <p class="text-sm text-gray-500">Total Spent</p>
 
             <p class="mt-2 text-2xl font-bold text-gray-900">
               ${{ formatPrice(user.spent) }}
             </p>
 
-            <p class="mt-1 text-xs text-gray-400">
-              Customer spending
-            </p>
+            <p class="mt-1 text-xs text-gray-400">Customer spending</p>
           </div>
-
         </div>
 
         <!-- ================================================= -->
@@ -476,16 +365,12 @@ const formatPrice = (price: number) => {
         <div
           class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
         >
-
           <!-- Order Header -->
           <div
             class="flex flex-col gap-3 border-b border-gray-100 p-6 sm:flex-row sm:items-center sm:justify-between"
           >
-
             <div>
-              <h2 class="text-lg font-bold text-gray-900">
-                Order History
-              </h2>
+              <h2 class="text-lg font-bold text-gray-900">Order History</h2>
 
               <p class="mt-1 text-sm text-gray-500">
                 Recent purchases made by this customer.
@@ -498,18 +383,13 @@ const formatPrice = (price: number) => {
             >
               View All
             </NuxtLink>
-
           </div>
 
           <!-- Table -->
           <div class="overflow-x-auto">
-
             <table class="w-full min-w-[800px] text-left">
-
               <thead class="bg-gray-50">
-
                 <tr class="border-b border-gray-100">
-
                   <th
                     class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
                   >
@@ -545,29 +425,23 @@ const formatPrice = (price: number) => {
                   >
                     Action
                   </th>
-
                 </tr>
-
               </thead>
 
               <tbody class="divide-y divide-gray-100">
-
                 <tr
                   v-for="order in orders"
                   :key="order.id"
                   class="transition hover:bg-gray-50"
                 >
-
                   <!-- Order -->
                   <td class="px-6 py-4">
-
                     <NuxtLink
                       :to="`/admin/orders/${order.id.replace('#ORD-', '')}`"
                       class="text-sm font-semibold text-gray-900 hover:underline"
                     >
                       {{ order.id }}
                     </NuxtLink>
-
                   </td>
 
                   <!-- Date -->
@@ -587,70 +461,47 @@ const formatPrice = (price: number) => {
 
                   <!-- Status -->
                   <td class="px-6 py-4">
-
                     <span
                       class="rounded-full px-3 py-1 text-xs font-semibold"
                       :class="orderStatusClass(order.status)"
                     >
                       {{ order.status }}
                     </span>
-
                   </td>
 
                   <!-- Action -->
                   <td class="px-6 py-4">
-
                     <NuxtLink
                       :to="`/admin/orders/${order.id.replace('#ORD-', '')}`"
                       class="text-sm font-semibold text-gray-700 hover:text-black hover:underline"
                     >
                       View
                     </NuxtLink>
-
                   </td>
-
                 </tr>
-
               </tbody>
-
             </table>
-
           </div>
 
           <!-- Empty State -->
-          <div
-            v-if="orders.length === 0"
-            class="p-10 text-center"
-          >
+          <div v-if="orders.length === 0" class="p-10 text-center">
+            <div class="text-4xl">🛒</div>
 
-            <div class="text-4xl">
-              🛒
-            </div>
-
-            <h3 class="mt-3 font-semibold text-gray-900">
-              No orders yet
-            </h3>
+            <h3 class="mt-3 font-semibold text-gray-900">No orders yet</h3>
 
             <p class="mt-1 text-sm text-gray-500">
               This customer hasn't placed any orders.
             </p>
-
           </div>
-
         </div>
 
         <!-- ================================================= -->
         <!-- RECENT ACTIVITY -->
         <!-- ================================================= -->
 
-        <div
-          class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-        >
-
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div>
-            <h2 class="text-lg font-bold text-gray-900">
-              Recent Activity
-            </h2>
+            <h2 class="text-lg font-bold text-gray-900">Recent Activity</h2>
 
             <p class="mt-1 text-sm text-gray-500">
               Recent activity from this customer.
@@ -659,13 +510,11 @@ const formatPrice = (price: number) => {
 
           <!-- Activity -->
           <div class="mt-6">
-
             <div
               v-for="(activity, index) in activities"
               :key="activity.title + activity.date"
               class="relative flex gap-4 pb-6 last:pb-0"
             >
-
               <!-- Timeline Line -->
               <div
                 v-if="index !== activities.length - 1"
@@ -681,11 +530,7 @@ const formatPrice = (price: number) => {
 
               <!-- Activity Content -->
               <div class="min-w-0 flex-1">
-
-                <div
-                  class="flex flex-col justify-between gap-1 sm:flex-row"
-                >
-
+                <div class="flex flex-col justify-between gap-1 sm:flex-row">
                   <p class="font-semibold text-gray-900">
                     {{ activity.title }}
                   </p>
@@ -693,24 +538,16 @@ const formatPrice = (price: number) => {
                   <span class="text-xs text-gray-400">
                     {{ activity.date }}
                   </span>
-
                 </div>
 
                 <p class="mt-1 text-sm text-gray-500">
                   {{ activity.description }}
                 </p>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

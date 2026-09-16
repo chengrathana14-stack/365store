@@ -123,14 +123,14 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <!-- ================================= -->
           <!-- Search -->
           <!-- ================================= -->
-
+<!-- 
           <button class="group" title="Search">
             <img
               class="h-6 w-6 transition duration-300 group-hover:scale-110"
               src="https://img.icons8.com/?size=100&id=132&format=png&color=000000"
               alt="Search"
             />
-          </button>
+          </button> -->
 
           <!-- ================================= -->
           <!-- Wishlist -->

@@ -10,13 +10,7 @@ definePageMeta({
    TYPES
 ========================================= */
 
-type ProductStatus =
-  | "All"
-  | "In Stock"
-  | "Low Stock"
-  | "Out of Stock";
 
-type ViewMode = "table" | "grid";
 
 /* =========================================
    STATE

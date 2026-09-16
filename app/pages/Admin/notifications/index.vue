@@ -1,77 +1,32 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { notificationSeedData } from "~/data/admin";
 
 definePageMeta({
-  layout: "admin"
+  layout: "admin",
 });
 
-const notifications = ref([
-  {
-    id: 1,
-    type: "order",
-    title: "New Order Received",
-    message: "Order #ORD-1005 has been placed by Dara Sok.",
-    time: "5 minutes ago",
-    read: false
-  },
-  {
-    id: 2,
-    type: "stock",
-    title: "Low Stock Alert",
-    message: "Nike Phantom GX 2 Elite has only 10 items remaining.",
-    time: "30 minutes ago",
-    read: false
-  },
-  {
-    id: 3,
-    type: "user",
-    title: "New Customer",
-    message: "A new customer account has been created.",
-    time: "1 hour ago",
-    read: true
-  },
-  {
-    id: 4,
-    type: "order",
-    title: "Order Completed",
-    message: "Order #ORD-1001 has been successfully completed.",
-    time: "2 hours ago",
-    read: true
-  },
-  {
-    id: 5,
-    type: "review",
-    title: "New Product Review",
-    message: "A customer left a 5-star review on Nike Mercurial Vapor 16.",
-    time: "4 hours ago",
-    read: true
-  }
-]);
+const notifications = ref(
+  notificationSeedData.map((notification) => ({ ...notification })),
+);
 
 const filter = ref("All");
 
 const unreadCount = computed(() => {
-  return notifications.value.filter(
-    notification => !notification.read
-  ).length;
+  return notifications.value.filter((notification) => !notification.read)
+    .length;
 });
 
 const filteredNotifications = computed(() => {
-
   if (filter.value === "Unread") {
-    return notifications.value.filter(
-      notification => !notification.read
-    );
+    return notifications.value.filter((notification) => !notification.read);
   }
 
   return notifications.value;
 });
 
 const markAsRead = (id: number) => {
-
-  const notification = notifications.value.find(
-    item => item.id === id
-  );
+  const notification = notifications.value.find((item) => item.id === id);
 
   if (notification) {
     notification.read = true;
@@ -79,39 +34,30 @@ const markAsRead = (id: number) => {
 };
 
 const markAllAsRead = () => {
-
-  notifications.value.forEach(
-    notification => {
-      notification.read = true;
-    }
-  );
+  notifications.value.forEach((notification) => {
+    notification.read = true;
+  });
 };
 
 const deleteNotification = (id: number) => {
-
-  notifications.value =
-    notifications.value.filter(
-      notification => notification.id !== id
-    );
+  notifications.value = notifications.value.filter(
+    (notification) => notification.id !== id,
+  );
 };
 </script>
 
 <template>
   <div class="mx-auto max-w-5xl space-y-6">
-
     <!-- Header -->
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-
+    <div
+      class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+    >
       <div>
-
-        <h2 class="text-2xl font-bold">
-          Notifications
-        </h2>
+        <h2 class="text-2xl font-bold">Notifications</h2>
 
         <p class="mt-1 text-sm text-gray-500">
           Stay updated with your store activity.
         </p>
-
       </div>
 
       <button
@@ -121,41 +67,29 @@ const deleteNotification = (id: number) => {
       >
         Mark all as read
       </button>
-
     </div>
 
     <!-- Stats -->
     <div class="grid gap-4 sm:grid-cols-2">
-
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
-
-        <p class="text-sm text-gray-500">
-          Total Notifications
-        </p>
+        <p class="text-sm text-gray-500">Total Notifications</p>
 
         <p class="mt-2 text-2xl font-bold">
           {{ notifications.length }}
         </p>
-
       </div>
 
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
-
-        <p class="text-sm text-gray-500">
-          Unread
-        </p>
+        <p class="text-sm text-gray-500">Unread</p>
 
         <p class="mt-2 text-2xl font-bold text-red-600">
           {{ unreadCount }}
         </p>
-
       </div>
-
     </div>
 
     <!-- Filter -->
     <div class="flex gap-2">
-
       <button
         class="rounded-xl px-4 py-2 text-sm font-semibold"
         :class="
@@ -179,19 +113,16 @@ const deleteNotification = (id: number) => {
       >
         Unread
       </button>
-
     </div>
 
     <!-- Notifications -->
     <div class="overflow-hidden rounded-2xl border bg-white shadow-sm">
-
       <div
         v-for="notification in filteredNotifications"
         :key="notification.id"
         class="flex gap-4 border-b p-5 transition last:border-b-0 hover:bg-gray-50"
         :class="!notification.read ? 'bg-gray-50' : 'bg-white'"
       >
-
         <!-- Icon -->
         <div
           class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl"
@@ -199,7 +130,7 @@ const deleteNotification = (id: number) => {
             'bg-blue-100': notification.type === 'order',
             'bg-orange-100': notification.type === 'stock',
             'bg-green-100': notification.type === 'user',
-            'bg-yellow-100': notification.type === 'review'
+            'bg-yellow-100': notification.type === 'review',
           }"
         >
           {{
@@ -215,9 +146,7 @@ const deleteNotification = (id: number) => {
 
         <!-- Content -->
         <div class="min-w-0 flex-1">
-
           <div class="flex flex-col justify-between gap-1 sm:flex-row">
-
             <h3
               class="font-semibold"
               :class="!notification.read ? 'text-black' : 'text-gray-700'"
@@ -228,7 +157,6 @@ const deleteNotification = (id: number) => {
             <span class="text-xs text-gray-400">
               {{ notification.time }}
             </span>
-
           </div>
 
           <p class="mt-1 text-sm text-gray-500">
@@ -236,7 +164,6 @@ const deleteNotification = (id: number) => {
           </p>
 
           <div class="mt-3 flex gap-3">
-
             <button
               v-if="!notification.read"
               class="text-xs font-semibold text-blue-600 hover:underline"
@@ -251,9 +178,7 @@ const deleteNotification = (id: number) => {
             >
               Delete
             </button>
-
           </div>
-
         </div>
 
         <!-- Unread -->
@@ -261,30 +186,16 @@ const deleteNotification = (id: number) => {
           v-if="!notification.read"
           class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500"
         ></div>
-
       </div>
 
       <!-- Empty -->
-      <div
-        v-if="filteredNotifications.length === 0"
-        class="p-16 text-center"
-      >
+      <div v-if="filteredNotifications.length === 0" class="p-16 text-center">
+        <div class="text-5xl">🔔</div>
 
-        <div class="text-5xl">
-          🔔
-        </div>
+        <h3 class="mt-4 font-bold">No notifications</h3>
 
-        <h3 class="mt-4 font-bold">
-          No notifications
-        </h3>
-
-        <p class="mt-1 text-sm text-gray-500">
-          You're all caught up.
-        </p>
-
+        <p class="mt-1 text-sm text-gray-500">You're all caught up.</p>
       </div>
-
     </div>
-
   </div>
 </template>

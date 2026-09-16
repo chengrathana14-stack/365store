@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { productFormOptions } from "~/data/admin";
 
 definePageMeta({
-  layout: "admin"
+  layout: "admin",
 });
 
 const form = ref({
@@ -21,57 +22,17 @@ const form = ref({
   isNew: true,
   image: "",
   hoverimg: "",
-  sizes: [] as string[]
+  sizes: [] as string[],
 });
 
-const availableSizes = [
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  "39",
-  "40",
-  "41",
-  "42",
-  "42.5",
-  "43",
-  "44",
-  "45"
-];
-
-const categories = [
-  "Football Boots",
-  "Football Jersey",
-  "Football Clothing",
-  "Football Bags",
-  "Football Accessories",
-  "Football",
-  "Goalkeeper",
-  "Running",
-  "Basketball",
-  "Training"
-];
-
-const brands = [
-  "Nike",
-  "Adidas",
-  "Puma",
-  "Mizuno",
-  "New Balance"
-];
-
-const genders = [
-  "Men",
-  "Women",
-  "Unisex"
-];
+const availableSizes = productFormOptions.sizes;
+const categories = productFormOptions.categories;
+const brands = productFormOptions.brands;
+const genders = productFormOptions.genders;
 
 const toggleSize = (size: string) => {
   if (form.value.sizes.includes(size)) {
-    form.value.sizes = form.value.sizes.filter(
-      item => item !== size
-    );
+    form.value.sizes = form.value.sizes.filter((item) => item !== size);
   } else {
     form.value.sizes.push(size);
   }
@@ -92,10 +53,10 @@ const cancel = () => {
 
 <template>
   <div class="mx-auto max-w-6xl space-y-6">
-
     <!-- Header -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
+    <div
+      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+    >
       <div>
         <NuxtLink
           to="/admin/products"
@@ -104,9 +65,7 @@ const cancel = () => {
           ← Back to Products
         </NuxtLink>
 
-        <h2 class="mt-2 text-2xl font-bold text-gray-900">
-          Add Product
-        </h2>
+        <h2 class="mt-2 text-2xl font-bold text-gray-900">Add Product</h2>
 
         <p class="mt-1 text-sm text-gray-500">
           Create a new product for your sports store.
@@ -114,7 +73,6 @@ const cancel = () => {
       </div>
 
       <div class="flex gap-3">
-
         <button
           type="button"
           class="rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold hover:bg-gray-50"
@@ -130,24 +88,17 @@ const cancel = () => {
         >
           Create Product
         </button>
-
       </div>
-
     </div>
 
     <!-- Main -->
     <div class="grid gap-6 lg:grid-cols-3">
-
       <!-- Left -->
       <div class="space-y-6 lg:col-span-2">
-
         <!-- Basic Information -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
           <div class="mb-6">
-            <h3 class="font-bold text-gray-900">
-              Basic Information
-            </h3>
+            <h3 class="font-bold text-gray-900">Basic Information</h3>
 
             <p class="mt-1 text-sm text-gray-500">
               Enter the main product information.
@@ -155,7 +106,6 @@ const cancel = () => {
           </div>
 
           <div class="space-y-5">
-
             <!-- Name -->
             <div>
               <label class="mb-2 block text-sm font-semibold">
@@ -186,7 +136,6 @@ const cancel = () => {
 
             <!-- Category / Brand -->
             <div class="grid gap-5 sm:grid-cols-2">
-
               <div>
                 <label class="mb-2 block text-sm font-semibold">
                   Category
@@ -207,33 +156,23 @@ const cancel = () => {
               </div>
 
               <div>
-                <label class="mb-2 block text-sm font-semibold">
-                  Brand
-                </label>
+                <label class="mb-2 block text-sm font-semibold"> Brand </label>
 
                 <select
                   v-model="form.brand"
                   class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 >
-                  <option
-                    v-for="brand in brands"
-                    :key="brand"
-                    :value="brand"
-                  >
+                  <option v-for="brand in brands" :key="brand" :value="brand">
                     {{ brand }}
                   </option>
                 </select>
               </div>
-
             </div>
 
             <!-- Gender / Color -->
             <div class="grid gap-5 sm:grid-cols-2">
-
               <div>
-                <label class="mb-2 block text-sm font-semibold">
-                  Gender
-                </label>
+                <label class="mb-2 block text-sm font-semibold"> Gender </label>
 
                 <select
                   v-model="form.gender"
@@ -250,9 +189,7 @@ const cancel = () => {
               </div>
 
               <div>
-                <label class="mb-2 block text-sm font-semibold">
-                  Color
-                </label>
+                <label class="mb-2 block text-sm font-semibold"> Color </label>
 
                 <input
                   v-model="form.color"
@@ -261,20 +198,14 @@ const cancel = () => {
                   class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 />
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         <!-- Pricing -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
           <div class="mb-6">
-            <h3 class="font-bold">
-              Pricing & Inventory
-            </h3>
+            <h3 class="font-bold">Pricing & Inventory</h3>
 
             <p class="mt-1 text-sm text-gray-500">
               Set product price, discount and stock.
@@ -282,7 +213,6 @@ const cancel = () => {
           </div>
 
           <div class="grid gap-5 sm:grid-cols-3">
-
             <div>
               <label class="mb-2 block text-sm font-semibold">
                 Price ($)
@@ -312,9 +242,7 @@ const cancel = () => {
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-semibold">
-                Stock
-              </label>
+              <label class="mb-2 block text-sm font-semibold"> Stock </label>
 
               <input
                 v-model="form.stock"
@@ -323,24 +251,18 @@ const cancel = () => {
                 class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
               />
             </div>
-
           </div>
-
         </div>
 
         <!-- Sizes -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h3 class="font-bold">
-            Available Sizes
-          </h3>
+          <h3 class="font-bold">Available Sizes</h3>
 
           <p class="mt-1 text-sm text-gray-500">
             Select the sizes available for this product.
           </p>
 
           <div class="mt-5 flex flex-wrap gap-3">
-
             <button
               v-for="size in availableSizes"
               :key="size"
@@ -355,29 +277,19 @@ const cancel = () => {
             >
               {{ size }}
             </button>
-
           </div>
-
         </div>
-
       </div>
 
       <!-- Right -->
       <div class="space-y-6">
-
         <!-- Product Image -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 class="font-bold">Product Images</h3>
 
-          <h3 class="font-bold">
-            Product Images
-          </h3>
-
-          <p class="mt-1 text-sm text-gray-500">
-            Add product image URLs.
-          </p>
+          <p class="mt-1 text-sm text-gray-500">Add product image URLs.</p>
 
           <div class="mt-5 space-y-4">
-
             <div>
               <label class="mb-2 block text-sm font-semibold">
                 Main Image URL
@@ -403,14 +315,12 @@ const cancel = () => {
                 class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
               />
             </div>
-
           </div>
 
           <!-- Preview -->
           <div
             class="mt-5 flex h-64 items-center justify-center overflow-hidden rounded-xl bg-gray-100"
           >
-
             <img
               v-if="form.image"
               :src="form.image"
@@ -418,42 +328,24 @@ const cancel = () => {
               class="h-full w-full object-contain"
             />
 
-            <div
-              v-else
-              class="text-center text-sm text-gray-400"
-            >
-              <div class="text-4xl">
-                👟
-              </div>
+            <div v-else class="text-center text-sm text-gray-400">
+              <div class="text-4xl">👟</div>
 
-              <p class="mt-2">
-                Image preview
-              </p>
+              <p class="mt-2">Image preview</p>
             </div>
-
           </div>
-
         </div>
 
         <!-- Product Status -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
-          <h3 class="font-bold">
-            Product Status
-          </h3>
+          <h3 class="font-bold">Product Status</h3>
 
           <div class="mt-5 space-y-4">
-
             <label class="flex cursor-pointer items-center justify-between">
-
               <div>
-                <p class="text-sm font-semibold">
-                  Featured Product
-                </p>
+                <p class="text-sm font-semibold">Featured Product</p>
 
-                <p class="text-xs text-gray-500">
-                  Show on featured sections
-                </p>
+                <p class="text-xs text-gray-500">Show on featured sections</p>
               </div>
 
               <input
@@ -461,19 +353,13 @@ const cancel = () => {
                 type="checkbox"
                 class="h-5 w-5 accent-black"
               />
-
             </label>
 
             <label class="flex cursor-pointer items-center justify-between">
-
               <div>
-                <p class="text-sm font-semibold">
-                  New Product
-                </p>
+                <p class="text-sm font-semibold">New Product</p>
 
-                <p class="text-xs text-gray-500">
-                  Mark product as new
-                </p>
+                <p class="text-xs text-gray-500">Mark product as new</p>
               </div>
 
               <input
@@ -481,16 +367,10 @@ const cancel = () => {
                 type="checkbox"
                 class="h-5 w-5 accent-black"
               />
-
             </label>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

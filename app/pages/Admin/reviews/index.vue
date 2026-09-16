@@ -1,124 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-
+import { products } from "~/data/product";
+import { reviewSeedData } from "~/data/admin";
 definePageMeta({
   layout: "admin",
 });
 
-interface Review {
-  id: number;
-  customer: string;
-  email: string;
-  avatar: string;
-  product: string;
-  rating: number;
-  title: string;
-  comment: string;
-  date: string;
-  status: "Published" | "Pending" | "Hidden";
-  verified: boolean;
-}
-
-const reviews = ref<Review[]>([
-  {
-    id: 1,
-    customer: "Dara Sok",
-    email: "dara@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=12",
-    product: "Mizuno Morelia Neo IV β JAPAN",
-    rating: 5,
-    title: "Amazing football boots!",
-    comment:
-      "The boots are very comfortable and lightweight. The touch on the ball is excellent.",
-    date: "2026-08-30",
-    status: "Published",
-    verified: true,
-  },
-  {
-    id: 2,
-    customer: "Vann Thai",
-    email: "vannthai@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=13",
-    product: "Nike Mercurial Vapor 16 Elite",
-    rating: 5,
-    title: "Very fast boots",
-    comment:
-      "I really like the speed and lightweight feeling. Perfect for attacking players.",
-    date: "2026-08-28",
-    status: "Published",
-    verified: true,
-  },
-  {
-    id: 3,
-    customer: "Sokha Chan",
-    email: "sokha@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=14",
-    product: "Adidas Predator Elite Firm Ground",
-    rating: 4,
-    title: "Good control",
-    comment:
-      "Great control and comfortable fit. Delivery was also fast.",
-    date: "2026-08-26",
-    status: "Pending",
-    verified: true,
-  },
-  {
-    id: 4,
-    customer: "Rithy Kim",
-    email: "rithy@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=15",
-    product: "PUMA FUTURE 8 ULTIMATE FG",
-    rating: 5,
-    title: "Excellent fit",
-    comment:
-      "The fit is excellent and the grip is very good during matches.",
-    date: "2026-08-25",
-    status: "Published",
-    verified: true,
-  },
-  {
-    id: 5,
-    customer: "Bora Lim",
-    email: "bora@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=16",
-    product: "Nike Phantom GX 2 Elite",
-    rating: 3,
-    title: "Good but expensive",
-    comment:
-      "The boots are good quality but I think the price is a little high.",
-    date: "2026-08-22",
-    status: "Pending",
-    verified: false,
-  },
-  {
-    id: 6,
-    customer: "Sopheak Men",
-    email: "sopheak@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=17",
-    product: "Adidas F50 Elite Firm Ground",
-    rating: 2,
-    title: "Not comfortable",
-    comment:
-      "The boots look good but they are not comfortable for my feet.",
-    date: "2026-08-20",
-    status: "Hidden",
-    verified: false,
-  },
-  {
-    id: 7,
-    customer: "Kosal Chea",
-    email: "kosal@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=18",
-    product: "Nike Tiempo Legend 10 Elite",
-    rating: 5,
-    title: "Classic and comfortable",
-    comment:
-      "Very comfortable boots with excellent touch and control.",
-    date: "2026-08-18",
-    status: "Published",
-    verified: true,
-  },
-]);
+const reviews = ref<Review[]>(reviewSeedData.map((review) => ({ ...review })));
 
 const search = ref("");
 const selectedRating = ref("All");
@@ -145,19 +33,13 @@ const filteredReviews = computed(() => {
       review.rating === Number(selectedRating.value);
 
     const statusMatch =
-      selectedStatus.value === "All" ||
-      review.status === selectedStatus.value;
+      selectedStatus.value === "All" || review.status === selectedStatus.value;
 
     const productMatch =
       selectedProduct.value === "All" ||
       review.product === selectedProduct.value;
 
-    return (
-      searchMatch &&
-      ratingMatch &&
-      statusMatch &&
-      productMatch
-    );
+    return searchMatch && ratingMatch && statusMatch && productMatch;
   });
 });
 
@@ -168,30 +50,21 @@ const filteredReviews = computed(() => {
 const totalReviews = computed(() => reviews.value.length);
 
 const publishedReviews = computed(() => {
-  return reviews.value.filter(
-    (review) => review.status === "Published"
-  ).length;
+  return reviews.value.filter((review) => review.status === "Published").length;
 });
 
 const pendingReviews = computed(() => {
-  return reviews.value.filter(
-    (review) => review.status === "Pending"
-  ).length;
+  return reviews.value.filter((review) => review.status === "Pending").length;
 });
 
 const hiddenReviews = computed(() => {
-  return reviews.value.filter(
-    (review) => review.status === "Hidden"
-  ).length;
+  return reviews.value.filter((review) => review.status === "Hidden").length;
 });
 
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return "0.0";
 
-  const total = reviews.value.reduce(
-    (sum, review) => sum + review.rating,
-    0
-  );
+  const total = reviews.value.reduce((sum, review) => sum + review.rating, 0);
 
   return (total / reviews.value.length).toFixed(1);
 });
@@ -202,21 +75,17 @@ const averageRating = computed(() => {
 
 const changeStatus = (
   review: Review,
-  status: "Published" | "Pending" | "Hidden"
+  status: "Published" | "Pending" | "Hidden",
 ) => {
   review.status = status;
 };
 
 const deleteReview = (id: number) => {
-  const confirmed = confirm(
-    "Are you sure you want to delete this review?"
-  );
+  const confirmed = confirm("Are you sure you want to delete this review?");
 
   if (!confirmed) return;
 
-  reviews.value = reviews.value.filter(
-    (review) => review.id !== id
-  );
+  reviews.value = reviews.value.filter((review) => review.id !== id);
 };
 
 const clearFilters = () => {
@@ -227,15 +96,12 @@ const clearFilters = () => {
 };
 
 const viewReview = (review: Review) => {
-  alert(
-    `Review by ${review.customer}\n\n${review.title}\n\n${review.comment}`
-  );
+  alert(`Review by ${review.customer}\n\n${review.title}\n\n${review.comment}`);
 };
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
@@ -244,9 +110,7 @@ const viewReview = (review: Review) => {
       class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
     >
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">
-          Reviews
-        </h1>
+        <h1 class="text-2xl font-bold text-gray-900">Reviews</h1>
 
         <p class="mt-1 text-sm text-gray-500">
           Manage customer reviews and product ratings.
@@ -256,17 +120,13 @@ const viewReview = (review: Review) => {
       <div
         class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
       >
-        <span class="text-yellow-500">
-          ★
-        </span>
+        <span class="text-yellow-500"> ★ </span>
 
         <span class="font-bold text-gray-900">
           {{ averageRating }}
         </span>
 
-        <span class="text-sm text-gray-400">
-          average rating
-        </span>
+        <span class="text-sm text-gray-400"> average rating </span>
       </div>
     </div>
 
@@ -274,20 +134,12 @@ const viewReview = (review: Review) => {
     <!-- STATISTICS -->
     <!-- ================================================= -->
 
-    <div
-      class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
-    >
-
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <!-- Total -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div>
-            <p class="text-sm text-gray-500">
-              Total Reviews
-            </p>
+            <p class="text-sm text-gray-500">Total Reviews</p>
 
             <p class="mt-2 text-3xl font-bold text-gray-900">
               {{ totalReviews }}
@@ -299,20 +151,14 @@ const viewReview = (review: Review) => {
           >
             ★
           </div>
-
         </div>
       </div>
 
       <!-- Published -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div>
-            <p class="text-sm text-gray-500">
-              Published
-            </p>
+            <p class="text-sm text-gray-500">Published</p>
 
             <p class="mt-2 text-3xl font-bold text-green-600">
               {{ publishedReviews }}
@@ -324,20 +170,14 @@ const viewReview = (review: Review) => {
           >
             ✓
           </div>
-
         </div>
       </div>
 
       <!-- Pending -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div>
-            <p class="text-sm text-gray-500">
-              Pending
-            </p>
+            <p class="text-sm text-gray-500">Pending</p>
 
             <p class="mt-2 text-3xl font-bold text-yellow-600">
               {{ pendingReviews }}
@@ -349,20 +189,14 @@ const viewReview = (review: Review) => {
           >
             !
           </div>
-
         </div>
       </div>
 
       <!-- Hidden -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div>
-            <p class="text-sm text-gray-500">
-              Hidden
-            </p>
+            <p class="text-sm text-gray-500">Hidden</p>
 
             <p class="mt-2 text-3xl font-bold text-red-600">
               {{ hiddenReviews }}
@@ -374,27 +208,18 @@ const viewReview = (review: Review) => {
           >
             ×
           </div>
-
         </div>
       </div>
-
     </div>
 
     <!-- ================================================= -->
     <!-- FILTERS -->
     <!-- ================================================= -->
 
-    <div
-      class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-    >
-
-      <div
-        class="grid grid-cols-1 gap-4 lg:grid-cols-4"
-      >
-
+    <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
         <!-- Search -->
         <div class="lg:col-span-1">
-
           <label
             class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
           >
@@ -402,7 +227,6 @@ const viewReview = (review: Review) => {
           </label>
 
           <div class="relative">
-
             <span
               class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
             >
@@ -415,14 +239,11 @@ const viewReview = (review: Review) => {
               placeholder="Search reviews..."
               class="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-black"
             />
-
           </div>
-
         </div>
 
         <!-- Rating -->
         <div>
-
           <label
             class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
           >
@@ -433,36 +254,22 @@ const viewReview = (review: Review) => {
             v-model="selectedRating"
             class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
           >
-            <option value="All">
-              All Ratings
-            </option>
+            <option value="All">All Ratings</option>
 
-            <option value="5">
-              ★★★★★ 5 Stars
-            </option>
+            <option value="5">★★★★★ 5 Stars</option>
 
-            <option value="4">
-              ★★★★☆ 4 Stars
-            </option>
+            <option value="4">★★★★☆ 4 Stars</option>
 
-            <option value="3">
-              ★★★☆☆ 3 Stars
-            </option>
+            <option value="3">★★★☆☆ 3 Stars</option>
 
-            <option value="2">
-              ★★☆☆☆ 2 Stars
-            </option>
+            <option value="2">★★☆☆☆ 2 Stars</option>
 
-            <option value="1">
-              ★☆☆☆☆ 1 Star
-            </option>
+            <option value="1">★☆☆☆☆ 1 Star</option>
           </select>
-
         </div>
 
         <!-- Status -->
         <div>
-
           <label
             class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
           >
@@ -473,28 +280,18 @@ const viewReview = (review: Review) => {
             v-model="selectedStatus"
             class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
           >
-            <option value="All">
-              All Status
-            </option>
+            <option value="All">All Status</option>
 
-            <option value="Published">
-              Published
-            </option>
+            <option value="Published">Published</option>
 
-            <option value="Pending">
-              Pending
-            </option>
+            <option value="Pending">Pending</option>
 
-            <option value="Hidden">
-              Hidden
-            </option>
+            <option value="Hidden">Hidden</option>
           </select>
-
         </div>
 
         <!-- Product -->
         <div>
-
           <label
             class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
           >
@@ -505,28 +302,19 @@ const viewReview = (review: Review) => {
             v-model="selectedProduct"
             class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
           >
-            <option value="All">
-              All Products
-            </option>
+            <option value="All">All Products</option>
 
-            <option
-              v-for="product in products"
-              :key="product"
-              :value="product"
-            >
+            <option v-for="product in products" :key="product" :value="product">
               {{ product }}
             </option>
           </select>
-
         </div>
-
       </div>
 
       <!-- Filter Footer -->
       <div
         class="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between"
       >
-
         <p class="text-sm text-gray-500">
           Showing
           <span class="font-semibold text-gray-900">
@@ -541,9 +329,7 @@ const viewReview = (review: Review) => {
         >
           Clear Filters
         </button>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -553,17 +339,13 @@ const viewReview = (review: Review) => {
     <div
       class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
     >
-
       <!-- Table Header -->
 
       <div
         class="flex flex-col gap-2 border-b border-gray-200 p-6 sm:flex-row sm:items-center sm:justify-between"
       >
-
         <div>
-          <h2 class="text-lg font-bold text-gray-900">
-            Customer Reviews
-          </h2>
+          <h2 class="text-lg font-bold text-gray-900">Customer Reviews</h2>
 
           <p class="mt-1 text-sm text-gray-500">
             Review and moderate customer feedback.
@@ -575,19 +357,14 @@ const viewReview = (review: Review) => {
         >
           {{ filteredReviews.length }} Results
         </span>
-
       </div>
 
       <!-- Table -->
 
       <div class="overflow-x-auto">
-
         <table class="w-full min-w-[1200px]">
-
           <thead class="bg-gray-50">
-
             <tr class="border-b border-gray-200">
-
               <th
                 class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
               >
@@ -629,25 +406,19 @@ const viewReview = (review: Review) => {
               >
                 Actions
               </th>
-
             </tr>
-
           </thead>
 
           <tbody class="divide-y divide-gray-100">
-
             <tr
               v-for="review in filteredReviews"
               :key="review.id"
               class="transition hover:bg-gray-50"
             >
-
               <!-- Customer -->
 
               <td class="px-6 py-5">
-
                 <div class="flex items-center gap-3">
-
                   <img
                     :src="review.avatar"
                     :alt="review.customer"
@@ -655,12 +426,8 @@ const viewReview = (review: Review) => {
                   />
 
                   <div>
-
                     <div class="flex items-center gap-2">
-
-                      <p
-                        class="font-semibold text-gray-900"
-                      >
+                      <p class="font-semibold text-gray-900">
                         {{ review.customer }}
                       </p>
 
@@ -670,64 +437,51 @@ const viewReview = (review: Review) => {
                       >
                         Verified
                       </span>
-
                     </div>
 
                     <p class="mt-1 text-xs text-gray-500">
                       {{ review.email }}
                     </p>
-
                   </div>
-
                 </div>
-
               </td>
 
               <!-- Product -->
 
               <td class="max-w-[220px] px-6 py-5">
-
                 <p
                   class="truncate text-sm font-medium text-gray-900"
                   :title="review.product"
                 >
                   {{ review.product }}
                 </p>
-
               </td>
 
               <!-- Rating -->
 
               <td class="px-6 py-5">
-
                 <div class="flex items-center gap-2">
-
                   <span class="text-sm tracking-wide text-yellow-500">
-                    {{ "★".repeat(review.rating) }}{{ "☆".repeat(5 - review.rating) }}
+                    {{ "★".repeat(review.rating)
+                    }}{{ "☆".repeat(5 - review.rating) }}
                   </span>
 
                   <span class="text-xs font-semibold text-gray-500">
                     {{ review.rating }}.0
                   </span>
-
                 </div>
-
               </td>
 
               <!-- Review -->
 
               <td class="max-w-[300px] px-6 py-5">
-
                 <p class="font-semibold text-gray-900">
                   {{ review.title }}
                 </p>
 
-                <p
-                  class="mt-1 line-clamp-2 text-sm text-gray-500"
-                >
+                <p class="mt-1 line-clamp-2 text-sm text-gray-500">
                   {{ review.comment }}
                 </p>
-
               </td>
 
               <!-- Date -->
@@ -739,7 +493,6 @@ const viewReview = (review: Review) => {
               <!-- Status -->
 
               <td class="px-6 py-5">
-
                 <span
                   class="rounded-full px-3 py-1.5 text-xs font-semibold"
                   :class="{
@@ -749,21 +502,17 @@ const viewReview = (review: Review) => {
                     'bg-yellow-100 text-yellow-700':
                       review.status === 'Pending',
 
-                    'bg-red-100 text-red-700':
-                      review.status === 'Hidden',
+                    'bg-red-100 text-red-700': review.status === 'Hidden',
                   }"
                 >
                   {{ review.status }}
                 </span>
-
               </td>
 
               <!-- Actions -->
 
               <td class="px-6 py-5">
-
                 <div class="flex justify-end gap-2">
-
                   <!-- View -->
 
                   <button
@@ -801,33 +550,22 @@ const viewReview = (review: Review) => {
                   >
                     Delete
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
 
             <!-- Empty -->
 
             <tr v-if="filteredReviews.length === 0">
-
-              <td
-                colspan="7"
-                class="px-6 py-16 text-center"
-              >
-
+              <td colspan="7" class="px-6 py-16 text-center">
                 <div class="mx-auto max-w-sm">
-
                   <div
                     class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-2xl"
                   >
                     ★
                   </div>
 
-                  <h3 class="mt-4 font-bold text-gray-900">
-                    No reviews found
-                  </h3>
+                  <h3 class="mt-4 font-bold text-gray-900">No reviews found</h3>
 
                   <p class="mt-1 text-sm text-gray-500">
                     Try changing your filters or search keywords.
@@ -839,17 +577,11 @@ const viewReview = (review: Review) => {
                   >
                     Clear Filters
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
 
       <!-- ================================================= -->
@@ -859,7 +591,6 @@ const viewReview = (review: Review) => {
       <div
         class="flex flex-col gap-3 border-t border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
       >
-
         <p class="text-sm text-gray-500">
           Showing
           <span class="font-semibold text-gray-900">
@@ -873,7 +604,6 @@ const viewReview = (review: Review) => {
         </p>
 
         <div class="flex gap-2">
-
           <button
             disabled
             class="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-400"
@@ -893,12 +623,8 @@ const viewReview = (review: Review) => {
           >
             Next
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

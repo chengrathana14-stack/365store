@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { reportPeriods, reportSeedData } from "~/data/admin";
 
 definePageMeta({
   layout: "admin",
@@ -15,16 +16,7 @@ useHead({
 
 const selectedPeriod = ref("This Month");
 
-const periods = [
-  "Today",
-  "Yesterday",
-  "Last 7 Days",
-  "Last 30 Days",
-  "This Month",
-  "Last Month",
-  "This Year",
-  "Custom",
-];
+const periods = reportPeriods;
 
 const fromDate = ref("2026-09-01");
 const toDate = ref("2026-09-03");
@@ -35,220 +27,37 @@ const reportLoading = ref(false);
 // REPORT DATA
 // =====================================================
 
-const report = ref({
-  revenue: 24580,
-  previousRevenue: 20800,
-
-  orders: 281,
-  previousOrders: 245,
-
-  customers: 184,
-  previousCustomers: 160,
-
-  averageOrder: 87.5,
-  previousAverageOrder: 84.9,
-
-  productsSold: 412,
-
-  cancelledOrders: 14,
-
-  returnedOrders: 8,
-});
+const report = ref({ ...reportSeedData.report });
 
 // =====================================================
 // SALES DATA
 // =====================================================
 
-const salesData = [
-  {
-    month: "Jan",
-    revenue: 14500,
-    orders: 165,
-  },
-  {
-    month: "Feb",
-    revenue: 17200,
-    orders: 190,
-  },
-  {
-    month: "Mar",
-    revenue: 15800,
-    orders: 178,
-  },
-  {
-    month: "Apr",
-    revenue: 19400,
-    orders: 215,
-  },
-  {
-    month: "May",
-    revenue: 21100,
-    orders: 235,
-  },
-  {
-    month: "Jun",
-    revenue: 20300,
-    orders: 228,
-  },
-  {
-    month: "Jul",
-    revenue: 22600,
-    orders: 250,
-  },
-  {
-    month: "Aug",
-    revenue: 24100,
-    orders: 270,
-  },
-  {
-    month: "Sep",
-    revenue: 24580,
-    orders: 281,
-  },
-  {
-    month: "Oct",
-    revenue: 0,
-    orders: 0,
-  },
-  {
-    month: "Nov",
-    revenue: 0,
-    orders: 0,
-  },
-  {
-    month: "Dec",
-    revenue: 0,
-    orders: 0,
-  },
-];
+const salesData = reportSeedData.salesData;
 
 // =====================================================
 // TOP PRODUCTS
 // =====================================================
 
-const topProducts = [
-  {
-    name: "Mizuno Morelia Neo IV β JAPAN",
-    category: "Football Boots",
-    sold: 86,
-    revenue: 27434,
-  },
-  {
-    name: "Nike Mercurial Vapor 16 Elite",
-    category: "Football Boots",
-    sold: 72,
-    revenue: 21528,
-  },
-  {
-    name: "Adidas Predator Elite Firm Ground",
-    category: "Football Boots",
-    sold: 65,
-    revenue: 17550,
-  },
-  {
-    name: "PUMA FUTURE 8 ULTIMATE FG",
-    category: "Football Boots",
-    sold: 54,
-    revenue: 14580,
-  },
-  {
-    name: "Nike Phantom GX 2 Elite",
-    category: "Football Boots",
-    sold: 43,
-    revenue: 13330,
-  },
-];
+const topProducts = reportSeedData.topProducts;
 
 // =====================================================
 // TOP CUSTOMERS
 // =====================================================
 
-const topCustomers = [
-  {
-    name: "Dara Sok",
-    email: "dara@gmail.com",
-    orders: 18,
-    spent: 2450,
-  },
-  {
-    name: "Sovann Vann",
-    email: "sovann@gmail.com",
-    orders: 15,
-    spent: 2180,
-  },
-  {
-    name: "Chantha Kim",
-    email: "chantha@gmail.com",
-    orders: 13,
-    spent: 1950,
-  },
-  {
-    name: "Rithy Chea",
-    email: "rithy@gmail.com",
-    orders: 11,
-    spent: 1640,
-  },
-  {
-    name: "Vicheka Long",
-    email: "vicheka@gmail.com",
-    orders: 9,
-    spent: 1390,
-  },
-];
+const topCustomers = reportSeedData.topCustomers;
 
 // =====================================================
 // ORDER STATUS
 // =====================================================
 
-const orderStatuses = [
-  {
-    name: "Delivered",
-    count: 218,
-    percentage: 77.6,
-  },
-  {
-    name: "Processing",
-    count: 29,
-    percentage: 10.3,
-  },
-  {
-    name: "Pending",
-    count: 20,
-    percentage: 7.1,
-  },
-  {
-    name: "Cancelled",
-    count: 14,
-    percentage: 5,
-  },
-];
+const orderStatuses = reportSeedData.orderStatuses;
 
 // =====================================================
 // PAYMENT METHODS
 // =====================================================
 
-const paymentMethods = [
-  {
-    name: "Cash on Delivery",
-    orders: 126,
-    percentage: 44.8,
-  },
-  {
-    name: "ABA Pay",
-    orders: 74,
-    percentage: 26.3,
-  },
-  {
-    name: "ACLEDA",
-    orders: 43,
-    percentage: 15.3,
-  },
-  {
-    name: "Credit / Debit Card",
-    orders: 38,
-    percentage: 13.5,
-  },
-];
+const paymentMethods = reportSeedData.paymentMethods;
 
 // =====================================================
 // CALCULATIONS
@@ -288,8 +97,7 @@ const averageOrderGrowth = computed(() => {
   if (!report.value.previousAverageOrder) return 0;
 
   return (
-    ((report.value.averageOrder -
-      report.value.previousAverageOrder) /
+    ((report.value.averageOrder - report.value.previousAverageOrder) /
       report.value.previousAverageOrder) *
     100
   ).toFixed(1);
@@ -402,9 +210,7 @@ const exportCSV = () => {
 
   const csv = rows
     .map((row) =>
-      row
-        .map((value) => `"${String(value).replace(/"/g, '""')}"`)
-        .join(","),
+      row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","),
     )
     .join("\n");
 
@@ -447,17 +253,15 @@ const reportTitle = computed(() => {
 
 <template>
   <div class="min-h-screen space-y-6 bg-gray-50 p-1">
-
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
 
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-
+    <div
+      class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+    >
       <div>
-        <h2 class="text-2xl font-bold text-gray-900">
-          Reports & Analytics
-        </h2>
+        <h2 class="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
 
         <p class="mt-1 text-sm text-gray-500">
           Analyze your store performance and sales activity.
@@ -467,14 +271,11 @@ const reportTitle = computed(() => {
       <!-- ACTION BUTTONS -->
 
       <div class="flex flex-wrap gap-2">
-
         <button
           @click="refreshReport"
           class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
         >
-          <span :class="{ 'animate-spin': reportLoading }">
-            ↻
-          </span>
+          <span :class="{ 'animate-spin': reportLoading }"> ↻ </span>
 
           Refresh
         </button>
@@ -483,18 +284,15 @@ const reportTitle = computed(() => {
           @click="printReport"
           class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
         >
-          🖨️
-          Print
+          🖨️ Print
         </button>
 
         <button
           @click="savePDF"
           class="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
         >
-          📄
-          Save PDF
+          📄 Save PDF
         </button>
-
       </div>
     </div>
 
@@ -503,17 +301,17 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-
-      <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-
+      <div
+        class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between"
+      >
         <div>
-
-          <p class="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+          <p
+            class="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400"
+          >
             Report Period
           </p>
 
           <div class="flex flex-wrap gap-2">
-
             <button
               v-for="period in periods"
               :key="period"
@@ -530,15 +328,12 @@ const reportTitle = computed(() => {
             >
               {{ period }}
             </button>
-
           </div>
-
         </div>
 
         <!-- CUSTOM DATE -->
 
         <div class="flex flex-col gap-3 sm:flex-row">
-
           <div>
             <label class="mb-1 block text-xs font-semibold text-gray-500">
               From
@@ -562,13 +357,12 @@ const reportTitle = computed(() => {
               class="rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-black"
             />
           </div>
-
         </div>
-
       </div>
 
-      <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-
+      <div
+        class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4"
+      >
         <div class="text-sm text-gray-500">
           Showing report for:
 
@@ -583,9 +377,7 @@ const reportTitle = computed(() => {
         >
           ⬇ Export CSV
         </button>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -593,28 +385,24 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-
       <!-- Revenue -->
 
       <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
           >
             $
           </div>
 
-          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
+          <span
+            class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600"
+          >
             +{{ revenueGrowth }}%
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Total Revenue
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Total Revenue</p>
 
         <p class="mt-1 text-3xl font-bold text-gray-900">
           {{ formatPrice(report.revenue) }}
@@ -623,30 +411,26 @@ const reportTitle = computed(() => {
         <p class="mt-2 text-xs text-gray-400">
           Previous: {{ formatPrice(report.previousRevenue) }}
         </p>
-
       </div>
 
       <!-- Orders -->
 
       <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
           >
             🛒
           </div>
 
-          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
+          <span
+            class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600"
+          >
             +{{ ordersGrowth }}%
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Total Orders
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Total Orders</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ report.orders }}
@@ -655,73 +439,59 @@ const reportTitle = computed(() => {
         <p class="mt-2 text-xs text-gray-400">
           {{ report.cancelledOrders }} cancelled orders
         </p>
-
       </div>
 
       <!-- Customers -->
 
       <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
           >
             👥
           </div>
 
-          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
+          <span
+            class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600"
+          >
             +{{ customersGrowth }}%
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Customers
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Customers</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ report.customers }}
         </p>
 
-        <p class="mt-2 text-xs text-gray-400">
-          Active customers
-        </p>
-
+        <p class="mt-2 text-xs text-gray-400">Active customers</p>
       </div>
 
       <!-- Average Order -->
 
       <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
           >
             📦
           </div>
 
-          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
+          <span
+            class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600"
+          >
             +{{ averageOrderGrowth }}%
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Average Order
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Average Order</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ formatPrice(report.averageOrder) }}
         </p>
 
-        <p class="mt-2 text-xs text-gray-400">
-          Per completed order
-        </p>
-
+        <p class="mt-2 text-xs text-gray-400">Per completed order</p>
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -729,17 +499,16 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="grid gap-6 xl:grid-cols-3">
-
       <!-- SALES CHART -->
 
-      <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm xl:col-span-2">
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-
+      <div
+        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm xl:col-span-2"
+      >
+        <div
+          class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h3 class="font-bold text-gray-900">
-              Sales Performance
-            </h3>
+            <h3 class="font-bold text-gray-900">Sales Performance</h3>
 
             <p class="mt-1 text-xs text-gray-400">
               Revenue generated over time
@@ -747,31 +516,23 @@ const reportTitle = computed(() => {
           </div>
 
           <div class="text-right">
-
-            <p class="text-xs text-gray-400">
-              Total
-            </p>
+            <p class="text-xs text-gray-400">Total</p>
 
             <p class="text-xl font-bold">
               {{ formatPrice(report.revenue) }}
             </p>
-
           </div>
-
         </div>
 
         <!-- CHART -->
 
         <div class="mt-8 flex h-72 items-end gap-2 overflow-x-auto sm:gap-3">
-
           <div
             v-for="item in salesData"
             :key="item.month"
             class="group flex h-full min-w-[35px] flex-1 flex-col justify-end"
           >
-
             <div class="relative flex h-full items-end">
-
               <div
                 class="w-full rounded-t-lg bg-black transition-all duration-300 group-hover:bg-gray-600"
                 :style="{
@@ -779,30 +540,26 @@ const reportTitle = computed(() => {
                   minHeight: item.revenue ? '8px' : '0px',
                 }"
               >
-
                 <div
                   v-if="item.revenue"
                   class="absolute -translate-y-7 whitespace-nowrap rounded bg-black px-2 py-1 text-[10px] text-white opacity-0 transition group-hover:opacity-100"
                 >
                   {{ formatPrice(item.revenue) }}
                 </div>
-
               </div>
-
             </div>
 
             <div class="mt-3 text-center text-xs text-gray-400">
               {{ item.month }}
             </div>
-
           </div>
-
         </div>
 
         <!-- CHART LEGEND -->
 
-        <div class="mt-5 flex items-center gap-6 border-t pt-4 text-xs text-gray-500">
-
+        <div
+          class="mt-5 flex items-center gap-6 border-t pt-4 text-xs text-gray-500"
+        >
           <div class="flex items-center gap-2">
             <span class="h-2.5 w-2.5 rounded-full bg-black"></span>
             Revenue
@@ -814,32 +571,19 @@ const reportTitle = computed(() => {
               {{ report.orders }}
             </span>
           </div>
-
         </div>
-
       </div>
 
       <!-- ORDER STATUS -->
 
       <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 class="font-bold">Order Status</h3>
 
-        <h3 class="font-bold">
-          Order Status
-        </h3>
-
-        <p class="mt-1 text-xs text-gray-400">
-          Current order distribution
-        </p>
+        <p class="mt-1 text-xs text-gray-400">Current order distribution</p>
 
         <div class="mt-8 space-y-6">
-
-          <div
-            v-for="status in orderStatuses"
-            :key="status.name"
-          >
-
+          <div v-for="status in orderStatuses" :key="status.name">
             <div class="mb-2 flex justify-between text-sm">
-
               <span class="font-medium text-gray-700">
                 {{ status.name }}
               </span>
@@ -847,28 +591,21 @@ const reportTitle = computed(() => {
               <span class="font-bold">
                 {{ status.count }}
               </span>
-
             </div>
 
             <div class="h-2 overflow-hidden rounded-full bg-gray-100">
-
               <div
                 class="h-full rounded-full bg-black transition-all"
                 :style="{ width: `${status.percentage}%` }"
               ></div>
-
             </div>
 
             <p class="mt-1 text-right text-xs text-gray-400">
               {{ status.percentage }}%
             </p>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -876,37 +613,29 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="grid gap-6 xl:grid-cols-2">
-
       <!-- TOP PRODUCTS -->
 
-      <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-
+      <div
+        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+      >
         <div class="flex items-center justify-between border-b p-6">
-
           <div>
-            <h3 class="font-bold">
-              Top Selling Products
-            </h3>
+            <h3 class="font-bold">Top Selling Products</h3>
 
-            <p class="mt-1 text-xs text-gray-400">
-              Best performing products
-            </p>
+            <p class="mt-1 text-xs text-gray-400">Best performing products</p>
           </div>
 
           <span class="rounded-lg bg-gray-100 px-3 py-1 text-xs font-bold">
             TOP 5
           </span>
-
         </div>
 
         <div class="divide-y">
-
           <div
             v-for="(product, index) in topProducts"
             :key="product.name"
             class="flex items-center gap-4 p-5 transition hover:bg-gray-50"
           >
-
             <div
               class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-sm font-bold text-white"
             >
@@ -914,7 +643,6 @@ const reportTitle = computed(() => {
             </div>
 
             <div class="min-w-0 flex-1">
-
               <p class="truncate text-sm font-bold text-gray-900">
                 {{ product.name }}
               </p>
@@ -922,37 +650,27 @@ const reportTitle = computed(() => {
               <p class="mt-1 text-xs text-gray-400">
                 {{ product.category }}
               </p>
-
             </div>
 
             <div class="text-right">
-
               <p class="text-sm font-bold">
                 {{ formatPrice(product.revenue) }}
               </p>
 
-              <p class="mt-1 text-xs text-gray-400">
-                {{ product.sold }} sold
-              </p>
-
+              <p class="mt-1 text-xs text-gray-400">{{ product.sold }} sold</p>
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       <!-- TOP CUSTOMERS -->
 
-      <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-
+      <div
+        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+      >
         <div class="flex items-center justify-between border-b p-6">
-
           <div>
-            <h3 class="font-bold">
-              Top Customers
-            </h3>
+            <h3 class="font-bold">Top Customers</h3>
 
             <p class="mt-1 text-xs text-gray-400">
               Customers with highest spending
@@ -962,17 +680,14 @@ const reportTitle = computed(() => {
           <span class="rounded-lg bg-gray-100 px-3 py-1 text-xs font-bold">
             TOP 5
           </span>
-
         </div>
 
         <div class="divide-y">
-
           <div
             v-for="(customer, index) in topCustomers"
             :key="customer.email"
             class="flex items-center gap-4 p-5 transition hover:bg-gray-50"
           >
-
             <div
               class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold"
             >
@@ -980,7 +695,6 @@ const reportTitle = computed(() => {
             </div>
 
             <div class="min-w-0 flex-1">
-
               <p class="truncate text-sm font-bold">
                 {{ customer.name }}
               </p>
@@ -988,11 +702,9 @@ const reportTitle = computed(() => {
               <p class="truncate text-xs text-gray-400">
                 {{ customer.email }}
               </p>
-
             </div>
 
             <div class="text-right">
-
               <p class="text-sm font-bold">
                 {{ formatPrice(customer.spent) }}
               </p>
@@ -1000,15 +712,10 @@ const reportTitle = computed(() => {
               <p class="mt-1 text-xs text-gray-400">
                 {{ customer.orders }} orders
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -1016,60 +723,40 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-
       <div class="mb-6">
+        <h3 class="font-bold">Payment Methods</h3>
 
-        <h3 class="font-bold">
-          Payment Methods
-        </h3>
-
-        <p class="mt-1 text-xs text-gray-400">
-          Orders by payment method
-        </p>
-
+        <p class="mt-1 text-xs text-gray-400">Orders by payment method</p>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
         <div
           v-for="payment in paymentMethods"
           :key="payment.name"
           class="rounded-xl border border-gray-100 bg-gray-50 p-5"
         >
-
           <div class="flex items-center justify-between">
-
             <span class="text-sm font-semibold text-gray-700">
               {{ payment.name }}
             </span>
 
-            <span class="text-xs font-bold">
-              {{ payment.percentage }}%
-            </span>
-
+            <span class="text-xs font-bold"> {{ payment.percentage }}% </span>
           </div>
 
           <p class="mt-3 text-2xl font-bold">
             {{ payment.orders }}
           </p>
 
-          <p class="mt-1 text-xs text-gray-400">
-            Orders
-          </p>
+          <p class="mt-1 text-xs text-gray-400">Orders</p>
 
           <div class="mt-4 h-1.5 overflow-hidden rounded-full bg-gray-200">
-
             <div
               class="h-full rounded-full bg-black"
               :style="{ width: `${payment.percentage}%` }"
             ></div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -1077,12 +764,13 @@ const reportTitle = computed(() => {
     <!-- ================================================= -->
 
     <div class="rounded-2xl bg-black p-6 text-white shadow-sm">
-
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-
+      <div
+        class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
+      >
         <div>
-
-          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+          <p
+            class="text-xs font-semibold uppercase tracking-wider text-gray-400"
+          >
             Report Summary
           </p>
 
@@ -1101,11 +789,9 @@ const reportTitle = computed(() => {
             </span>
             orders during this reporting period.
           </p>
-
         </div>
 
         <div class="flex flex-wrap gap-3">
-
           <button
             @click="exportCSV"
             class="rounded-xl border border-gray-700 px-4 py-2.5 text-sm font-semibold transition hover:bg-gray-800"
@@ -1119,13 +805,9 @@ const reportTitle = computed(() => {
           >
             Print Report
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>
 

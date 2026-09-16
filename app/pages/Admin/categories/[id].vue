@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { categoryDetailProductSeedData } from "~/data/admin";
+import type { CategoryProduct } from "~/type/admin";
 
 definePageMeta({
   layout: "admin",
@@ -8,16 +10,6 @@ definePageMeta({
 const route = useRoute();
 
 const categoryId = Number(route.params.id);
-
-interface Product {
-  id: number;
-  name: string;
-  brand: string;
-  price: number;
-  stock: number;
-  sold: number;
-  status: string;
-}
 
 const category = ref({
   id: categoryId,
@@ -32,62 +24,9 @@ const category = ref({
   updated: "August 28, 2026",
 });
 
-const products = ref<Product[]>([
-  {
-    id: 1,
-    name: "Mizuno Morelia Neo IV β JAPAN",
-    brand: "Mizuno",
-    price: 319,
-    stock: 18,
-    sold: 74,
-    status: "In Stock",
-  },
-  {
-    id: 2,
-    name: "Nike Mercurial Vapor 16 Elite",
-    brand: "Nike",
-    price: 299,
-    stock: 24,
-    sold: 96,
-    status: "In Stock",
-  },
-  {
-    id: 3,
-    name: "Adidas Predator Elite Firm Ground",
-    brand: "Adidas",
-    price: 280,
-    stock: 9,
-    sold: 82,
-    status: "Low Stock",
-  },
-  {
-    id: 4,
-    name: "PUMA FUTURE 8 ULTIMATE FG",
-    brand: "Puma",
-    price: 270,
-    stock: 16,
-    sold: 61,
-    status: "In Stock",
-  },
-  {
-    id: 5,
-    name: "Nike Phantom GX 2 Elite",
-    brand: "Nike",
-    price: 310,
-    stock: 5,
-    sold: 57,
-    status: "Low Stock",
-  },
-  {
-    id: 6,
-    name: "Adidas F50 Elite Firm Ground",
-    brand: "Adidas",
-    price: 290,
-    stock: 0,
-    sold: 43,
-    status: "Out of Stock",
-  },
-]);
+const products = ref<CategoryProduct[]>(
+  categoryDetailProductSeedData.map((product) => ({ ...product })),
+);
 
 const search = ref("");
 
@@ -115,9 +54,8 @@ const totalSold = computed(() =>
 
 const lowStock = computed(
   () =>
-    products.value.filter(
-      (product) => product.stock > 0 && product.stock <= 10,
-    ).length,
+    products.value.filter((product) => product.stock > 0 && product.stock <= 10)
+      .length,
 );
 
 const outOfStock = computed(
@@ -161,7 +99,6 @@ const productStatusClass = (status: string) => {
 
 <template>
   <div class="space-y-6">
-
     <!-- Back -->
     <NuxtLink
       to="/admin/categories"
@@ -171,16 +108,11 @@ const productStatusClass = (status: string) => {
     </NuxtLink>
 
     <!-- Category Header -->
-    <div
-      class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-    >
-
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <div
         class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
       >
-
         <div class="flex items-center gap-5">
-
           <div
             class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gray-100 text-4xl"
           >
@@ -188,9 +120,7 @@ const productStatusClass = (status: string) => {
           </div>
 
           <div>
-
             <div class="flex flex-wrap items-center gap-3">
-
               <h1 class="text-2xl font-bold text-gray-900">
                 {{ category.name }}
               </h1>
@@ -205,7 +135,6 @@ const productStatusClass = (status: string) => {
               >
                 {{ category.status }}
               </span>
-
             </div>
 
             <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
@@ -215,13 +144,10 @@ const productStatusClass = (status: string) => {
             <p class="mt-2 text-xs text-gray-400">
               Category ID: #{{ category.id }}
             </p>
-
           </div>
-
         </div>
 
         <div class="flex flex-wrap gap-3">
-
           <button
             class="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold hover:bg-gray-50"
             @click="toggleStatus"
@@ -242,20 +168,14 @@ const productStatusClass = (status: string) => {
           >
             Delete
           </button>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- Statistics -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">
-          Products
-        </p>
+        <p class="text-sm text-gray-500">Products</p>
 
         <p class="mt-2 text-2xl font-bold">
           {{ category.products }}
@@ -263,9 +183,7 @@ const productStatusClass = (status: string) => {
       </div>
 
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">
-          Total Sales
-        </p>
+        <p class="text-sm text-gray-500">Total Sales</p>
 
         <p class="mt-2 text-2xl font-bold">
           {{ category.totalSales }}
@@ -273,9 +191,7 @@ const productStatusClass = (status: string) => {
       </div>
 
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">
-          Revenue
-        </p>
+        <p class="text-sm text-gray-500">Revenue</p>
 
         <p class="mt-2 text-2xl font-bold">
           ${{ category.revenue.toLocaleString() }}
@@ -283,9 +199,7 @@ const productStatusClass = (status: string) => {
       </div>
 
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">
-          Current Stock
-        </p>
+        <p class="text-sm text-gray-500">Current Stock</p>
 
         <p class="mt-2 text-2xl font-bold">
           {{ totalStock }}
@@ -293,31 +207,23 @@ const productStatusClass = (status: string) => {
       </div>
 
       <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">
-          Units Sold
-        </p>
+        <p class="text-sm text-gray-500">Units Sold</p>
 
         <p class="mt-2 text-2xl font-bold">
           {{ totalSold }}
         </p>
       </div>
-
     </div>
 
     <!-- Information + Alerts -->
     <div class="grid gap-6 lg:grid-cols-3">
-
       <!-- Information -->
       <div
         class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
       >
-
-        <h2 class="text-lg font-bold">
-          Category Information
-        </h2>
+        <h2 class="text-lg font-bold">Category Information</h2>
 
         <div class="mt-5 grid gap-5 sm:grid-cols-2">
-
           <div>
             <p class="text-xs font-semibold uppercase text-gray-400">
               Category Name
@@ -329,9 +235,7 @@ const productStatusClass = (status: string) => {
           </div>
 
           <div>
-            <p class="text-xs font-semibold uppercase text-gray-400">
-              Status
-            </p>
+            <p class="text-xs font-semibold uppercase text-gray-400">Status</p>
 
             <p class="mt-2 font-semibold">
               {{ category.status }}
@@ -339,9 +243,7 @@ const productStatusClass = (status: string) => {
           </div>
 
           <div>
-            <p class="text-xs font-semibold uppercase text-gray-400">
-              Created
-            </p>
+            <p class="text-xs font-semibold uppercase text-gray-400">Created</p>
 
             <p class="mt-2 font-semibold">
               {{ category.created }}
@@ -357,11 +259,9 @@ const productStatusClass = (status: string) => {
               {{ category.updated }}
             </p>
           </div>
-
         </div>
 
         <div class="mt-6 border-t border-gray-100 pt-5">
-
           <p class="text-xs font-semibold uppercase text-gray-400">
             Description
           </p>
@@ -369,25 +269,15 @@ const productStatusClass = (status: string) => {
           <p class="mt-2 text-sm leading-6 text-gray-600">
             {{ category.description }}
           </p>
-
         </div>
-
       </div>
 
       <!-- Alerts -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      >
-
-        <h2 class="text-lg font-bold">
-          Inventory Alerts
-        </h2>
+      <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 class="text-lg font-bold">Inventory Alerts</h2>
 
         <div class="mt-5 space-y-3">
-
-          <div
-            class="rounded-xl bg-yellow-50 p-4"
-          >
+          <div class="rounded-xl bg-yellow-50 p-4">
             <div class="flex items-center justify-between">
               <span class="text-sm font-semibold text-yellow-700">
                 Low Stock
@@ -403,9 +293,7 @@ const productStatusClass = (status: string) => {
             </p>
           </div>
 
-          <div
-            class="rounded-xl bg-red-50 p-4"
-          >
+          <div class="rounded-xl bg-red-50 p-4">
             <div class="flex items-center justify-between">
               <span class="text-sm font-semibold text-red-700">
                 Out of Stock
@@ -420,26 +308,19 @@ const productStatusClass = (status: string) => {
               Products currently unavailable.
             </p>
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- Products -->
     <div
       class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
     >
-
       <div
         class="flex flex-col gap-4 border-b border-gray-200 p-6 sm:flex-row sm:items-center sm:justify-between"
       >
-
         <div>
-          <h2 class="text-lg font-bold">
-            Category Products
-          </h2>
+          <h2 class="text-lg font-bold">Category Products</h2>
 
           <p class="mt-1 text-sm text-gray-500">
             Products belonging to {{ category.name }}
@@ -447,10 +328,7 @@ const productStatusClass = (status: string) => {
         </div>
 
         <div class="relative sm:w-72">
-
-          <span
-            class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-          >
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             🔍
           </span>
 
@@ -460,63 +338,65 @@ const productStatusClass = (status: string) => {
             placeholder="Search products..."
             class="w-full rounded-xl border border-gray-200 py-3 pl-11 pr-4 text-sm outline-none focus:border-black"
           />
-
         </div>
-
       </div>
 
       <div class="overflow-x-auto">
-
         <table class="w-full min-w-[850px] text-left">
-
           <thead class="border-b border-gray-200 bg-gray-50">
-
             <tr>
-
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Product
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Brand
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Price
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Stock
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Sold
               </th>
 
-              <th class="px-6 py-4 text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
+              >
                 Status
               </th>
 
-              <th class="px-6 py-4 text-right text-xs font-semibold uppercase text-gray-500">
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold uppercase text-gray-500"
+              >
                 Action
               </th>
-
             </tr>
-
           </thead>
 
           <tbody class="divide-y divide-gray-100">
-
             <tr
               v-for="product in filteredProducts"
               :key="product.id"
               class="hover:bg-gray-50"
             >
-
               <td class="px-6 py-5">
-
                 <div class="flex items-center gap-3">
-
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100"
                   >
@@ -528,13 +408,9 @@ const productStatusClass = (status: string) => {
                       {{ product.name }}
                     </p>
 
-                    <p class="mt-1 text-xs text-gray-400">
-                      #{{ product.id }}
-                    </p>
+                    <p class="mt-1 text-xs text-gray-400">#{{ product.id }}</p>
                   </div>
-
                 </div>
-
               </td>
 
               <td class="px-6 py-5 text-sm">
@@ -554,55 +430,35 @@ const productStatusClass = (status: string) => {
               </td>
 
               <td class="px-6 py-5">
-
                 <span
                   class="rounded-full px-3 py-1 text-xs font-semibold"
                   :class="productStatusClass(product.status)"
                 >
                   {{ product.status }}
                 </span>
-
               </td>
 
               <td class="px-6 py-5 text-right">
-
                 <NuxtLink
                   :to="`/admin/products/${product.id}`"
                   class="rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold hover:bg-gray-50"
                 >
                   View
                 </NuxtLink>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
 
       <!-- No products -->
-      <div
-        v-if="!filteredProducts.length"
-        class="py-14 text-center"
-      >
+      <div v-if="!filteredProducts.length" class="py-14 text-center">
+        <div class="text-4xl">🛍️</div>
 
-        <div class="text-4xl">
-          🛍️
-        </div>
+        <h3 class="mt-3 font-bold">No products found</h3>
 
-        <h3 class="mt-3 font-bold">
-          No products found
-        </h3>
-
-        <p class="mt-1 text-sm text-gray-500">
-          Try another search term.
-        </p>
-
+        <p class="mt-1 text-sm text-gray-500">Try another search term.</p>
       </div>
-
     </div>
 
     <!-- Delete Modal -->
@@ -610,28 +466,22 @@ const productStatusClass = (status: string) => {
       v-if="showDeleteModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
     >
-
       <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-
         <div
           class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl"
         >
           🗑️
         </div>
 
-        <h3 class="mt-5 text-xl font-bold">
-          Delete Category?
-        </h3>
+        <h3 class="mt-5 text-xl font-bold">Delete Category?</h3>
 
         <p class="mt-2 text-sm leading-6 text-gray-500">
           Are you sure you want to delete
-          <span class="font-semibold text-gray-900">
-            {{ category.name }}
-          </span>?
+          <span class="font-semibold text-gray-900"> {{ category.name }} </span
+          >?
         </p>
 
         <div class="mt-6 flex justify-end gap-3">
-
           <button
             class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold hover:bg-gray-50"
             @click="showDeleteModal = false"
@@ -645,12 +495,8 @@ const productStatusClass = (status: string) => {
           >
             Delete
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

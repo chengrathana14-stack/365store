@@ -1,49 +1,17 @@
 <script setup lang="ts">
-interface Product {
-  name: string
-  sold: number
-}
+import { topProductSeedData } from "~/data/admin";
 
-const products: Product[] = [
-  {
-    name: "Nike Mercurial Vapor 16",
-    sold: 245
-  },
-  {
-    name: "Adidas Predator Elite",
-    sold: 189
-  },
-  {
-    name: "PUMA Future 8 Ultimate",
-    sold: 156
-  },
-  {
-    name: "Nike Phantom GX 2",
-    sold: 142
-  },
-  {
-    name: "Mizuno Morelia Neo IV",
-    sold: 128
-  }
-]
+const products = topProductSeedData;
 </script>
 
 <template>
-  <div
-    class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-  >
-
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
     <!-- Header -->
     <div class="flex items-center justify-between">
-
       <div>
-        <h3 class="font-bold text-gray-900">
-          Top Products
-        </h3>
+        <h3 class="font-bold text-gray-900">Top Products</h3>
 
-        <p class="text-sm text-gray-500">
-          Best selling products
-        </p>
+        <p class="text-sm text-gray-500">Best selling products</p>
       </div>
 
       <NuxtLink
@@ -52,18 +20,15 @@ const products: Product[] = [
       >
         View all
       </NuxtLink>
-
     </div>
 
     <!-- Products -->
     <div class="mt-6 space-y-5">
-
       <div
         v-for="(product, index) in products"
         :key="product.name"
         class="flex items-center gap-4"
       >
-
         <!-- Ranking -->
         <div
           class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold text-gray-700"
@@ -73,25 +38,16 @@ const products: Product[] = [
 
         <!-- Product -->
         <div class="min-w-0 flex-1">
-
           <p class="truncate text-sm font-semibold text-gray-900">
             {{ product.name }}
           </p>
 
-          <p class="mt-1 text-xs text-gray-500">
-            {{ product.sold }} sold
-          </p>
-
+          <p class="mt-1 text-xs text-gray-500">{{ product.sold }} sold</p>
         </div>
 
         <!-- Arrow -->
-        <span class="text-gray-400">
-          →
-        </span>
-
+        <span class="text-gray-400"> → </span>
       </div>
-
     </div>
-
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { brandSeedData } from "~/data/admin";
 
 definePageMeta({
   layout: "admin",
@@ -13,72 +14,7 @@ useHead({
 // BRAND DATA
 // =====================================================
 
-const brands = ref([
-  {
-    id: 1,
-    name: "Nike",
-    products: 125,
-    status: "Active",
-    description: "Global sportswear and football brand",
-    created: "January 12, 2026",
-  },
-  {
-    id: 2,
-    name: "Adidas",
-    products: 98,
-    status: "Active",
-    description: "Sportswear, football and lifestyle products",
-    created: "January 15, 2026",
-  },
-  {
-    id: 3,
-    name: "Puma",
-    products: 67,
-    status: "Active",
-    description: "Football, running and sports products",
-    created: "January 20, 2026",
-  },
-  {
-    id: 4,
-    name: "Mizuno",
-    products: 42,
-    status: "Active",
-    description: "Premium football and sports equipment",
-    created: "February 02, 2026",
-  },
-  {
-    id: 5,
-    name: "New Balance",
-    products: 24,
-    status: "Active",
-    description: "Running and football products",
-    created: "February 15, 2026",
-  },
-  {
-    id: 6,
-    name: "Under Armour",
-    products: 18,
-    status: "Inactive",
-    description: "Performance sportswear",
-    created: "March 01, 2026",
-  },
-  {
-    id: 7,
-    name: "Asics",
-    products: 31,
-    status: "Active",
-    description: "Running and performance footwear",
-    created: "March 10, 2026",
-  },
-  {
-    id: 8,
-    name: "Jordan",
-    products: 16,
-    status: "Inactive",
-    description: "Basketball and lifestyle footwear",
-    created: "March 22, 2026",
-  },
-]);
+const brands = ref(brandSeedData.map((brand) => ({ ...brand })));
 
 // =====================================================
 // FILTERS
@@ -109,22 +45,15 @@ const itemsPerPage = 6;
 // =====================================================
 
 const totalProducts = computed(() => {
-  return brands.value.reduce(
-    (total, brand) => total + brand.products,
-    0,
-  );
+  return brands.value.reduce((total, brand) => total + brand.products, 0);
 });
 
 const activeBrands = computed(() => {
-  return brands.value.filter(
-    (brand) => brand.status === "Active",
-  ).length;
+  return brands.value.filter((brand) => brand.status === "Active").length;
 });
 
 const inactiveBrands = computed(() => {
-  return brands.value.filter(
-    (brand) => brand.status === "Inactive",
-  ).length;
+  return brands.value.filter((brand) => brand.status === "Inactive").length;
 });
 
 const filteredBrands = computed(() => {
@@ -143,34 +72,24 @@ const filteredBrands = computed(() => {
 
   // Status
   if (statusFilter.value !== "All") {
-    result = result.filter(
-      (brand) => brand.status === statusFilter.value,
-    );
+    result = result.filter((brand) => brand.status === statusFilter.value);
   }
 
   // Sorting
   if (sortBy.value === "A-Z") {
-    result.sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
+    result.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   if (sortBy.value === "Z-A") {
-    result.sort((a, b) =>
-      b.name.localeCompare(a.name),
-    );
+    result.sort((a, b) => b.name.localeCompare(a.name));
   }
 
   if (sortBy.value === "Most Products") {
-    result.sort(
-      (a, b) => b.products - a.products,
-    );
+    result.sort((a, b) => b.products - a.products);
   }
 
   if (sortBy.value === "Least Products") {
-    result.sort(
-      (a, b) => a.products - b.products,
-    );
+    result.sort((a, b) => a.products - b.products);
   }
 
   if (sortBy.value === "Newest") {
@@ -185,19 +104,13 @@ const filteredBrands = computed(() => {
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(
-    filteredBrands.value.length / itemsPerPage,
-  );
+  return Math.ceil(filteredBrands.value.length / itemsPerPage);
 });
 
 const paginatedBrands = computed(() => {
-  const start =
-    (currentPage.value - 1) * itemsPerPage;
+  const start = (currentPage.value - 1) * itemsPerPage;
 
-  return filteredBrands.value.slice(
-    start,
-    start + itemsPerPage,
-  );
+  return filteredBrands.value.slice(start, start + itemsPerPage);
 });
 
 // =====================================================
@@ -220,10 +133,7 @@ const clearFilters = () => {
 // =====================================================
 
 const toggleStatus = (brand: any) => {
-  brand.status =
-    brand.status === "Active"
-      ? "Inactive"
-      : "Active";
+  brand.status = brand.status === "Active" ? "Inactive" : "Active";
 };
 
 // =====================================================
@@ -239,17 +149,13 @@ const deleteBrand = () => {
   if (!selectedBrand.value) return;
 
   brands.value = brands.value.filter(
-    (brand) =>
-      brand.id !== selectedBrand.value.id,
+    (brand) => brand.id !== selectedBrand.value.id,
   );
 
   selectedBrand.value = null;
   showDeleteModal.value = false;
 
-  if (
-    currentPage.value > totalPages.value &&
-    currentPage.value > 1
-  ) {
+  if (currentPage.value > totalPages.value && currentPage.value > 1) {
     currentPage.value--;
   }
 };
@@ -281,7 +187,6 @@ const getBrandInitial = (name: string) => {
 
 <template>
   <div class="space-y-6">
-
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
@@ -289,10 +194,8 @@ const getBrandInitial = (name: string) => {
     <div
       class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
     >
-
       <div>
         <div class="flex items-center gap-3">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-black text-lg font-black text-white"
           >
@@ -300,15 +203,10 @@ const getBrandInitial = (name: string) => {
           </div>
 
           <div>
-            <h2 class="text-2xl font-bold text-gray-900">
-              Brands
-            </h2>
+            <h2 class="text-2xl font-bold text-gray-900">Brands</h2>
 
-            <p class="text-sm text-gray-500">
-              Manage your sports brands
-            </p>
+            <p class="text-sm text-gray-500">Manage your sports brands</p>
           </div>
-
         </div>
       </div>
 
@@ -319,25 +217,17 @@ const getBrandInitial = (name: string) => {
         <span class="text-lg">+</span>
         Add Brand
       </NuxtLink>
-
     </div>
 
     <!-- ================================================= -->
     <!-- STATISTICS -->
     <!-- ================================================= -->
 
-    <div
-      class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
-    >
-
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <!-- Total Brands -->
 
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-lg"
           >
@@ -349,27 +239,19 @@ const getBrandInitial = (name: string) => {
           >
             Total
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Total Brands
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Total Brands</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ brands.length }}
         </p>
-
       </div>
 
       <!-- Active -->
 
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-lg"
           >
@@ -381,27 +263,19 @@ const getBrandInitial = (name: string) => {
           >
             Active
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Active Brands
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Active Brands</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ activeBrands }}
         </p>
-
       </div>
 
       <!-- Inactive -->
 
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-lg"
           >
@@ -413,27 +287,19 @@ const getBrandInitial = (name: string) => {
           >
             Inactive
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Inactive Brands
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Inactive Brands</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ inactiveBrands }}
         </p>
-
       </div>
 
       <!-- Products -->
 
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-
           <div
             class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-lg"
           >
@@ -445,37 +311,27 @@ const getBrandInitial = (name: string) => {
           >
             Products
           </span>
-
         </div>
 
-        <p class="mt-5 text-sm text-gray-500">
-          Total Products
-        </p>
+        <p class="mt-5 text-sm text-gray-500">Total Products</p>
 
         <p class="mt-1 text-3xl font-bold">
           {{ totalProducts }}
         </p>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
     <!-- FILTER BAR -->
     <!-- ================================================= -->
 
-    <div
-      class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-    >
-
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <div
         class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
       >
-
         <!-- SEARCH -->
 
         <div class="relative w-full xl:max-w-md">
-
           <span
             class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
           >
@@ -489,15 +345,11 @@ const getBrandInitial = (name: string) => {
             placeholder="Search brands..."
             class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-black focus:bg-white"
           />
-
         </div>
 
         <!-- FILTERS -->
 
-        <div
-          class="flex flex-col gap-3 sm:flex-row"
-        >
-
+        <div class="flex flex-col gap-3 sm:flex-row">
           <!-- STATUS -->
 
           <select
@@ -505,17 +357,11 @@ const getBrandInitial = (name: string) => {
             @change="resetPage"
             class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium outline-none focus:border-black"
           >
-            <option value="All">
-              All Status
-            </option>
+            <option value="All">All Status</option>
 
-            <option value="Active">
-              Active
-            </option>
+            <option value="Active">Active</option>
 
-            <option value="Inactive">
-              Inactive
-            </option>
+            <option value="Inactive">Inactive</option>
           </select>
 
           <!-- SORT -->
@@ -525,29 +371,17 @@ const getBrandInitial = (name: string) => {
             @change="resetPage"
             class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium outline-none focus:border-black"
           >
-            <option value="Newest">
-              Newest
-            </option>
+            <option value="Newest">Newest</option>
 
-            <option value="Oldest">
-              Oldest
-            </option>
+            <option value="Oldest">Oldest</option>
 
-            <option value="A-Z">
-              A-Z
-            </option>
+            <option value="A-Z">A-Z</option>
 
-            <option value="Z-A">
-              Z-A
-            </option>
+            <option value="Z-A">Z-A</option>
 
-            <option value="Most Products">
-              Most Products
-            </option>
+            <option value="Most Products">Most Products</option>
 
-            <option value="Least Products">
-              Least Products
-            </option>
+            <option value="Least Products">Least Products</option>
           </select>
 
           <!-- CLEAR -->
@@ -561,10 +395,7 @@ const getBrandInitial = (name: string) => {
 
           <!-- VIEW -->
 
-          <div
-            class="flex rounded-xl border border-gray-200 p-1"
-          >
-
+          <div class="flex rounded-xl border border-gray-200 p-1">
             <button
               @click="viewMode = 'grid'"
               class="rounded-lg px-3 py-2 text-sm transition"
@@ -590,25 +421,19 @@ const getBrandInitial = (name: string) => {
             >
               ☷
             </button>
-
           </div>
-
         </div>
-
       </div>
 
       <!-- RESULTS -->
 
-      <div
-        class="mt-4 border-t pt-4 text-sm text-gray-500"
-      >
+      <div class="mt-4 border-t pt-4 text-sm text-gray-500">
         Showing
         <span class="font-bold text-gray-900">
           {{ filteredBrands.length }}
         </span>
         brands
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -619,17 +444,14 @@ const getBrandInitial = (name: string) => {
       v-if="viewMode === 'grid' && paginatedBrands.length"
       class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
     >
-
       <div
         v-for="brand in paginatedBrands"
         :key="brand.id"
         class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
       >
-
         <!-- CARD TOP -->
 
         <div class="flex items-start justify-between">
-
           <div
             class="flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-2xl font-black text-white shadow-sm"
           >
@@ -637,44 +459,31 @@ const getBrandInitial = (name: string) => {
           </div>
 
           <div class="relative">
-
             <button
               class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-900"
             >
               ⋮
             </button>
-
           </div>
-
         </div>
 
         <!-- NAME -->
 
         <div class="mt-5">
-
           <div class="flex items-center gap-2">
-
             <h3 class="text-lg font-bold text-gray-900">
               {{ brand.name }}
             </h3>
 
             <span
               class="h-2 w-2 rounded-full"
-              :class="
-                brand.status === 'Active'
-                  ? 'bg-green-500'
-                  : 'bg-red-500'
-              "
+              :class="brand.status === 'Active' ? 'bg-green-500' : 'bg-red-500'"
             ></span>
-
           </div>
 
-          <p
-            class="mt-1 min-h-[40px] text-sm text-gray-500"
-          >
+          <p class="mt-1 min-h-[40px] text-sm text-gray-500">
             {{ brand.description }}
           </p>
-
         </div>
 
         <!-- PRODUCT COUNT -->
@@ -682,31 +491,20 @@ const getBrandInitial = (name: string) => {
         <div
           class="mt-5 flex items-center justify-between rounded-xl bg-gray-50 p-4"
         >
-
           <div>
-
-            <p class="text-xs text-gray-400">
-              Products
-            </p>
+            <p class="text-xs text-gray-400">Products</p>
 
             <p class="mt-1 text-xl font-bold">
               {{ brand.products }}
             </p>
-
           </div>
 
-          <div class="text-2xl">
-            📦
-          </div>
-
+          <div class="text-2xl">📦</div>
         </div>
 
         <!-- STATUS -->
 
-        <div
-          class="mt-4 flex items-center justify-between"
-        >
-
+        <div class="mt-4 flex items-center justify-between">
           <button
             @click="toggleStatus(brand)"
             class="rounded-full px-3 py-1 text-xs font-bold transition"
@@ -722,15 +520,11 @@ const getBrandInitial = (name: string) => {
           <span class="text-xs text-gray-400">
             {{ brand.created }}
           </span>
-
         </div>
 
         <!-- ACTIONS -->
 
-        <div
-          class="mt-5 flex gap-2 border-t pt-5"
-        >
-
+        <div class="mt-5 flex gap-2 border-t pt-5">
           <NuxtLink
             :to="`/admin/brands/${brand.id}`"
             class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
@@ -752,11 +546,8 @@ const getBrandInitial = (name: string) => {
           >
             🗑️
           </button>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -767,15 +558,10 @@ const getBrandInitial = (name: string) => {
       v-if="viewMode === 'table' && paginatedBrands.length"
       class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
     >
-
       <div class="overflow-x-auto">
-
         <table class="w-full min-w-[800px]">
-
           <thead class="border-b bg-gray-50">
-
             <tr>
-
               <th
                 class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-500"
               >
@@ -805,25 +591,19 @@ const getBrandInitial = (name: string) => {
               >
                 Actions
               </th>
-
             </tr>
-
           </thead>
 
           <tbody class="divide-y">
-
             <tr
               v-for="brand in paginatedBrands"
               :key="brand.id"
               class="transition hover:bg-gray-50"
             >
-
               <!-- BRAND -->
 
               <td class="px-6 py-5">
-
                 <div class="flex items-center gap-4">
-
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl bg-black font-bold text-white"
                   >
@@ -831,7 +611,6 @@ const getBrandInitial = (name: string) => {
                   </div>
 
                   <div>
-
                     <p class="font-bold text-gray-900">
                       {{ brand.name }}
                     </p>
@@ -839,31 +618,23 @@ const getBrandInitial = (name: string) => {
                     <p class="mt-1 text-xs text-gray-400">
                       {{ brand.description }}
                     </p>
-
                   </div>
-
                 </div>
-
               </td>
 
               <!-- PRODUCTS -->
 
               <td class="px-6 py-5">
-
                 <span class="font-bold">
                   {{ brand.products }}
                 </span>
 
-                <span class="ml-1 text-xs text-gray-400">
-                  products
-                </span>
-
+                <span class="ml-1 text-xs text-gray-400"> products </span>
               </td>
 
               <!-- STATUS -->
 
               <td class="px-6 py-5">
-
                 <button
                   @click="toggleStatus(brand)"
                   class="rounded-full px-3 py-1 text-xs font-bold"
@@ -875,7 +646,6 @@ const getBrandInitial = (name: string) => {
                 >
                   {{ brand.status }}
                 </button>
-
               </td>
 
               <!-- CREATED -->
@@ -887,9 +657,7 @@ const getBrandInitial = (name: string) => {
               <!-- ACTIONS -->
 
               <td class="px-6 py-5">
-
                 <div class="flex justify-end gap-2">
-
                   <NuxtLink
                     :to="`/admin/brands/${brand.id}`"
                     class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold hover:bg-gray-100"
@@ -910,19 +678,12 @@ const getBrandInitial = (name: string) => {
                   >
                     Delete
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -933,16 +694,13 @@ const getBrandInitial = (name: string) => {
       v-if="filteredBrands.length === 0"
       class="rounded-2xl border border-dashed border-gray-300 bg-white py-16 text-center"
     >
-
       <div
         class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-2xl"
       >
         🔍
       </div>
 
-      <h3 class="mt-5 text-lg font-bold">
-        No brands found
-      </h3>
+      <h3 class="mt-5 text-lg font-bold">No brands found</h3>
 
       <p class="mt-2 text-sm text-gray-500">
         Try changing your search or filter.
@@ -954,7 +712,6 @@ const getBrandInitial = (name: string) => {
       >
         Clear Filters
       </button>
-
     </div>
 
     <!-- ================================================= -->
@@ -965,9 +722,7 @@ const getBrandInitial = (name: string) => {
       v-if="filteredBrands.length > itemsPerPage"
       class="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
     >
-
       <p class="text-sm text-gray-500">
-
         Page
         <span class="font-bold text-gray-900">
           {{ currentPage }}
@@ -978,11 +733,9 @@ const getBrandInitial = (name: string) => {
         <span class="font-bold text-gray-900">
           {{ totalPages }}
         </span>
-
       </p>
 
       <div class="flex gap-2">
-
         <button
           @click="previousPage"
           :disabled="currentPage === 1"
@@ -998,9 +751,7 @@ const getBrandInitial = (name: string) => {
         >
           Next →
         </button>
-
       </div>
-
     </div>
 
     <!-- ================================================= -->
@@ -1011,20 +762,14 @@ const getBrandInitial = (name: string) => {
       v-if="showDeleteModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
     >
-
-      <div
-        class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
-      >
-
+      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
         <div
           class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl"
         >
           🗑️
         </div>
 
-        <h3 class="mt-5 text-xl font-bold">
-          Delete Brand?
-        </h3>
+        <h3 class="mt-5 text-xl font-bold">Delete Brand?</h3>
 
         <p class="mt-2 text-sm leading-6 text-gray-500">
           Are you sure you want to delete
@@ -1035,7 +780,6 @@ const getBrandInitial = (name: string) => {
         </p>
 
         <div class="mt-6 flex justify-end gap-3">
-
           <button
             @click="showDeleteModal = false"
             class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
@@ -1049,12 +793,8 @@ const getBrandInitial = (name: string) => {
           >
             Delete Brand
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

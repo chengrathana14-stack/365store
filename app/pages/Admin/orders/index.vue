@@ -1,144 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-
+import { products } from "~/data/product";
+import { orderSeedData } from "~/data/admin";
 definePageMeta({
-  layout: "admin"
+  layout: "admin",
 });
 
-type OrderStatus =
-  | "Pending"
-  | "Processing"
-  | "Completed"
-  | "Cancelled";
-
-type PaymentStatus =
-  | "Paid"
-  | "Pending"
-  | "Refunded";
-
-interface Order {
-  id: string;
-  customer: string;
-  email: string;
-  phone: string;
-  product: string;
-  quantity: number;
-  subtotal: number;
-  shipping: number;
-  total: number;
-  status: OrderStatus;
-  paymentStatus: PaymentStatus;
-  paymentMethod: string;
-  date: string;
-}
-
-const orders = ref<Order[]>([
-  {
-    id: "#ORD-1001",
-    customer: "Dara Sok",
-    email: "dara@example.com",
-    phone: "+855 12 345 678",
-    product: "Nike Mercurial Vapor 16",
-    quantity: 1,
-    subtotal: 145.97,
-    shipping: 6,
-    total: 151.97,
-    status: "Completed",
-    paymentStatus: "Paid",
-    paymentMethod: "ABA Pay",
-    date: "Sep 03, 2026"
-  },
-  {
-    id: "#ORD-1002",
-    customer: "Vann Thai",
-    email: "vann@example.com",
-    phone: "+855 96 555 1234",
-    product: "Adidas Predator Elite",
-    quantity: 1,
-    subtotal: 260,
-    shipping: 0,
-    total: 260,
-    status: "Processing",
-    paymentStatus: "Paid",
-    paymentMethod: "Credit Card",
-    date: "Sep 03, 2026"
-  },
-  {
-    id: "#ORD-1003",
-    customer: "Seyha Chan",
-    email: "seyha@example.com",
-    phone: "+855 97 222 4567",
-    product: "PUMA Future 8 Ultimate",
-    quantity: 2,
-    subtotal: 217.98,
-    shipping: 10,
-    total: 227.98,
-    status: "Pending",
-    paymentStatus: "Pending",
-    paymentMethod: "Cash on Delivery",
-    date: "Sep 02, 2026"
-  },
-  {
-    id: "#ORD-1004",
-    customer: "Sokha Kim",
-    email: "sokha@example.com",
-    phone: "+855 11 888 999",
-    product: "Nike Phantom GX 2",
-    quantity: 1,
-    subtotal: 220,
-    shipping: 0,
-    total: 220,
-    status: "Cancelled",
-    paymentStatus: "Refunded",
-    paymentMethod: "Wing",
-    date: "Sep 01, 2026"
-  },
-  {
-    id: "#ORD-1005",
-    customer: "Rithy Chea",
-    email: "rithy@example.com",
-    phone: "+855 10 444 555",
-    product: "Mizuno Morelia Neo IV JAPAN",
-    quantity: 1,
-    subtotal: 285,
-    shipping: 8,
-    total: 293,
-    status: "Completed",
-    paymentStatus: "Paid",
-    paymentMethod: "ABA Pay",
-    date: "Aug 31, 2026"
-  },
-  {
-    id: "#ORD-1006",
-    customer: "Sokun Vibol",
-    email: "sokun@example.com",
-    phone: "+855 15 333 222",
-    product: "Nike Tiempo Legend 10 Elite",
-    quantity: 1,
-    subtotal: 280,
-    shipping: 0,
-    total: 280,
-    status: "Processing",
-    paymentStatus: "Paid",
-    paymentMethod: "Credit Card",
-    date: "Aug 30, 2026"
-  },
-  {
-    id: "#ORD-1007",
-    customer: "Kanha Ly",
-    email: "kanha@example.com",
-    phone: "+855 88 777 666",
-    product: "Adidas Copa Pure 2 Elite",
-    quantity: 2,
-    subtotal: 310,
-    shipping: 10,
-    total: 320,
-    status: "Pending",
-    paymentStatus: "Pending",
-    paymentMethod: "Cash on Delivery",
-    date: "Aug 29, 2026"
-  }
-]);
+const orders = ref<Order[]>(orderSeedData.map((order) => ({ ...order })));
 
 const search = ref("");
 const selectedStatus = ref("All");
@@ -156,28 +24,28 @@ const totalOrders = computed(() => orders.value.length);
 
 const totalRevenue = computed(() =>
   orders.value
-    .filter(order => order.status !== "Cancelled")
-    .reduce((sum, order) => sum + order.total, 0)
+    .filter((order) => order.status !== "Cancelled")
+    .reduce((sum, order) => sum + order.total, 0),
 );
 
-const pendingOrders = computed(() =>
-  orders.value.filter(order => order.status === "Pending").length
+const pendingOrders = computed(
+  () => orders.value.filter((order) => order.status === "Pending").length,
 );
 
-const processingOrders = computed(() =>
-  orders.value.filter(order => order.status === "Processing").length
+const processingOrders = computed(
+  () => orders.value.filter((order) => order.status === "Processing").length,
 );
 
-const completedOrders = computed(() =>
-  orders.value.filter(order => order.status === "Completed").length
+const completedOrders = computed(
+  () => orders.value.filter((order) => order.status === "Completed").length,
 );
 
-const cancelledOrders = computed(() =>
-  orders.value.filter(order => order.status === "Cancelled").length
+const cancelledOrders = computed(
+  () => orders.value.filter((order) => order.status === "Cancelled").length,
 );
 
-const paidOrders = computed(() =>
-  orders.value.filter(order => order.paymentStatus === "Paid").length
+const paidOrders = computed(
+  () => orders.value.filter((order) => order.paymentStatus === "Paid").length,
 );
 
 /* =========================
@@ -187,7 +55,7 @@ const paidOrders = computed(() =>
 const filteredOrders = computed(() => {
   const keyword = search.value.toLowerCase().trim();
 
-  let result = orders.value.filter(order => {
+  let result = orders.value.filter((order) => {
     const matchSearch =
       !keyword ||
       order.id.toLowerCase().includes(keyword) ||
@@ -196,8 +64,7 @@ const filteredOrders = computed(() => {
       order.product.toLowerCase().includes(keyword);
 
     const matchStatus =
-      selectedStatus.value === "All" ||
-      order.status === selectedStatus.value;
+      selectedStatus.value === "All" || order.status === selectedStatus.value;
 
     const matchPayment =
       selectedPayment.value === "All" ||
@@ -223,9 +90,7 @@ const filteredOrders = computed(() => {
   }
 
   if (selectedSort.value === "Customer A-Z") {
-    result = [...result].sort((a, b) =>
-      a.customer.localeCompare(b.customer)
-    );
+    result = [...result].sort((a, b) => a.customer.localeCompare(b.customer));
   }
 
   return result;
@@ -240,7 +105,7 @@ const statusClass = (status: OrderStatus) => {
     "bg-yellow-100 text-yellow-700": status === "Pending",
     "bg-blue-100 text-blue-700": status === "Processing",
     "bg-green-100 text-green-700": status === "Completed",
-    "bg-red-100 text-red-700": status === "Cancelled"
+    "bg-red-100 text-red-700": status === "Cancelled",
   };
 };
 
@@ -248,7 +113,7 @@ const paymentClass = (status: PaymentStatus) => {
   return {
     "bg-green-100 text-green-700": status === "Paid",
     "bg-yellow-100 text-yellow-700": status === "Pending",
-    "bg-red-100 text-red-700": status === "Refunded"
+    "bg-red-100 text-red-700": status === "Refunded",
   };
 };
 
@@ -281,7 +146,7 @@ const deleteOrder = () => {
   if (!selectedOrder.value) return;
 
   orders.value = orders.value.filter(
-    order => order.id !== selectedOrder.value?.id
+    (order) => order.id !== selectedOrder.value?.id,
   );
 
   closeDeleteModal();
@@ -290,13 +155,12 @@ const deleteOrder = () => {
 
 <template>
   <div class="space-y-6">
-
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div
+      class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+    >
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">
-          Orders
-        </h1>
+        <h1 class="text-2xl font-bold text-gray-900">Orders</h1>
 
         <p class="mt-1 text-sm text-gray-500">
           Manage customer orders, payments and order status.
@@ -316,99 +180,70 @@ const deleteOrder = () => {
 
     <!-- MAIN STATS -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">
-            Total Orders
-          </p>
+          <p class="text-sm text-gray-500">Total Orders</p>
 
-          <div class="rounded-xl bg-gray-100 p-3">
-            📦
-          </div>
+          <div class="rounded-xl bg-gray-100 p-3">📦</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold">
           {{ totalOrders }}
         </p>
 
-        <p class="mt-1 text-xs text-gray-500">
-          All orders
-        </p>
+        <p class="mt-1 text-xs text-gray-500">All orders</p>
       </div>
 
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">
-            Revenue
-          </p>
+          <p class="text-sm text-gray-500">Revenue</p>
 
-          <div class="rounded-xl bg-green-100 p-3">
-            💰
-          </div>
+          <div class="rounded-xl bg-green-100 p-3">💰</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-green-600">
           {{ formatPrice(totalRevenue) }}
         </p>
 
-        <p class="mt-1 text-xs text-gray-500">
-          Excluding cancelled orders
-        </p>
+        <p class="mt-1 text-xs text-gray-500">Excluding cancelled orders</p>
       </div>
 
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">
-            Pending
-          </p>
+          <p class="text-sm text-gray-500">Pending</p>
 
-          <div class="rounded-xl bg-yellow-100 p-3">
-            ⏳
-          </div>
+          <div class="rounded-xl bg-yellow-100 p-3">⏳</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-yellow-600">
           {{ pendingOrders }}
         </p>
 
-        <p class="mt-1 text-xs text-gray-500">
-          Waiting for confirmation
-        </p>
+        <p class="mt-1 text-xs text-gray-500">Waiting for confirmation</p>
       </div>
 
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">
-            Completed
-          </p>
+          <p class="text-sm text-gray-500">Completed</p>
 
-          <div class="rounded-xl bg-green-100 p-3">
-            ✓
-          </div>
+          <div class="rounded-xl bg-green-100 p-3">✓</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-green-600">
           {{ completedOrders }}
         </p>
 
-        <p class="mt-1 text-xs text-gray-500">
-          Successfully delivered
-        </p>
+        <p class="mt-1 text-xs text-gray-500">Successfully delivered</p>
       </div>
-
     </div>
 
     <!-- ORDER STATUS SUMMARY -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
       <div class="rounded-2xl border bg-white p-5">
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
 
-          <span class="text-sm font-medium text-gray-600">
-            Pending
-          </span>
+          <span class="text-sm font-medium text-gray-600"> Pending </span>
         </div>
 
         <p class="mt-3 text-2xl font-bold">
@@ -420,9 +255,7 @@ const deleteOrder = () => {
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-blue-500"></span>
 
-          <span class="text-sm font-medium text-gray-600">
-            Processing
-          </span>
+          <span class="text-sm font-medium text-gray-600"> Processing </span>
         </div>
 
         <p class="mt-3 text-2xl font-bold">
@@ -434,9 +267,7 @@ const deleteOrder = () => {
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-green-500"></span>
 
-          <span class="text-sm font-medium text-gray-600">
-            Completed
-          </span>
+          <span class="text-sm font-medium text-gray-600"> Completed </span>
         </div>
 
         <p class="mt-3 text-2xl font-bold">
@@ -448,31 +279,26 @@ const deleteOrder = () => {
         <div class="flex items-center gap-3">
           <span class="h-3 w-3 rounded-full bg-red-500"></span>
 
-          <span class="text-sm font-medium text-gray-600">
-            Cancelled
-          </span>
+          <span class="text-sm font-medium text-gray-600"> Cancelled </span>
         </div>
 
         <p class="mt-3 text-2xl font-bold">
           {{ cancelledOrders }}
         </p>
       </div>
-
     </div>
 
     <!-- FILTERS -->
     <div class="rounded-2xl border bg-white p-5 shadow-sm">
-
       <div class="grid gap-4 lg:grid-cols-4">
-
         <!-- Search -->
         <div class="lg:col-span-2">
-          <label class="mb-2 block text-sm font-semibold">
-            Search
-          </label>
+          <label class="mb-2 block text-sm font-semibold"> Search </label>
 
           <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <span
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
               🔍
             </span>
 
@@ -487,9 +313,7 @@ const deleteOrder = () => {
 
         <!-- Status -->
         <div>
-          <label class="mb-2 block text-sm font-semibold">
-            Order Status
-          </label>
+          <label class="mb-2 block text-sm font-semibold"> Order Status </label>
 
           <select
             v-model="selectedStatus"
@@ -505,9 +329,7 @@ const deleteOrder = () => {
 
         <!-- Payment -->
         <div>
-          <label class="mb-2 block text-sm font-semibold">
-            Payment
-          </label>
+          <label class="mb-2 block text-sm font-semibold"> Payment </label>
 
           <select
             v-model="selectedPayment"
@@ -519,11 +341,11 @@ const deleteOrder = () => {
             <option>Refunded</option>
           </select>
         </div>
-
       </div>
 
-      <div class="mt-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-
+      <div
+        class="mt-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center"
+      >
         <p class="text-sm text-gray-500">
           Showing
           <span class="font-semibold text-gray-900">
@@ -542,80 +364,57 @@ const deleteOrder = () => {
           <option>Lowest Amount</option>
           <option>Customer A-Z</option>
         </select>
-
       </div>
-
     </div>
 
     <!-- TABLE -->
     <div class="overflow-hidden rounded-2xl border bg-white shadow-sm">
-
       <div class="border-b px-6 py-4">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="font-bold">
-              Order List
-            </h2>
+            <h2 class="font-bold">Order List</h2>
 
             <p class="mt-1 text-xs text-gray-500">
               View and manage customer purchases.
             </p>
           </div>
 
-          <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold">
+          <span
+            class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold"
+          >
             {{ filteredOrders.length }} Orders
           </span>
         </div>
       </div>
 
       <div class="overflow-x-auto">
-
         <table class="w-full min-w-[1100px] text-left text-sm">
-
           <thead class="bg-gray-50 text-xs uppercase text-gray-500">
             <tr>
-              <th class="px-6 py-4">
-                Order
-              </th>
+              <th class="px-6 py-4">Order</th>
 
-              <th class="px-6 py-4">
-                Customer
-              </th>
+              <th class="px-6 py-4">Customer</th>
 
-              <th class="px-6 py-4">
-                Product
-              </th>
+              <th class="px-6 py-4">Product</th>
 
-              <th class="px-6 py-4">
-                Total
-              </th>
+              <th class="px-6 py-4">Total</th>
 
-              <th class="px-6 py-4">
-                Payment
-              </th>
+              <th class="px-6 py-4">Payment</th>
 
-              <th class="px-6 py-4">
-                Status
-              </th>
+              <th class="px-6 py-4">Status</th>
 
-              <th class="px-6 py-4">
-                Date
-              </th>
+              <th class="px-6 py-4">Date</th>
 
-              <th class="px-6 py-4">
-                Action
-              </th>
+              <th class="px-6 py-4">Action</th>
             </tr>
           </thead>
 
           <tbody class="divide-y">
-
             <tr
               v-for="order in filteredOrders"
               :key="order.id"
               class="transition hover:bg-gray-50"
             >
-
               <!-- Order -->
               <td class="px-6 py-5">
                 <NuxtLink
@@ -626,7 +425,9 @@ const deleteOrder = () => {
                 </NuxtLink>
 
                 <p class="mt-1 text-xs text-gray-400">
-                  {{ order.quantity }} item<span v-if="order.quantity > 1">s</span>
+                  {{ order.quantity }} item<span v-if="order.quantity > 1"
+                    >s</span
+                  >
                 </p>
               </td>
 
@@ -698,9 +499,7 @@ const deleteOrder = () => {
 
               <!-- Action -->
               <td class="px-6 py-5">
-
                 <div class="flex items-center gap-2">
-
                   <NuxtLink
                     :to="`/admin/orders/${order.id.replace('#ORD-', '')}`"
                     class="rounded-lg bg-gray-100 px-3 py-2 text-xs font-semibold transition hover:bg-black hover:text-white"
@@ -715,31 +514,18 @@ const deleteOrder = () => {
                   >
                     Delete
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
 
       <!-- EMPTY -->
-      <div
-        v-if="filteredOrders.length === 0"
-        class="px-6 py-20 text-center"
-      >
-        <div class="text-5xl">
-          📦
-        </div>
+      <div v-if="filteredOrders.length === 0" class="px-6 py-20 text-center">
+        <div class="text-5xl">📦</div>
 
-        <h3 class="mt-4 text-lg font-bold">
-          No orders found
-        </h3>
+        <h3 class="mt-4 text-lg font-bold">No orders found</h3>
 
         <p class="mt-2 text-sm text-gray-500">
           Try changing your search or filters.
@@ -753,7 +539,6 @@ const deleteOrder = () => {
           Clear Filters
         </button>
       </div>
-
     </div>
 
     <!-- DELETE MODAL -->
@@ -762,27 +547,23 @@ const deleteOrder = () => {
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
       @click.self="closeDeleteModal"
     >
-
       <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl"
+        >
           ⚠️
         </div>
 
-        <h2 class="mt-4 text-xl font-bold">
-          Delete Order?
-        </h2>
+        <h2 class="mt-4 text-xl font-bold">Delete Order?</h2>
 
         <p class="mt-2 text-sm leading-6 text-gray-500">
           Are you sure you want to delete
           <span class="font-semibold text-gray-900">
-            {{ selectedOrder?.id }}
-          </span>?
-          This action cannot be undone.
+            {{ selectedOrder?.id }} </span
+          >? This action cannot be undone.
         </p>
 
         <div class="mt-6 flex justify-end gap-3">
-
           <button
             type="button"
             class="rounded-xl border px-5 py-3 text-sm font-semibold hover:bg-gray-50"
@@ -798,12 +579,8 @@ const deleteOrder = () => {
           >
             Delete Order
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 </template>

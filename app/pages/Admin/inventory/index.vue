@@ -6,15 +6,7 @@ definePageMeta({
   layout: "admin",
 });
 
-interface InventoryProduct {
-  id: number;
-  name: string;
-  brand: string;
-  category: string;
-  price: number;
-  stock: number;
-  image: string;
-}
+
 
 /* --------------------------------
    Inventory Data

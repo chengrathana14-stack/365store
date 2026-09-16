@@ -1,26 +1,19 @@
 <script setup lang="ts">
-interface Stat {
-  title: string
-  value: string
-  change: string
-  icon: string
-}
+import type { DashboardStat } from "~/type/admin";
 
 defineProps<{
-  stats: Stat[]
-}>()
+  stats: DashboardStat[];
+}>();
 </script>
 
 <template>
   <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-
     <div
       v-for="stat in stats"
       :key="stat.title"
       class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
     >
       <div class="flex items-start justify-between">
-
         <div>
           <p class="text-sm text-gray-500">
             {{ stat.title }}
@@ -33,9 +26,7 @@ defineProps<{
           <p class="mt-2 text-sm font-medium text-green-600">
             {{ stat.change }}
 
-            <span class="font-normal text-gray-400">
-              from last month
-            </span>
+            <span class="font-normal text-gray-400"> from last month </span>
           </p>
         </div>
 
@@ -44,9 +35,7 @@ defineProps<{
         >
           {{ stat.icon }}
         </div>
-
       </div>
     </div>
-
   </div>
 </template>

@@ -1,12 +1,6 @@
 import { computed } from "vue";
 import { useState } from "#app";
-import type { Product } from "~/type/product";
-
-interface CartItem {
-  product: Product;
-  quantity: number;
-  size: string;
-}
+import type { CartItem, Product } from "~/type/product";
 export const useCart = () => {
   const cart = useState<CartItem[]>("cart", () => []);
 

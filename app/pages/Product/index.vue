@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { definePageMeta } from "#app/composables/pages";
 import { products } from "~/data/product";
+import { productFilterOptions } from "~/data/storefront";
 
 definePageMeta({
   layout: "user",
@@ -42,13 +43,10 @@ const sortBy = ref("featured");
 // FILTER OPTIONS
 // =====================================================
 
-const productTypes = ["All", "Popular", "Discount"];
-
-const categories = ["All", "Football", "Clothing", "Accessories", "Goalkeeper"];
-
-const brands = ["All", "Mizuno", "Nike", "Adidas", "Puma", "New Balance"];
-
-const genders = ["All", "Men", "Women", "Unisex"];
+const productTypes = productFilterOptions.types;
+const categories = productFilterOptions.categories;
+const brands = productFilterOptions.brands;
+const genders = productFilterOptions.genders;
 
 // =====================================================
 // FILTER PRODUCTS
