@@ -177,7 +177,7 @@ const formatPrice = (price: number) => {
       <div class="flex flex-wrap gap-3">
         <button
           type="button"
-          class="rounded-xl border bg-white px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+          class="rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-2xs hover:bg-gray-50"
           @click="printOrder"
         >
           🖨 Print
@@ -185,7 +185,7 @@ const formatPrice = (price: number) => {
 
         <button
           type="button"
-          class="rounded-xl border border-red-200 bg-white px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-50"
+          class="rounded-md border border-red-200 bg-white px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50"
           @click="showDeleteModal = true"
         >
           Delete
@@ -196,7 +196,7 @@ const formatPrice = (price: number) => {
     <!-- SUCCESS MESSAGE -->
     <div
       v-if="showSuccess"
-      class="rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700"
+      class="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-xs font-medium text-green-700"
     >
       ✓ Order updated successfully.
     </div>
@@ -205,7 +205,7 @@ const formatPrice = (price: number) => {
       <!-- LEFT -->
       <div class="space-y-6 lg:col-span-2">
         <!-- ORDER ITEMS -->
-        <div class="rounded-2xl border bg-white shadow-sm">
+        <div class="rounded-md border bg-white shadow-sm">
           <div class="border-b px-6 py-5">
             <h2 class="font-bold">Order Items</h2>
 
@@ -218,7 +218,7 @@ const formatPrice = (price: number) => {
             <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
               <!-- IMAGE -->
               <div
-                class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100"
+                class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100"
               >
                 <img
                   :src="order.productImage"
@@ -234,11 +234,11 @@ const formatPrice = (price: number) => {
                 </p>
 
                 <div class="mt-2 flex flex-wrap gap-2">
-                  <span class="rounded-lg bg-gray-100 px-3 py-1 text-xs">
+                  <span class="rounded-md bg-gray-100 px-3 py-1 text-xs">
                     Size: {{ order.size }}
                   </span>
 
-                  <span class="rounded-lg bg-gray-100 px-3 py-1 text-xs">
+                  <span class="rounded-md bg-gray-100 px-3 py-1 text-xs">
                     Color: {{ order.color }}
                   </span>
                 </div>
@@ -263,7 +263,7 @@ const formatPrice = (price: number) => {
         <!-- CUSTOMER -->
         <div class="grid gap-6 md:grid-cols-2">
           <!-- CUSTOMER INFORMATION -->
-          <div class="rounded-2xl border bg-white p-6 shadow-sm">
+          <div class="rounded-md border bg-white p-6 shadow-sm">
             <h2 class="font-bold">Customer Information</h2>
 
             <div class="mt-5 space-y-4">
@@ -294,7 +294,7 @@ const formatPrice = (price: number) => {
           </div>
 
           <!-- SHIPPING -->
-          <div class="rounded-2xl border bg-white p-6 shadow-sm">
+          <div class="rounded-md border bg-white p-6 shadow-sm">
             <h2 class="font-bold">Shipping Address</h2>
 
             <div class="mt-5">
@@ -310,7 +310,7 @@ const formatPrice = (price: number) => {
         </div>
 
         <!-- ORDER TIMELINE -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h2 class="font-bold">Order Timeline</h2>
 
           <div class="mt-6 space-y-6">
@@ -384,7 +384,7 @@ const formatPrice = (price: number) => {
       <!-- RIGHT SIDEBAR -->
       <div class="space-y-6">
         <!-- UPDATE STATUS -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h2 class="font-bold">Update Order</h2>
 
           <div class="mt-5 space-y-5">
@@ -396,7 +396,7 @@ const formatPrice = (price: number) => {
 
               <select
                 v-model="selectedStatus"
-                class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border px-4 py-3 outline-none focus:border-black"
               >
                 <option>Pending</option>
                 <option>Processing</option>
@@ -413,7 +413,7 @@ const formatPrice = (price: number) => {
 
               <select
                 v-model="selectedPaymentStatus"
-                class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border px-4 py-3 outline-none focus:border-black"
               >
                 <option>Paid</option>
                 <option>Pending</option>
@@ -423,7 +423,7 @@ const formatPrice = (price: number) => {
 
             <button
               type="button"
-              class="w-full rounded-xl bg-black px-5 py-3 font-semibold text-white transition hover:bg-gray-800"
+              class="w-full rounded-md bg-black px-5 py-3 font-semibold text-white transition hover:bg-gray-800"
               @click="updateOrder"
             >
               Save Changes
@@ -432,7 +432,7 @@ const formatPrice = (price: number) => {
         </div>
 
         <!-- PAYMENT -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h2 class="font-bold">Payment Information</h2>
 
           <div class="mt-5 space-y-4">
@@ -458,7 +458,7 @@ const formatPrice = (price: number) => {
         </div>
 
         <!-- ORDER SUMMARY -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h2 class="font-bold">Order Summary</h2>
 
           <div class="mt-5 space-y-4 text-sm">
@@ -499,7 +499,7 @@ const formatPrice = (price: number) => {
         </div>
 
         <!-- ORDER INFO -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h2 class="font-bold">Order Information</h2>
 
           <div class="mt-5 space-y-4">
@@ -537,25 +537,25 @@ const formatPrice = (price: number) => {
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
       @click.self="showDeleteModal = false"
     >
-      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div class="w-full max-w-md rounded-md bg-white p-6 shadow-xl border border-gray-100">
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100"
+          class="flex h-10 w-10 items-center justify-center rounded-md bg-red-100 text-sm"
         >
           ⚠️
         </div>
 
-        <h2 class="mt-4 text-xl font-bold">Delete Order?</h2>
+        <h2 class="mt-4 text-base font-bold text-gray-900">Delete Order?</h2>
 
-        <p class="mt-2 text-sm leading-6 text-gray-500">
+        <p class="mt-2 text-xs leading-relaxed text-gray-500">
           Are you sure you want to delete
           <span class="font-semibold text-gray-900"> {{ order.id }} </span>?
           This action cannot be undone.
         </p>
 
-        <div class="mt-6 flex justify-end gap-3">
+        <div class="mt-6 flex justify-end gap-2 text-xs font-semibold">
           <button
             type="button"
-            class="rounded-xl border px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+            class="rounded-md border border-gray-200 px-3.5 py-2 text-gray-700 hover:bg-gray-50 transition"
             @click="showDeleteModal = false"
           >
             Cancel
@@ -563,7 +563,7 @@ const formatPrice = (price: number) => {
 
           <button
             type="button"
-            class="rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700"
+            class="rounded-md bg-red-600 px-3.5 py-2 text-white hover:bg-red-700 transition shadow-2xs"
             @click="deleteOrder"
           >
             Delete Order

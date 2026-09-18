@@ -75,7 +75,7 @@ const cancel = () => {
       <div class="flex gap-3">
         <button
           type="button"
-          class="rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+          class="rounded-md border border-gray-200 bg-white px-5 py-3 text-sm font-semibold hover:bg-gray-50"
           @click="cancel"
         >
           Cancel
@@ -83,7 +83,7 @@ const cancel = () => {
 
         <button
           type="button"
-          class="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
+          class="rounded-md bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
           @click="createProduct"
         >
           Create Product
@@ -96,7 +96,7 @@ const cancel = () => {
       <!-- Left -->
       <div class="space-y-6 lg:col-span-2">
         <!-- Basic Information -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
           <div class="mb-6">
             <h3 class="font-bold text-gray-900">Basic Information</h3>
 
@@ -116,7 +116,7 @@ const cancel = () => {
                 v-model="form.name"
                 type="text"
                 placeholder="Nike Mercurial Vapor 16 Elite"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
               />
             </div>
 
@@ -130,7 +130,7 @@ const cancel = () => {
                 v-model="form.description"
                 rows="5"
                 placeholder="Enter product description..."
-                class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                class="w-full resize-none rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
               ></textarea>
             </div>
 
@@ -143,7 +143,7 @@ const cancel = () => {
 
                 <select
                   v-model="form.category"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                  class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 >
                   <option
                     v-for="category in categories"
@@ -160,7 +160,7 @@ const cancel = () => {
 
                 <select
                   v-model="form.brand"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                  class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 >
                   <option v-for="brand in brands" :key="brand" :value="brand">
                     {{ brand }}
@@ -176,7 +176,7 @@ const cancel = () => {
 
                 <select
                   v-model="form.gender"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                  class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 >
                   <option
                     v-for="gender in genders"
@@ -195,7 +195,7 @@ const cancel = () => {
                   v-model="form.color"
                   type="text"
                   placeholder="Black / White"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                  class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
                 />
               </div>
             </div>
@@ -203,7 +203,7 @@ const cancel = () => {
         </div>
 
         <!-- Pricing -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
           <div class="mb-6">
             <h3 class="font-bold">Pricing & Inventory</h3>
 
@@ -223,7 +223,7 @@ const cancel = () => {
                 type="number"
                 min="0"
                 placeholder="150"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
               />
             </div>
 
@@ -237,7 +237,7 @@ const cancel = () => {
                 type="number"
                 min="0"
                 max="100"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
               />
             </div>
 
@@ -248,14 +248,14 @@ const cancel = () => {
                 v-model="form.stock"
                 type="number"
                 min="0"
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none focus:border-black"
               />
             </div>
           </div>
         </div>
 
         <!-- Sizes -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
           <h3 class="font-bold">Available Sizes</h3>
 
           <p class="mt-1 text-sm text-gray-500">
@@ -284,7 +284,7 @@ const cancel = () => {
       <!-- Right -->
       <div class="space-y-6">
         <!-- Product Image -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
           <h3 class="font-bold">Product Images</h3>
 
           <p class="mt-1 text-sm text-gray-500">Add product image URLs.</p>
@@ -299,7 +299,7 @@ const cancel = () => {
                 v-model="form.image"
                 type="text"
                 placeholder="https://..."
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
               />
             </div>
 
@@ -312,14 +312,14 @@ const cancel = () => {
                 v-model="form.hoverimg"
                 type="text"
                 placeholder="https://..."
-                class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
+                class="w-full rounded-md border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
               />
             </div>
           </div>
 
           <!-- Preview -->
           <div
-            class="mt-5 flex h-64 items-center justify-center overflow-hidden rounded-xl bg-gray-100"
+            class="mt-5 flex h-64 items-center justify-center overflow-hidden rounded-md bg-gray-100"
           >
             <img
               v-if="form.image"
@@ -337,7 +337,7 @@ const cancel = () => {
         </div>
 
         <!-- Product Status -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
           <h3 class="font-bold">Product Status</h3>
 
           <div class="mt-5 space-y-4">

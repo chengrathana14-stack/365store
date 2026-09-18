@@ -32,6 +32,22 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false;
 };
 
+const route = useRoute();
+
+const navLinks = [
+  { name: "Home", path: "/" },
+  { name: "Product", path: "/Product" },
+  { name: "About", path: "/about" },
+  { name: "Contact", path: "/contact" },
+];
+
+const isActive = (path: string) => {
+  if (path === "/") {
+    return route.path === "/";
+  }
+  return route.path.toLowerCase().startsWith(path.toLowerCase());
+};
+
 onMounted(loadUser);
 onMounted(() => document.addEventListener("click", closeAccountMenu));
 onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
@@ -65,52 +81,27 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
         <!-- Desktop Menu -->
         <!-- ===================================== -->
 
-        <ul class="hidden items-center gap-8 md:flex lg:gap-10">
-          <!-- Home -->
-
-          <li>
+        <ul class="hidden items-center gap-7 md:flex lg:gap-9">
+          <li v-for="link in navLinks" :key="link.path">
             <NuxtLink
-              to="/"
-              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
-              active-class="bg-black text-white hover:bg-black hover:text-white"
+              :to="link.path"
+              class="group relative inline-flex items-center px-1 py-2 text-sm font-semibold tracking-wide transition-colors duration-200 lg:text-base"
+              :class="
+                isActive(link.path)
+                  ? 'font-bold text-black'
+                  : 'text-gray-600 hover:text-black'
+              "
             >
-              Home
-            </NuxtLink>
-          </li>
-
-          <!-- Product -->
-
-          <li>
-            <NuxtLink
-              to="/Product"
-              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
-              active-class="bg-black text-white hover:bg-black hover:text-white"
-            >
-              Product
-            </NuxtLink>
-          </li>
-
-          <!-- About -->
-
-          <li>
-            <NuxtLink
-              to="/About"
-              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
-              active-class="bg-black text-white hover:bg-black hover:text-white"
-            >
-              About
-            </NuxtLink>
-          </li>
-
-          <!-- Contact -->
-
-          <li>
-            <NuxtLink
-              to="/Contact"
-              class="rounded-full px-4 py-2 font-semibold text-gray-700 transition duration-300 hover:bg-lime-100 hover:text-black"
-              active-class="bg-black text-white hover:bg-black hover:text-white"
-            >
-              Contact
+              <span>{{ link.name }}</span>
+              <!-- Modern Lime Underline Indicator -->
+              <span
+                class="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-lime-500 transition-all duration-250 ease-out"
+                :class="
+                  isActive(link.path)
+                    ? 'scale-x-100 opacity-100'
+                    : 'scale-x-0 opacity-0 group-hover:scale-x-50 group-hover:opacity-60'
+                "
+              ></span>
             </NuxtLink>
           </li>
         </ul>
@@ -328,32 +319,22 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
         >
           <div class="flex flex-col gap-1">
             <NuxtLink
-              to="/"
-              class="rounded-lg px-4 py-3 text-base font-semibold text-gray-800 transition hover:bg-gray-100"
+              v-for="link in navLinks"
+              :key="link.path"
+              :to="link.path"
+              class="flex items-center justify-between rounded-lg px-4 py-3 text-base font-semibold transition-all duration-200"
+              :class="
+                isActive(link.path)
+                  ? 'border-l-4 border-lime-500 bg-lime-50/80 font-bold text-black'
+                  : 'text-gray-700 hover:bg-gray-100'
+              "
               @click="closeMobileMenu"
             >
-              Home
-            </NuxtLink>
-            <NuxtLink
-              to="/Product"
-              class="rounded-lg px-4 py-3 text-base font-semibold text-gray-800 transition hover:bg-gray-100"
-              @click="closeMobileMenu"
-            >
-              Product
-            </NuxtLink>
-            <NuxtLink
-              to="/About"
-              class="rounded-lg px-4 py-3 text-base font-semibold text-gray-800 transition hover:bg-gray-100"
-              @click="closeMobileMenu"
-            >
-              About
-            </NuxtLink>
-            <NuxtLink
-              to="/Contact"
-              class="rounded-lg px-4 py-3 text-base font-semibold text-gray-800 transition hover:bg-gray-100"
-              @click="closeMobileMenu"
-            >
-              Contact
+              <span>{{ link.name }}</span>
+              <span
+                v-if="isActive(link.path)"
+                class="h-2 w-2 rounded-full bg-lime-500"
+              ></span>
             </NuxtLink>
           </div>
 

@@ -118,14 +118,14 @@ const deleteProduct = () => {
 
       <div class="flex gap-3">
         <button
-          class="rounded-xl border border-red-200 bg-white px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-50"
+          class="rounded-md border border-red-200 bg-white px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-50"
           @click="deleteProduct"
         >
           Delete
         </button>
 
         <button
-          class="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
+          class="rounded-md bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
           @click="updateProduct"
         >
           Save Changes
@@ -137,7 +137,7 @@ const deleteProduct = () => {
       <!-- Main -->
       <div class="space-y-6 lg:col-span-2">
         <!-- Information -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h3 class="font-bold">Product Information</h3>
 
           <div class="mt-6 space-y-5">
@@ -148,7 +148,7 @@ const deleteProduct = () => {
 
               <input
                 v-model="form.name"
-                class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+                class="w-full rounded-md border px-4 py-3 outline-none focus:border-black"
               />
             </div>
 
@@ -160,7 +160,7 @@ const deleteProduct = () => {
               <textarea
                 v-model="form.description"
                 rows="5"
-                class="w-full resize-none rounded-xl border px-4 py-3 outline-none focus:border-black"
+                class="w-full resize-none rounded-md border px-4 py-3 outline-none focus:border-black"
               ></textarea>
             </div>
 
@@ -170,7 +170,7 @@ const deleteProduct = () => {
 
                 <select
                   v-model="form.brand"
-                  class="w-full rounded-xl border px-4 py-3 outline-none"
+                  class="w-full rounded-md border px-4 py-3 outline-none"
                 >
                   <option>Nike</option>
                   <option>Adidas</option>
@@ -187,7 +187,7 @@ const deleteProduct = () => {
 
                 <select
                   v-model="form.category"
-                  class="w-full rounded-xl border px-4 py-3 outline-none"
+                  class="w-full rounded-md border px-4 py-3 outline-none"
                 >
                   <option>Football Boots</option>
                   <option>Football Jersey</option>
@@ -206,7 +206,7 @@ const deleteProduct = () => {
 
                 <select
                   v-model="form.gender"
-                  class="w-full rounded-xl border px-4 py-3 outline-none"
+                  class="w-full rounded-md border px-4 py-3 outline-none"
                 >
                   <option>Men</option>
                   <option>Women</option>
@@ -219,7 +219,7 @@ const deleteProduct = () => {
 
                 <input
                   v-model="form.color"
-                  class="w-full rounded-xl border px-4 py-3 outline-none focus:border-black"
+                  class="w-full rounded-md border px-4 py-3 outline-none focus:border-black"
                 />
               </div>
             </div>
@@ -227,7 +227,7 @@ const deleteProduct = () => {
         </div>
 
         <!-- Pricing -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h3 class="font-bold">Pricing & Inventory</h3>
 
           <div class="mt-6 grid gap-5 sm:grid-cols-3">
@@ -237,7 +237,7 @@ const deleteProduct = () => {
               <input
                 v-model="form.price"
                 type="number"
-                class="w-full rounded-xl border px-4 py-3 outline-none"
+                class="w-full rounded-md border px-4 py-3 outline-none"
               />
             </div>
 
@@ -247,7 +247,7 @@ const deleteProduct = () => {
               <input
                 v-model="form.discount"
                 type="number"
-                class="w-full rounded-xl border px-4 py-3 outline-none"
+                class="w-full rounded-md border px-4 py-3 outline-none"
               />
             </div>
 
@@ -257,14 +257,14 @@ const deleteProduct = () => {
               <input
                 v-model="form.stock"
                 type="number"
-                class="w-full rounded-xl border px-4 py-3 outline-none"
+                class="w-full rounded-md border px-4 py-3 outline-none"
               />
             </div>
           </div>
         </div>
 
         <!-- Sizes -->
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h3 class="font-bold">Available Sizes</h3>
 
           <div class="mt-5 flex flex-wrap gap-3">
@@ -288,17 +288,17 @@ const deleteProduct = () => {
 
       <!-- Sidebar -->
       <div class="space-y-6">
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h3 class="font-bold">Product Image</h3>
 
           <input
             v-model="form.image"
-            class="mt-5 w-full rounded-xl border px-4 py-3 text-sm outline-none"
+            class="mt-5 w-full rounded-md border px-4 py-3 text-sm outline-none"
             placeholder="Image URL"
           />
 
           <div
-            class="mt-5 flex h-64 items-center justify-center overflow-hidden rounded-xl bg-gray-100"
+            class="mt-5 flex h-64 items-center justify-center overflow-hidden rounded-md bg-gray-100"
           >
             <img
               :src="form.image"
@@ -308,7 +308,7 @@ const deleteProduct = () => {
           </div>
         </div>
 
-        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <div class="rounded-md border bg-white p-6 shadow-sm">
           <h3 class="font-bold">Status</h3>
 
           <label class="mt-5 flex items-center justify-between">
@@ -348,7 +348,7 @@ const deleteProduct = () => {
 
       <NuxtLink
         to="/admin/products"
-        class="mt-5 inline-block rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
+        class="mt-5 inline-block rounded-md bg-black px-5 py-3 text-sm font-semibold text-white"
       >
         Back to Products
       </NuxtLink>

@@ -19,7 +19,7 @@ const statusClass = (status: RecentOrder["status"]) => {
 
 <template>
   <div
-    class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+    class="overflow-hidden rounded-md border border-gray-200 bg-white shadow-xs"
   >
     <!-- Header -->
     <div
@@ -82,7 +82,7 @@ const statusClass = (status: RecentOrder["status"]) => {
 
             <td class="px-6 py-5">
               <span
-                class="rounded-full px-3 py-1 text-xs font-semibold"
+                class="rounded-md px-2.5 py-0.5 text-xs font-semibold"
                 :class="statusClass(order.status)"
               >
                 {{ order.status }}

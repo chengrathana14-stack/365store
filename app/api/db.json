@@ -1,0 +1,1209 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Nike Air Zoom Pegasus 40",
+      "price": 129.99,
+      "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
+      "hoverimg": "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&q=80",
+        "https://images.unsplash.com/photo-1579958118587-cd4628902d4a?w=800&q=80"
+      ],
+      "description": "Responsive cushioning and smooth transitions make it a great choice for everyday running. The Nike Air Zoom Pegasus 40 delivers the responsive support you need.",
+      "category": "Running Shoes",
+      "brand": "Nike",
+      "gender": "Men",
+      "color": "Black / White / University Red",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 15,
+      "rating": 4.8,
+      "reviews": 1247,
+      "stock": 24,
+      "featured": true,
+      "isNew": true,
+      "popular": true
+    },
+    {
+      "id": 2,
+      "name": "Adidas Ultraboost 22",
+      "price": 189.99,
+      "image": "https://imgs.search.brave.com/poRUZ37YcDCWMuiHT15J-VQ9jll7hVHCVmVJi-grdSc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL2g0RUFB/ZVN3T0tocWJRVkkv/cy1sNDAwLndlYnA",
+      "hoverimg": "https://imgs.search.brave.com/_YgHcEjeHdVLHLl6Qw2TGDAVLcSVxacAHceIrIgC7zg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0VWZ0FB/T1N3TnhwbEpDTkMv/cy1sNTAwLmpwZw",
+      "images": [
+        "https://images.unsplash.com/photo-1556821552-5f94c71f2f3b?w=800&q=80",
+        "https://images.unsplash.com/photo-1525966222134-fcebf0055d5f?w=800&q=80",
+        "https://images.unsplash.com/photo-1523170535258-f5ed11844a49?w=800&q=80"
+      ],
+      "description": "Designed for comfort and performance, Ultraboost 22 provides exceptional energy return with advanced Boost technology. Perfect for long-distance running.",
+      "category": "Running Shoes",
+      "brand": "Adidas",
+      "gender": "Men",
+      "color": "Cloud White / Core Black",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 20,
+      "rating": 4.9,
+      "reviews": 2156,
+      "stock": 18,
+      "featured": true,
+      "isNew": false,
+      "popular": true
+    },
+    {
+      "id": 3,
+      "name": "Puma RS-X Super",
+      "price": 109.99,
+      "image": "https://imgs.search.brave.com/uRoXx_jyNJZdnGqhWxe7yD9LvPu0uxkGOKvGObfXhBo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hcnR3/YWxrLnZ0ZXhhc3Nl/dHMuY29tL2FycXVp/dm9zL2lkcy8yMjE1/OTcvVGVuaXMtUHVt/YS1SUy1YLVN1cGVy/LU11bHRpY29sb3It/My5qcGc_dj02Mzcx/OTYxMTMwODE2MDAw/MDA",
+      "hoverimg": "https://imgs.search.brave.com/YasNbFLKBPo4JlcLc2v3ec3XZTSy99Phk5EAzEdHx9U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL2d2Y0FB/ZVN3T09GcHFQMm0v/cy1sOTYwLndlYnA",
+      "images": [
+        "https://images.unsplash.com/photo-1539185441766-40950953cd6f?w=800&q=80",
+        "https://images.unsplash.com/photo-1549298881-0710dc682b7b?w=800&q=80",
+        "https://images.unsplash.com/photo-1542546068-19db7dc21d74?w=800&q=80"
+      ],
+      "description": "The RS-X Super combines street style with premium comfort. A modern take on a retro favorite, perfect for casual wear and light training.",
+      "category": "Casual Sneakers",
+      "brand": "Puma",
+      "gender": "Unisex",
+      "color": "Puma White / Puma Black",
+      "size": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "discount": 25,
+      "rating": 4.7,
+      "reviews": 892,
+      "stock": 32,
+      "featured": true,
+      "isNew": true,
+      "popular": true
+    },
+    {
+      "id": 4,
+      "name": "New Balance 990v6",
+      "price": 184.99,
+      "image": "https://imgs.search.brave.com/BFprRYQtK3R2hGDlme3gZge8n31ZcRUCzX39wLb0los/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc29sZXJldHJp/ZXZlci5jb20vc2Iv/cHJvZHVjdHMvbmV3/X2JhbGFuY2VfOTkw/djZfbWFkZV9pbl91/c2FfYmxhY2stZ3Jl/eS1VOTkwamM2LTE3/Mzk0NjU1OTcxMTUu/d2VicD93aWR0aD0z/OTImcXVhbGl0eT03/NSZmaXQ9Y29udGFp/bg",
+      "hoverimg": "https://imgs.search.brave.com/Uak0HR3ZVPRKNl-xJsIZ_uNwgd0Hgo-sMlDg-8bFIf8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9qdXN0/ZnJlc2hraWNrcy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjEvMTIvTmV3LUJh/bGFuY2UtOTkwdjYt/R3JleS1SZWxlYXNl/LURhdGUtNC53ZWJw",
+      "images": [
+        "https://images.unsplash.com/photo-1612521150235-e80e0b5f51d5?w=800&q=80",
+        "https://images.unsplash.com/photo-1549622582-1e5a27a63c86?w=800&q=80",
+        "https://images.unsplash.com/photo-1530309592458-340c1d05b9df?w=800&q=80"
+      ],
+      "description": "Legendary comfort and heritage design. The 990v6 features premium materials and advanced cushioning technology for all-day comfort and support.",
+      "category": "Running Shoes",
+      "brand": "New Balance",
+      "gender": "Men",
+      "color": "Grey / White",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 10,
+      "rating": 4.9,
+      "reviews": 1834,
+      "stock": 15,
+      "featured": true,
+      "isNew": false,
+      "popular": true
+    },
+    {
+      "id": 5,
+      "name": "Adidas NMD R1",
+      "price": 99.99,
+      "image": "https://imgs.search.brave.com/-8zDMz8z6Am-tn1sJdceQYzV9sXejlwcVhGiHCMPJc4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0Y4WUFB/T1N3cmJSa0pFSlMv/cy1sNDAwLndlYnA",
+      "hoverimg": "https://imgs.search.brave.com/Cp7Eq8Qcr2kUUc4jU1fZfj05s7O66Ygnmj5iZ31xqdY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZS1jZG4uaHlwYi5z/dC9odHRwczovL2h5/cGViZWFzdC5jb20v/aW1hZ2UvMjAxOC8w/Ni9hZGlkYXMtbm1k/LXIxLWJsYWNrLWd1/bS1yZWxlYXNlLTAu/anBnP2ZpdD1tYXgm/Y2JyPTEmcT05MCZ3/PTc1MCZoPTUwMA",
+      "images": [
+        "https://images.unsplash.com/photo-1577872200969-2b12d56c3c45?w=800&q=80",
+        "https://images.unsplash.com/photo-1540020773857-3e3b86f6b9da?w=800&q=80",
+        "https://images.unsplash.com/photo-1513455835260-430cecad64fd?w=800&q=80"
+      ],
+      "description": "The classic NMD R1 offers modern style with Boost technology cushioning. Great for everyday wear with street-style appeal.",
+      "category": "Casual Sneakers",
+      "brand": "Adidas",
+      "gender": "Unisex",
+      "color": "Cloud White / Green",
+      "size": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 35,
+      "rating": 4.6,
+      "reviews": 1523,
+      "stock": 28,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 6,
+      "name": "Nike Revolution 6",
+      "price": 64.99,
+      "image": "https://imgs.search.brave.com/CLjt7qf8KiuC6rV5J_E0xaMkDkWx27SoWlUb4l7Owig/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0E2UUFB/ZVN3OEVGcVdmV2Iv/cy1sOTYwLndlYnA",
+      "hoverimg": "https://imgs.search.brave.com/bfhkT6ak4v_l6RxKlujrTMQHiGWj1UulWlgpYk_-sDM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL01BSUFB/T1N3Qml0bnU5d0Ev/cy1sNTAwLmpwZw",
+      "images": [
+        "https://images.unsplash.com/photo-1606107557529-da4b46f20128?w=800&q=80",
+        "https://images.unsplash.com/photo-1559056199-641a0ac8b3f4?w=800&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80"
+      ],
+      "description": "Simple, comfortable, and affordable. The Nike Revolution 6 provides essential performance for casual training and everyday activities.",
+      "category": "Running Shoes",
+      "brand": "Nike",
+      "gender": "Kids",
+      "color": "Black / White",
+      "size": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "discount": 40,
+      "rating": 4.5,
+      "reviews": 876,
+      "stock": 45,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 7,
+      "name": "Saucony Triumph 20",
+      "price": 139.99,
+      "image": "https://imgs.search.brave.com/wxzyGj2JJNreDd9CBAIXfOC-BS-ZC3L4iyaLx2b4IHg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c29sZXJldmlldy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMTIvU2F1Y29u/eV9Ucml1bXBoXzIw/X3VwcGVyLmpwZw",
+      "hoverimg": "https://imgs.search.brave.com/mtU-ISWShO1cC5M3pN4XFcIECI4oP7GNN2BOkFc98Io/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c29sZXJldmlldy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMTIvU2F1Y29u/eV9Ucml1bXBoXzIw/X3dpdGhfU3VwZXJm/ZWV0X2JsdWUuanBn",
+      "images": [
+        "https://images.unsplash.com/photo-1526062881576-09a72c4c7f8b?w=800&q=80",
+        "https://images.unsplash.com/photo-1542456292-cbe1f5caa6db?w=800&q=80",
+        "https://images.unsplash.com/photo-1479622753714-4e3871c667e1?w=800&q=80"
+      ],
+      "description": "Saucony's premium cushioned runner with PlushGel technology. Built for maximum comfort on long-distance runs and daily training.",
+      "category": "Running Shoes",
+      "brand": "Saucony",
+      "gender": "Men",
+      "color": "Ocean / Storm",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 30,
+      "rating": 4.8,
+      "reviews": 945,
+      "stock": 20,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 8,
+      "name": "ASICS Gel-Kayano 29",
+      "price": 169.99,
+      "image": "https://imgs.search.brave.com/kKGhqKpxItGunaBaPNDD8dOOfAWJDMKpaMNDZ4a4diA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3ZzcG9ydHMuY29t/L2Nkbi9zaG9wL2Zp/bGVzLzEwMTFiNDc0/LTQwMS0zLmpwZz92/PTE3MTE0MTQ5NTMm/d2lkdGg9MTQ0NQ",
+      "hoverimg": "https://imgs.search.brave.com/8MfiUw94KMkrcxK3w3OFZF2O_oIUBJCQ0wO5uEvehBI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c29sZXJldmlldy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMTEvQXNpY3Nf/S2F5YW5vXzI5X3Rv/bmd1ZS5qcGc",
+      "images": [
+        "https://images.unsplash.com/photo-1463622328062-d692c695ba36?w=800&q=80",
+        "https://images.unsplash.com/photo-1542546068-19db7dc21d74?w=800&q=80",
+        "https://images.unsplash.com/photo-1505228395891-9a51e7e86e81?w=800&q=80"
+      ],
+      "description": "Premium stability shoe with advanced GEL technology. Designed for runners who need support and comfort on every stride.",
+      "category": "Running Shoes",
+      "brand": "ASICS",
+      "gender": "Men",
+      "color": "Peacoat / White",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 28,
+      "rating": 4.9,
+      "reviews": 1456,
+      "stock": 17,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 9,
+      "name": "Reebok Classic Leather Legacy",
+      "price": 89.99,
+      "image": "https://imgs.search.brave.com/VnU8guAFI8JIUAlJtle2fWfzmdMCyaWITbOU8zXGhmM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL2JFTUFB/ZVN3cmFWcVd5bUgv/cy1sOTYwLndlYnA",
+      "hoverimg": "https://imgs.search.brave.com/H_UZlTwOCczROh5_Z5GjU5bNT0tRESnWs9QrRLdpnbU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/ODFvMzcwMTIyeEwu/anBn",
+      "images": [
+        "https://images.unsplash.com/photo-1608231387042-352e5dea6917?w=800&q=80",
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80"
+      ],
+      "description": "Iconic retro design meets modern comfort. The Classic Leather Legacy is perfect for casual wear and offers timeless style.",
+      "category": "Casual Sneakers",
+      "brand": "Reebok",
+      "gender": "Unisex",
+      "color": "White / Pure Grey",
+      "size": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "discount": 32,
+      "rating": 4.6,
+      "reviews": 728,
+      "stock": 35,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 10,
+      "name": "Converse Chuck Taylor All Star",
+      "price": 64.99,
+      "image": "https://imgs.search.brave.com/-IyspomKToHVr5fhhq5OXoUrUTGaDORicsBDDzcF_p8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NzE3bFM1SUFpNEwu/anBn",
+      "hoverimg": "https://imgs.search.brave.com/ubnSg3s-1ORM6YhR8zUpOFMoOY6cyEk4YvsKHtAQQfo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/bWVkaWEuYW1wbGll/bmNlLm5ldC9pL3Nj/dmwvOTE4OTNfMzU5/MTQzXzE_Zm10PWF1/dG8mdz02NDA",
+      "images": [
+        "https://images.unsplash.com/photo-1577222055194-41cf4a33f011?w=800&q=80",
+        "https://images.unsplash.com/photo-1579538481759-d8d769cf22ca?w=800&q=80",
+        "https://images.unsplash.com/photo-1598694159484-3671e856c8e5?w=800&q=80"
+      ],
+      "description": "The legendary All Star. A timeless classic canvas sneaker that goes with everything. Perfect for street style and casual adventures.",
+      "category": "Casual Sneakers",
+      "brand": "Converse",
+      "gender": "Unisex",
+      "color": "Classic White",
+      "size": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 45,
+      "rating": 4.7,
+      "reviews": 3421,
+      "stock": 60,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 11,
+      "name": "Nike Phantom GX 2 Elite FG",
+      "price": 259.99,
+      "image": "https://imgs.search.brave.com/ykLwTMrp97LFoECMw8VPOoji7t5T7lk638KEDbvlxes/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YmxyLnVuaWlkLml0/L3Byb2R1Y3QvMzY5/MjM3LzljYjUzZTI4/OTQyOS5qcGc_d2lk/dGg9Mzg0MCZmb3Jt/YXQ9d2VicCZxPTc1",
+      "hoverimg": "https://imgs.search.brave.com/GfhHBgXM6B_njCkbhJ_CMDRnu5nZFOzrVG7yPlDxBow/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzcxaTQrMmc2bjBM/LmpwZw",
+      "images": [
+        "https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=800&q=80",
+        "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=800&q=80",
+        "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80"
+      ],
+      "description": "Elite football boots with a precise touch zone and aggressive traction for natural-grass pitches.",
+      "category": "Football Shoes",
+      "brand": "Nike",
+      "gender": "Unisex",
+      "color": "White / Bright Crimson",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "discount": 12,
+      "rating": 4.8,
+      "reviews": 642,
+      "stock": 12,
+      "featured": true,
+      "isNew": true,
+      "popular": false
+    },
+    {
+      "id": 12,
+      "name": "Adidas Predator League FG",
+      "price": 119.99,
+      "image": "https://imgs.search.brave.com/IoEiLlbSAjgYIyLJd0yJWBdOQVBz7pnNpjtOGR4UnPY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuZm9vdGxvY2tl/ci5jb20vaXMvaW1h/Z2UvRUJGTDIvSkkx/MTE3P3dpZD01MDAm/aGVpPTUwMA",
+      "hoverimg": "https://imgs.search.brave.com/_nuYUsyRAUIOovVB_B2HIPN_SfMp61hNR0arn9D-Eqw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YmxyLnVuaWlkLml0/L3Byb2R1Y3QvNDMx/MTEwLzE5ZTA5NDQ0/ZTE0MC5qcGc_d2lk/dGg9Mzg0MCZmb3Jt/YXQ9d2VicCZxPTc1",
+      "images": [
+        "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=800&q=80",
+        "https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=800&q=80",
+        "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80"
+      ],
+      "description": "Control-focused football boots with a textured upper for confident passing and finishing.",
+      "category": "Football Shoes",
+      "brand": "Adidas",
+      "gender": "Men",
+      "color": "Black / Solar Red",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "discount": 22,
+      "rating": 4.7,
+      "reviews": 488,
+      "stock": 16,
+      "featured": false,
+      "isNew": true,
+      "popular": false
+    },
+    {
+      "id": 13,
+      "name": "Jordan One Take 5",
+      "price": 115,
+      "image": "https://imgs.search.brave.com/2pY3pHqx1Wza3DGpzJjkFKD-QWFgfWd4Fb0um6oAgR0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YmFza2V0YmFsbHN0/b3JlLm5ldC9jZG4v/c2hvcC9maWxlcy9G/RDIzMzUtMTYwLWpv/cmRhbi1vbmUtdGFr/ZS01LXNjYXJwYS1k/YS1iYXNrZXQtcnVz/c2VsbC13ZXN0YnJv/b2stbmJhLTAtMTAw/MHgxMDAwLmpwZz92/PTE3Mzg2NzcwMzQm/d2lkdGg9MTAwMA",
+      "hoverimg": "https://imgs.search.brave.com/PEt2IYjBap816KGES7L2liArS5ExXOAZlzNbFWnzGdU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL21WNEFB/T1N3Tjk5bXB2NWMv/cy1sNDAwLndlYnA",
+      "images": [
+        "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80",
+        "https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=800&q=80",
+        "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80"
+      ],
+      "description": "Responsive basketball shoes with court-ready grip and lightweight cushioning for quick changes of direction.",
+      "category": "Basketball Shoes",
+      "brand": "Jordan",
+      "gender": "Men",
+      "color": "Black / University Red",
+      "size": [
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 18,
+      "rating": 4.6,
+      "reviews": 367,
+      "stock": 21,
+      "featured": true,
+      "isNew": true,
+      "popular": false
+    },
+    {
+      "id": 14,
+      "name": "Nike Metcon 9 AMP",
+      "price": 150,
+      "image": "https://imgs.search.brave.com/XUmGwt8vg1R9CsszG8Rc9uSl1o0PzeILUF2JsMOyI0E/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hY2Fk/ZW15LnNjZW5lNy5j/b20vaXMvaW1hZ2Uv/YWNhZGVteS8yMTEz/MjM4Mj8kcGRwLW1v/YmlsZS1nYWxsZXJ5/LW5nJA",
+      "hoverimg": "https://imgs.search.brave.com/a36bzFIlsZqBr71huiUSNBfe-bv8NvzCzE7DA3IUDM4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMubmlrZS5jb20v/YS9pbWFnZXMvdF93/ZWJfcHdfNTkyX3Yy/L2ZfYXV0by91Xzlk/ZGYwNGM3LTJhOWEt/NGQ3Ni1hZGQxLWQx/NWFmOGYwMjYzZCxj/X3NjYWxlLGZsX3Jl/bGF0aXZlLHdfMS4w/LGhfMS4wLGZsX2xh/eWVyX2FwcGx5L2U1/MzQzMDEyLTQzODEt/NDQ4Zi1hZDNiLWQ5/MzhmZDUwMWRkNC9X/K05JS0UrTUVUQ09O/KzEwK05CWS5wbmc",
+      "images": [
+        "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+        "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80",
+        "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=800&q=80"
+      ],
+      "description": "Stable training shoes built for lifting, short runs, rope climbs and demanding gym sessions.",
+      "category": "Training Shoes",
+      "brand": "Nike",
+      "gender": "Unisex",
+      "color": "Sail / Black / Gum",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "discount": 15,
+      "rating": 4.8,
+      "reviews": 531,
+      "stock": 14,
+      "featured": true,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 15,
+      "name": "Under Armour HOVR Sonic 6",
+      "price": 110,
+      "image": "https://imgs.search.brave.com/pLh537KUUeJw_2E_qsSP4A-61lpwwD3B58D5_hr4H-o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL3pFWUFB/T1N3N1VsbnVvOGUv/cy1sMTYwMC53ZWJw",
+      "hoverimg": "https://imgs.search.brave.com/CXQUug4XvS6H8xfC9zD9RXc-Bw1sN8wMPULxcg9mk9U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL29NY0FB/ZVN3MWJscExrVDcv/cy1sNDAwLndlYnA",
+      "images": [
+        "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&q=80"
+      ],
+      "description": "Lightweight connected running shoes with responsive cushioning for daily road miles.",
+      "category": "Running Shoes",
+      "brand": "Under Armour",
+      "gender": "Unisex",
+      "color": "Blue / White",
+      "size": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "discount": 24,
+      "rating": 4.5,
+      "reviews": 286,
+      "stock": 19,
+      "featured": false,
+      "isNew": true,
+      "popular": false
+    },
+    {
+      "id": 16,
+      "name": "Nike Dri-FIT Academy Jersey",
+      "price": 45,
+      "image": "https://imgs.search.brave.com/Xlx-3_XhJoc6w2fdLft9D4sb1dAwTRDWC-DnJ1AruXM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly94dHJl/bWVzb2NjZXJvbmxp/bmUuY29tL2Nkbi9z/aG9wL2ZpbGVzLzEt/bmlrZS1kcmktZml0/LWFjYWRlbXktZGg4/MDMzLTQxOS5qcGc_/dj0xNzQwNjI4NDkx/JndpZHRoPTIwMDA",
+      "hoverimg": "https://imgs.search.brave.com/TxQU01ntRAjjEi1Qr6zdB_bo4LwCPuLhLpPqrExvdMs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMubWVkaWEtYXJv/Y2FtLmNvbS9qNUVa/cDE0enBGYjZRbEdz/QXR5UTRRblF2WDA9/L2ZpdC1pbi80NTB4/NDUwL1cyODUwMi9W/QksvMXNCNE5IN2xf/VkJLLnBuZw",
+      "images": [
+        "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=800&q=80",
+        "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800&q=80",
+        "https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=800&q=80"
+      ],
+      "description": "Breathable football jersey with sweat-wicking fabric for training and match-day comfort.",
+      "category": "Sports Clothing",
+      "brand": "Nike",
+      "gender": "Unisex",
+      "color": "Volt / Black",
+      "size": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "discount": 20,
+      "rating": 4.6,
+      "reviews": 154,
+      "stock": 30,
+      "featured": false,
+      "isNew": true,
+      "popular": false
+    },
+    {
+      "id": 17,
+      "name": "Adidas Training Backpack 30L",
+      "price": 65,
+      "image": "https://imgs.search.brave.com/xrjdPOuSCGGPRnZ-sRqAx3BRjP_rOmOI52HQC7E_ff0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nLy1pSUFB/ZVN3ZDAxb3VhcW4v/cy1sNTAwLmpwZw",
+      "hoverimg": "https://imgs.search.brave.com/WqWELS9WcRexHmi2ISlzm4TNaU-4avqlOajjXCMu0EA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dHJhZGVpbm4uY29t/L2YvMTM4NDIvMTM4/NDI1OTM0XzUvYWRp/ZGFzLWVwLXN5c3Rl/bS0zMGwtYmFja3Bh/Y2sud2VicA",
+      "images": [
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80",
+        "https://images.unsplash.com/photo-1547949003-9792a18a2601?w=800&q=80",
+        "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800&q=80"
+      ],
+      "description": "Durable 30-litre backpack with separate shoe storage and organized pockets for training essentials.",
+      "category": "Sports Bags",
+      "brand": "Adidas",
+      "gender": "Unisex",
+      "color": "Black / White",
+      "size": [
+        "One Size"
+      ],
+      "discount": 15,
+      "rating": 4.7,
+      "reviews": 203,
+      "stock": 25,
+      "featured": false,
+      "isNew": false,
+      "popular": false
+    },
+    {
+      "id": 18,
+      "name": "Thermos Performance Water Bottle",
+      "price": 24.99,
+      "image": "https://imgs.search.brave.com/cy-xBPtkquawBhgIYREgoCPJG3Yke9rHiXofkel9Ii4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aGVy/bW9zLmNvbS9jZG4v/c2hvcC9wcm9kdWN0/cy90czQzMWJrX2Jv/dHRsZV93ZGltc19y/MS5qcGc_dj0xNjM2/NzM1MDU2JndpZHRo/PTEwODA",
+      "hoverimg": "https://imgs.search.brave.com/jGM_ZO9NXxVNsN2sHtQ7riyQ-D5IHOiBmM9mExghbSE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aGVy/bW9zLmNvbS9jZG4v/c2hvcC9wcm9kdWN0/cy90czQzMTlkcl8y/NG96X2h5ZHJhdGlv/bl9kYXJrcmVkX2xp/ZGluc2V0X29wZW5f/djIuanBnP3Y9MTYy/MzY4MDUyMyZ3aWR0/aD03MjA",
+      "images": [
+        "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&q=80",
+        "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=800&q=80",
+        "https://images.unsplash.com/photo-1610824352934-c10d87b700cc?w=800&q=80"
+      ],
+      "description": "Double-wall insulated bottle that keeps drinks cold through workouts, matches and outdoor sessions.",
+      "category": "Sports Accessories",
+      "brand": "Thermos",
+      "gender": "Unisex",
+      "color": "Matte Black",
+      "size": [
+        "750ml"
+      ],
+      "discount": 10,
+      "rating": 4.5,
+      "reviews": 118,
+      "stock": 42,
+      "featured": false,
+      "isNew": true,
+      "popular": false
+    }
+  ],
+  "brands": [
+    {
+      "id": 1,
+      "name": "Nike",
+      "products": 125,
+      "status": "Active",
+      "description": "Global sportswear and football brand",
+      "created": "January 12, 2026"
+    },
+    {
+      "id": 2,
+      "name": "Adidas",
+      "products": 98,
+      "status": "Active",
+      "description": "Sportswear, football and lifestyle products",
+      "created": "January 15, 2026"
+    },
+    {
+      "id": 3,
+      "name": "Puma",
+      "products": 67,
+      "status": "Active",
+      "description": "Football, running and sports products",
+      "created": "January 20, 2026"
+    },
+    {
+      "id": 4,
+      "name": "Mizuno",
+      "products": 42,
+      "status": "Active",
+      "description": "Premium football and sports equipment",
+      "created": "February 02, 2026"
+    },
+    {
+      "id": 5,
+      "name": "New Balance",
+      "products": 24,
+      "status": "Active",
+      "description": "Running and football products",
+      "created": "February 15, 2026"
+    },
+    {
+      "id": 6,
+      "name": "Under Armour",
+      "products": 18,
+      "status": "Inactive",
+      "description": "Performance sportswear",
+      "created": "March 01, 2026"
+    },
+    {
+      "id": 7,
+      "name": "Asics",
+      "products": 31,
+      "status": "Active",
+      "description": "Running and performance footwear",
+      "created": "March 10, 2026"
+    },
+    {
+      "id": 8,
+      "name": "Jordan",
+      "products": 16,
+      "status": "Inactive",
+      "description": "Basketball and lifestyle footwear",
+      "created": "March 22, 2026"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Football Boots",
+      "description": "Football shoes and professional soccer boots.",
+      "products": 85,
+      "status": "Active",
+      "created": "January 10, 2026"
+    },
+    {
+      "id": 2,
+      "name": "Football Jersey",
+      "description": "Official and training football jerseys.",
+      "products": 42,
+      "status": "Active",
+      "created": "January 15, 2026"
+    },
+    {
+      "id": 3,
+      "name": "Football Clothing",
+      "description": "Football shirts, shorts, pants and training clothes.",
+      "products": 36,
+      "status": "Active",
+      "created": "January 20, 2026"
+    },
+    {
+      "id": 4,
+      "name": "Football Bags",
+      "description": "Sports bags, backpacks and football equipment bags.",
+      "products": 18,
+      "status": "Active",
+      "created": "February 2, 2026"
+    },
+    {
+      "id": 5,
+      "name": "Football Accessories",
+      "description": "Shin guards, socks, gloves and other accessories.",
+      "products": 51,
+      "status": "Active",
+      "created": "February 10, 2026"
+    },
+    {
+      "id": 6,
+      "name": "Goalkeeper",
+      "description": "Goalkeeper gloves, jerseys and goalkeeper equipment.",
+      "products": 24,
+      "status": "Active",
+      "created": "February 18, 2026"
+    },
+    {
+      "id": 7,
+      "name": "Running",
+      "description": "Running shoes and running accessories.",
+      "products": 31,
+      "status": "Active",
+      "created": "March 4, 2026"
+    },
+    {
+      "id": 8,
+      "name": "Training",
+      "description": "Training equipment and workout products.",
+      "products": 27,
+      "status": "Inactive",
+      "created": "March 12, 2026"
+    }
+  ],
+  "categoryCards": [
+    {
+      "name": "All",
+      "image": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "name": "Football",
+      "image": "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "name": "Clothing",
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "name": "Accessories",
+      "image": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "name": "Goalkeeper",
+      "image": "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=800&q=80"
+    }
+  ],
+  "heroSlides": [
+    {
+      "title": "Move With Power",
+      "subtitle": "365 Sport",
+      "description": "Discover premium sportswear designed to help you perform at your best.",
+      "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1600&q=80"
+    },
+    {
+      "title": "Run Your Game",
+      "subtitle": "New Collection",
+      "description": "Performance running shoes and gear built for every step.",
+      "image": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1600&q=80"
+    },
+    {
+      "title": "Play Without Limits",
+      "subtitle": "Basketball",
+      "description": "Upgrade your basketball game with the latest performance collection.",
+      "image": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1600&q=80"
+    }
+  ],
+  "orders": [
+    {
+      "id": "#ORD-1001",
+      "customer": "Dara Sok",
+      "email": "dara@example.com",
+      "phone": "+855 12 345 678",
+      "product": "Nike Mercurial Vapor 16",
+      "quantity": 1,
+      "subtotal": 145.97,
+      "shipping": 6,
+      "total": 151.97,
+      "status": "Completed",
+      "paymentStatus": "Paid",
+      "paymentMethod": "ABA Pay",
+      "date": "Sep 03, 2026"
+    },
+    {
+      "id": "#ORD-1002",
+      "customer": "Vann Thai",
+      "email": "vann@example.com",
+      "phone": "+855 96 555 1234",
+      "product": "Adidas Predator Elite",
+      "quantity": 1,
+      "subtotal": 260,
+      "shipping": 0,
+      "total": 260,
+      "status": "Processing",
+      "paymentStatus": "Paid",
+      "paymentMethod": "Credit Card",
+      "date": "Sep 03, 2026"
+    },
+    {
+      "id": "#ORD-1003",
+      "customer": "Seyha Chan",
+      "email": "seyha@example.com",
+      "phone": "+855 97 222 4567",
+      "product": "PUMA Future 8 Ultimate",
+      "quantity": 2,
+      "subtotal": 217.98,
+      "shipping": 10,
+      "total": 227.98,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "paymentMethod": "Cash on Delivery",
+      "date": "Sep 02, 2026"
+    },
+    {
+      "id": "#ORD-1004",
+      "customer": "Sokha Kim",
+      "email": "sokha@example.com",
+      "phone": "+855 11 888 999",
+      "product": "Nike Phantom GX 2",
+      "quantity": 1,
+      "subtotal": 220,
+      "shipping": 0,
+      "total": 220,
+      "status": "Cancelled",
+      "paymentStatus": "Refunded",
+      "paymentMethod": "Wing",
+      "date": "Sep 01, 2026"
+    },
+    {
+      "id": "#ORD-1005",
+      "customer": "Rithy Chea",
+      "email": "rithy@example.com",
+      "phone": "+855 10 444 555",
+      "product": "Mizuno Morelia Neo IV JAPAN",
+      "quantity": 1,
+      "subtotal": 285,
+      "shipping": 8,
+      "total": 293,
+      "status": "Completed",
+      "paymentStatus": "Paid",
+      "paymentMethod": "ABA Pay",
+      "date": "Aug 31, 2026"
+    },
+    {
+      "id": "#ORD-1006",
+      "customer": "Sokun Vibol",
+      "email": "sokun@example.com",
+      "phone": "+855 15 333 222",
+      "product": "Nike Tiempo Legend 10 Elite",
+      "quantity": 1,
+      "subtotal": 280,
+      "shipping": 0,
+      "total": 280,
+      "status": "Processing",
+      "paymentStatus": "Paid",
+      "paymentMethod": "Credit Card",
+      "date": "Aug 30, 2026"
+    },
+    {
+      "id": "#ORD-1007",
+      "customer": "Kanha Ly",
+      "email": "kanha@example.com",
+      "phone": "+855 88 777 666",
+      "product": "Adidas Copa Pure 2 Elite",
+      "quantity": 2,
+      "subtotal": 310,
+      "shipping": 10,
+      "total": 320,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "paymentMethod": "Cash on Delivery",
+      "date": "Aug 29, 2026"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Dara Sok",
+      "email": "dara@gmail.com",
+      "phone": "+855 12 111 222",
+      "role": "Customer",
+      "status": "Active",
+      "orders": 12,
+      "spent": 1250,
+      "joined": "2026-01-12",
+      "avatar": "https://i.pravatar.cc/150?img=12"
+    },
+    {
+      "id": 2,
+      "name": "Vann Thai",
+      "email": "vannthai@gmail.com",
+      "phone": "+855 15 222 333",
+      "role": "Customer",
+      "status": "Active",
+      "orders": 8,
+      "spent": 870,
+      "joined": "2026-02-05",
+      "avatar": "https://i.pravatar.cc/150?img=13"
+    },
+    {
+      "id": 3,
+      "name": "Admin 365",
+      "email": "admin@365sport.com",
+      "phone": "+855 10 333 444",
+      "role": "Admin",
+      "status": "Active",
+      "orders": 0,
+      "spent": 0,
+      "joined": "2025-12-01",
+      "avatar": "https://i.pravatar.cc/150?img=11"
+    },
+    {
+      "id": 4,
+      "name": "Sokha Chan",
+      "email": "sokha@gmail.com",
+      "phone": "+855 16 444 555",
+      "role": "Customer",
+      "status": "Blocked",
+      "orders": 4,
+      "spent": 350,
+      "joined": "2026-03-15",
+      "avatar": "https://i.pravatar.cc/150?img=14"
+    },
+    {
+      "id": 5,
+      "name": "Rithy Kim",
+      "email": "rithy@gmail.com",
+      "phone": "+855 17 555 666",
+      "role": "Customer",
+      "status": "Active",
+      "orders": 17,
+      "spent": 1890,
+      "joined": "2026-03-22",
+      "avatar": "https://i.pravatar.cc/150?img=15"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "customer": "Dara Sok",
+      "email": "dara@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=12",
+      "product": "Mizuno Morelia Neo IV β JAPAN",
+      "rating": 5,
+      "title": "Amazing football boots!",
+      "comment": "The boots are very comfortable and lightweight. The touch on the ball is excellent.",
+      "date": "2026-08-30",
+      "status": "Published",
+      "verified": true
+    },
+    {
+      "id": 2,
+      "customer": "Vann Thai",
+      "email": "vannthai@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=13",
+      "product": "Nike Mercurial Vapor 16 Elite",
+      "rating": 5,
+      "title": "Very fast boots",
+      "comment": "I really like the speed and lightweight feeling. Perfect for attacking players.",
+      "date": "2026-08-28",
+      "status": "Published",
+      "verified": true
+    },
+    {
+      "id": 3,
+      "customer": "Sokha Chan",
+      "email": "sokha@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=14",
+      "product": "Adidas Predator Elite Firm Ground",
+      "rating": 4,
+      "title": "Good control",
+      "comment": "Great control and comfortable fit. Delivery was also fast.",
+      "date": "2026-08-26",
+      "status": "Pending",
+      "verified": true
+    },
+    {
+      "id": 4,
+      "customer": "Rithy Kim",
+      "email": "rithy@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=15",
+      "product": "PUMA FUTURE 8 ULTIMATE FG",
+      "rating": 5,
+      "title": "Excellent fit",
+      "comment": "The fit is excellent and the grip is very good during matches.",
+      "date": "2026-08-25",
+      "status": "Published",
+      "verified": true
+    },
+    {
+      "id": 5,
+      "customer": "Bora Lim",
+      "email": "bora@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=16",
+      "product": "Nike Phantom GX 2 Elite",
+      "rating": 3,
+      "title": "Good but expensive",
+      "comment": "The boots are good quality but I think the price is a little high.",
+      "date": "2026-08-22",
+      "status": "Pending",
+      "verified": false
+    },
+    {
+      "id": 6,
+      "customer": "Sopheak Men",
+      "email": "sopheak@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=17",
+      "product": "Adidas F50 Elite Firm Ground",
+      "rating": 2,
+      "title": "Not comfortable",
+      "comment": "The boots look good but they are not comfortable for my feet.",
+      "date": "2026-08-20",
+      "status": "Hidden",
+      "verified": false
+    },
+    {
+      "id": 7,
+      "customer": "Kosal Chea",
+      "email": "kosal@gmail.com",
+      "avatar": "https://i.pravatar.cc/150?img=18",
+      "product": "Nike Tiempo Legend 10 Elite",
+      "rating": 5,
+      "title": "Classic and comfortable",
+      "comment": "Very comfortable boots with excellent touch and control.",
+      "date": "2026-08-18",
+      "status": "Published",
+      "verified": true
+    }
+  ],
+  "discounts": [
+    {
+      "id": 1,
+      "code": "SUMMER20",
+      "description": "Summer sale promotion",
+      "type": "Percentage",
+      "value": 20,
+      "used": 64,
+      "usageLimit": 100,
+      "startDate": "2026-08-01",
+      "endDate": "2026-09-30",
+      "status": "Active",
+      "products": 16
+    },
+    {
+      "id": 2,
+      "code": "WELCOME10",
+      "description": "New customer discount",
+      "type": "Percentage",
+      "value": 10,
+      "used": 42,
+      "usageLimit": 200,
+      "startDate": "2026-01-01",
+      "endDate": "2026-12-31",
+      "status": "Active",
+      "products": 16
+    },
+    {
+      "id": 3,
+      "code": "SPORT50",
+      "description": "$50 discount for selected products",
+      "type": "Fixed",
+      "value": 50,
+      "used": 28,
+      "usageLimit": 50,
+      "startDate": "2026-09-10",
+      "endDate": "2026-10-10",
+      "status": "Scheduled",
+      "products": 8
+    },
+    {
+      "id": 4,
+      "code": "NIKE15",
+      "description": "Nike football products promotion",
+      "type": "Percentage",
+      "value": 15,
+      "used": 89,
+      "usageLimit": 100,
+      "startDate": "2026-07-01",
+      "endDate": "2026-08-31",
+      "status": "Expired",
+      "products": 5
+    },
+    {
+      "id": 5,
+      "code": "OLDUSER25",
+      "description": "Special discount for existing customers",
+      "type": "Percentage",
+      "value": 25,
+      "used": 12,
+      "usageLimit": 50,
+      "startDate": "2026-06-01",
+      "endDate": "2026-07-01",
+      "status": "Inactive",
+      "products": 10
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "type": "order",
+      "title": "New Order Received",
+      "message": "Order #ORD-1005 has been placed by Dara Sok.",
+      "time": "5 minutes ago",
+      "read": false
+    },
+    {
+      "id": 2,
+      "type": "stock",
+      "title": "Low Stock Alert",
+      "message": "Nike Phantom GX 2 Elite has only 10 items remaining.",
+      "time": "30 minutes ago",
+      "read": false
+    },
+    {
+      "id": 3,
+      "type": "user",
+      "title": "New Customer",
+      "message": "A new customer account has been created.",
+      "time": "1 hour ago",
+      "read": true
+    },
+    {
+      "id": 4,
+      "type": "order",
+      "title": "Order Completed",
+      "message": "Order #ORD-1001 has been successfully completed.",
+      "time": "2 hours ago",
+      "read": true
+    },
+    {
+      "id": 5,
+      "type": "review",
+      "title": "New Product Review",
+      "message": "A customer left a 5-star review on Nike Mercurial Vapor 16.",
+      "time": "4 hours ago",
+      "read": true
+    }
+  ],
+  "dashboardStats": [
+    {
+      "title": "Total Revenue",
+      "value": "$24,580",
+      "change": "+12.5%",
+      "icon": "💰"
+    },
+    {
+      "title": "Total Orders",
+      "value": "1,248",
+      "change": "+8.2%",
+      "icon": "🛒"
+    },
+    {
+      "title": "Products",
+      "value": "356",
+      "change": "+5.4%",
+      "icon": "👟"
+    },
+    {
+      "title": "Customers",
+      "value": "8,492",
+      "change": "+14.3%",
+      "icon": "👥"
+    }
+  ],
+  "recentOrders": [
+    {
+      "id": "#ORD-1001",
+      "customer": "Dara Sok",
+      "product": "Nike Mercurial Vapor 16",
+      "amount": "$151.97",
+      "status": "Completed"
+    },
+    {
+      "id": "#ORD-1002",
+      "customer": "Vann Thai",
+      "product": "Adidas Predator Elite",
+      "amount": "$260.00",
+      "status": "Processing"
+    },
+    {
+      "id": "#ORD-1003",
+      "customer": "Seyha Chan",
+      "product": "PUMA Future 8 Ultimate",
+      "amount": "$113.99",
+      "status": "Pending"
+    },
+    {
+      "id": "#ORD-1004",
+      "customer": "Sokha Kim",
+      "product": "Nike Phantom GX 2",
+      "amount": "$220.00",
+      "status": "Completed"
+    }
+  ],
+  "topProducts": [
+    {
+      "name": "Nike Mercurial Vapor 16",
+      "sold": 245
+    },
+    {
+      "name": "Adidas Predator Elite",
+      "sold": 189
+    },
+    {
+      "name": "PUMA Future 8 Ultimate",
+      "sold": 156
+    },
+    {
+      "name": "Nike Phantom GX 2",
+      "sold": 142
+    },
+    {
+      "name": "Mizuno Morelia Neo IV",
+      "sold": 128
+    }
+  ]
+}

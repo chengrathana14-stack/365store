@@ -171,7 +171,7 @@ const deleteOrder = () => {
       <div class="flex gap-3">
         <button
           type="button"
-           class="rounded-xl border border-black/10 bg-black/5 py-2 pl-5 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
+          class="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-2xs hover:bg-gray-50 transition"
           @click="clearFilters"
         >
           Reset Filters
@@ -181,11 +181,11 @@ const deleteOrder = () => {
 
     <!-- MAIN STATS -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-2xl bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Total Orders</p>
 
-          <div class="rounded-xl bg-gray-100 p-3">📦</div>
+          <div class="rounded-md bg-gray-100 p-2.5">📦</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold">
@@ -195,11 +195,11 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">All orders</p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Revenue</p>
 
-          <div class="rounded-xl bg-green-100 p-3">💰</div>
+          <div class="rounded-md bg-green-100 p-2.5">💰</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-green-600">
@@ -209,11 +209,11 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">Excluding cancelled orders</p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Pending</p>
 
-          <div class="rounded-xl bg-yellow-100 p-3">⏳</div>
+          <div class="rounded-md bg-yellow-100 p-2.5">⏳</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-yellow-600">
@@ -223,11 +223,11 @@ const deleteOrder = () => {
         <p class="mt-1 text-xs text-gray-500">Waiting for confirmation</p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">Completed</p>
 
-          <div class="rounded-xl bg-green-100 p-3">✓</div>
+          <div class="rounded-md bg-green-100 p-2.5">✓</div>
         </div>
 
         <p class="mt-4 text-3xl font-bold text-green-600">
@@ -240,9 +240,9 @@ const deleteOrder = () => {
 
     <!-- ORDER STATUS SUMMARY -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-2xl bg-white p-5">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center gap-3">
-          <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
 
           <span class="text-sm font-medium text-gray-600"> Pending </span>
         </div>
@@ -252,9 +252,9 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center gap-3">
-          <span class="h-3 w-3 rounded-full bg-blue-500"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
 
           <span class="text-sm font-medium text-gray-600"> Processing </span>
         </div>
@@ -264,9 +264,9 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center gap-3">
-          <span class="h-3 w-3 rounded-full bg-green-500"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
 
           <span class="text-sm font-medium text-gray-600"> Completed </span>
         </div>
@@ -276,9 +276,9 @@ const deleteOrder = () => {
         </p>
       </div>
 
-      <div class="rounded-2xl bg-white p-5">
+      <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
         <div class="flex items-center gap-3">
-          <span class="h-3 w-3 rounded-full bg-red-500"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
 
           <span class="text-sm font-medium text-gray-600"> Cancelled </span>
         </div>
@@ -290,15 +290,15 @@ const deleteOrder = () => {
     </div>
 
     <!-- FILTERS -->
-    <div class="rounded-2xl bg-white p-5 shadow-sm">
+    <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
       <div class="grid gap-4 lg:grid-cols-4">
         <!-- Search -->
         <div class="lg:col-span-2">
-          <label class="mb-2 block text-sm font-semibold"> Search </label>
+          <label class="mb-1.5 block text-xs font-semibold text-gray-700"> Search </label>
 
           <div class="relative">
             <span
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
             >
               🔍
             </span>
@@ -307,18 +307,18 @@ const deleteOrder = () => {
               v-model="search"
               type="text"
               placeholder="Order ID, customer, email or product..."
-              class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
+              class="w-full rounded-md border border-gray-200 bg-white py-1.5 pl-8 pr-3 text-xs text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
 
         <!-- Status -->
         <div>
-          <label class="mb-2 block text-sm font-semibold"> Order Status </label>
+          <label class="mb-1.5 block text-xs font-semibold text-gray-700"> Order Status </label>
 
           <select
             v-model="selectedStatus"
-            class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
+            class="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
             <option>All</option>
             <option>Pending</option>
@@ -330,11 +330,11 @@ const deleteOrder = () => {
 
         <!-- Payment -->
         <div>
-          <label class="mb-2 block text-sm font-semibold"> Payment </label>
+          <label class="mb-1.5 block text-xs font-semibold text-gray-700"> Payment </label>
 
           <select
             v-model="selectedPayment"
-            class="w-full rounded-xl border border-black/10 bg-black/5 py-3 pl-11 pr-4 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
+            class="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
             <option>All</option>
             <option>Paid</option>
@@ -347,7 +347,7 @@ const deleteOrder = () => {
       <div
         class="mt-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center"
       >
-        <p class="text-sm text-gray-500">
+        <p class="text-xs text-gray-500">
           Showing
           <span class="font-semibold text-gray-900">
             {{ filteredOrders.length }}
@@ -357,7 +357,7 @@ const deleteOrder = () => {
 
         <select
           v-model="selectedSort"
-          class="rounded-xl border border-black/10 bg-black/5 py-2 pl-5 text-black placeholder-black/40 backdrop-blur-xl shadow-lg shadow-black/10 outline-none transition-all duration-300 focus:border-black/30 focus:bg-black/10 focus:ring-2 focus:ring-black/10"
+          class="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option>Newest</option>
           <option>Oldest</option>
@@ -369,7 +369,7 @@ const deleteOrder = () => {
     </div>
 
     <!-- TABLE -->
-    <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
+    <div class="overflow-hidden rounded-md border border-gray-100 bg-white shadow-xs">
       <div class="px-6 py-4">
         <div class="flex items-center justify-between">
           <div>
@@ -534,7 +534,7 @@ const deleteOrder = () => {
 
         <button
           type="button"
-          class="mt-5 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
+          class="mt-5 rounded-md bg-black px-5 py-3 text-sm font-semibold text-white"
           @click="clearFilters"
         >
           Clear Filters
@@ -548,7 +548,7 @@ const deleteOrder = () => {
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
       @click.self="closeDeleteModal"
     >
-      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div class="w-full max-w-md rounded-md bg-white p-6 shadow-xl">
         <div
           class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl"
         >
@@ -567,7 +567,7 @@ const deleteOrder = () => {
         <div class="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            class="rounded-xl px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+            class="rounded-md px-5 py-3 text-sm font-semibold hover:bg-gray-50"
             @click="closeDeleteModal"
           >
             Cancel
@@ -575,7 +575,7 @@ const deleteOrder = () => {
 
           <button
             type="button"
-            class="rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700"
+            class="rounded-md bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700"
             @click="deleteOrder"
           >
             Delete Order

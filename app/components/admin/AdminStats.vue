@@ -11,7 +11,7 @@ defineProps<{
     <div
       v-for="stat in stats"
       :key="stat.title"
-      class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+      class="rounded-md border border-gray-200 bg-white p-6 shadow-xs transition hover:shadow-sm"
     >
       <div class="flex items-start justify-between">
         <div>
@@ -31,7 +31,7 @@ defineProps<{
         </div>
 
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-2xl"
+          class="flex h-12 w-12 items-center justify-center rounded-md bg-gray-100 text-2xl"
         >
           {{ stat.icon }}
         </div>

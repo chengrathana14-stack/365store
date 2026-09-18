@@ -3,7 +3,7 @@
   "files": [],
   "compilerOptions": {
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "types": ["node"],
     "paths": {
       "#app": ["node_modules/nuxt/dist/app"],

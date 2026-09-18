@@ -1,20 +1,51 @@
 <script setup lang="ts">
-import { products } from "~/data/product";
+import { ref, computed, onMounted } from "vue";
+import type { Product } from "~/type/product";
+import { products as fallbackProducts } from "~/data/product";
+import { useApiBase } from "~/composables/useApi";
 
 definePageMeta({
   layout: "user",
 });
 
+const apiBase = useApiBase();
+const products = ref<Product[]>(fallbackProducts);
+const isLoading = ref(true);
+
+const loadProducts = async () => {
+  try {
+    const res = await fetch(`${apiBase}/products`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        products.value = data;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to fetch products from frontend:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadProducts();
+});
+
 // Popular Products = marked as popular
-const popularProducts = products
-  .filter((product) => product.popular === true)
-  .slice(0, 4);
+const popularProducts = computed(() => {
+  return products.value
+    .filter((product) => product.popular === true)
+    .slice(0, 4);
+});
 
 // Discount Products = sorted by discount amount (highest first)
-const discountProducts = products
-  .filter((product) => product.discount > 0 && !product.popular)
-  .sort((a, b) => b.discount - a.discount)
-  .slice(0, 4);
+const discountProducts = computed(() => {
+  return products.value
+    .filter((product) => product.discount > 0 && !product.popular)
+    .sort((a, b) => b.discount - a.discount)
+    .slice(0, 4);
+});
 </script>
 
 <template>
@@ -47,23 +78,25 @@ const discountProducts = products
         <!-- Section Header -->
         <div class="mb-8 flex items-end justify-between">
           <div>
-            <div class="flex items-center gap-2">
-              <span class="text-2xl"> 🔥 </span>
-
-              <h2 class="text-3xl font-bold text-gray-900">Popular Products</h2>
+            <div class="flex items-center gap-3">
+              <span class="h-6 w-1 rounded-full bg-lime-500"></span>
+              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 uppercase">
+                Popular Products
+              </h2>
             </div>
 
-            <p class="mt-2 text-gray-500">
-              Popular products with limited stock
+            <p class="mt-2 text-sm text-gray-500">
+              Top trending performance shoes and apparel
             </p>
           </div>
 
           <!-- View All -->
           <NuxtLink
             to="/Product?type=popular"
-            class="hidden font-semibold text-blue-600 transition hover:text-blue-800 sm:block"
+            class="hidden text-sm font-bold text-black transition hover:text-lime-600 sm:inline-flex items-center gap-1"
           >
-            View All →
+            <span>View All</span>
+            <span aria-hidden="true">&rarr;</span>
           </NuxtLink>
         </div>
 
@@ -80,9 +113,9 @@ const discountProducts = products
         <div class="mt-8 text-center sm:hidden">
           <NuxtLink
             to="/Product?type=popular"
-            class="font-semibold text-blue-600 transition hover:text-blue-800"
+            class="inline-flex items-center justify-center rounded-md bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-400 hover:text-black"
           >
-            View All Products →
+            View All Products &rarr;
           </NuxtLink>
         </div>
       </div>
@@ -94,25 +127,25 @@ const discountProducts = products
         <!-- Section Header -->
         <div class="mb-8 flex items-end justify-between">
           <div>
-            <div class="flex items-center gap-2">
-              <span class="text-2xl"> 🏷️ </span>
-
-              <h2 class="text-3xl font-bold text-gray-900">
-                Discount Products
+            <div class="flex items-center gap-3">
+              <span class="h-6 w-1 rounded-full bg-lime-500"></span>
+              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 uppercase">
+                Discount Deals
               </h2>
             </div>
 
-            <p class="mt-2 text-gray-500">
-              Get your favorite sports products at special prices
+            <p class="mt-2 text-sm text-gray-500">
+              Get your favorite sports products at special discounted prices
             </p>
           </div>
 
           <!-- View All -->
           <NuxtLink
             to="/Product?type=discount"
-            class="hidden font-semibold text-blue-600 transition hover:text-blue-800 sm:block"
+            class="hidden text-sm font-bold text-black transition hover:text-lime-600 sm:inline-flex items-center gap-1"
           >
-            View All →
+            <span>View All</span>
+            <span aria-hidden="true">&rarr;</span>
           </NuxtLink>
         </div>
 
@@ -129,9 +162,9 @@ const discountProducts = products
         <div class="mt-8 text-center sm:hidden">
           <NuxtLink
             to="/Product?type=discount"
-            class="font-semibold text-blue-600 transition hover:text-blue-800"
+            class="inline-flex items-center justify-center rounded-md bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-400 hover:text-black"
           >
-            View All Products →
+            View All Products &rarr;
           </NuxtLink>
         </div>
       </div>

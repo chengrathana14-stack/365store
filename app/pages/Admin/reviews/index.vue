@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { products } from "~/data/product";
 import { reviewSeedData } from "~/data/admin";
+import type { Review } from "~/type/product";
+
 definePageMeta({
   layout: "admin",
 });
@@ -13,7 +14,7 @@ const selectedRating = ref("All");
 const selectedStatus = ref("All");
 const selectedProduct = ref("All");
 
-const products = computed(() => {
+const products = computed<string[]>(() => {
   return [...new Set(reviews.value.map((review) => review.product))];
 });
 
@@ -63,14 +64,12 @@ const hiddenReviews = computed(() => {
 
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return "0.0";
-
   const total = reviews.value.reduce((sum, review) => sum + review.rating, 0);
-
   return (total / reviews.value.length).toFixed(1);
 });
 
 /* =========================
-   Actions
+   Status & Actions
 ========================= */
 
 const changeStatus = (
@@ -80,12 +79,45 @@ const changeStatus = (
   review.status = status;
 };
 
-const deleteReview = (id: number) => {
-  const confirmed = confirm("Are you sure you want to delete this review?");
+// =========================
+// DELETE MODAL
+// =========================
 
-  if (!confirmed) return;
+const reviewToDelete = ref<Review | null>(null);
+const showDeleteModal = ref(false);
 
-  reviews.value = reviews.value.filter((review) => review.id !== id);
+const openDeleteModal = (review: Review) => {
+  reviewToDelete.value = review;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+  reviewToDelete.value = null;
+  showDeleteModal.value = false;
+};
+
+const confirmDeleteReview = () => {
+  if (reviewToDelete.value) {
+    reviews.value = reviews.value.filter((r) => r.id !== reviewToDelete.value!.id);
+  }
+  closeDeleteModal();
+};
+
+// =========================
+// VIEW REVIEW MODAL
+// =========================
+
+const reviewToView = ref<Review | null>(null);
+const showViewModal = ref(false);
+
+const openViewModal = (review: Review) => {
+  reviewToView.value = review;
+  showViewModal.value = true;
+};
+
+const closeViewModal = () => {
+  reviewToView.value = null;
+  showViewModal.value = false;
 };
 
 const clearFilters = () => {
@@ -95,351 +127,251 @@ const clearFilters = () => {
   selectedProduct.value = "All";
 };
 
-const viewReview = (review: Review) => {
-  alert(`Review by ${review.customer}\n\n${review.title}\n\n${review.comment}`);
+const getStatusBadgeClass = (status: string) => {
+  if (status === "Published") {
+    return "bg-emerald-50 text-emerald-600 border border-emerald-100";
+  }
+  if (status === "Pending") {
+    return "bg-amber-50 text-amber-600 border border-amber-100";
+  }
+  return "bg-red-50 text-red-600 border border-red-100";
 };
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+  <div class="space-y-5">
+
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-md bg-gray-900 text-white shadow-2xs">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+        </div>
 
-    <div
-      class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-    >
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Reviews</h1>
-
-        <p class="mt-1 text-sm text-gray-500">
-          Manage customer reviews and product ratings.
-        </p>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
+            Reviews
+          </h1>
+          <p class="text-xs text-gray-400 mt-0.5">
+            Monitor customer ratings, moderate feedback, and manage sports catalog sentiment
+          </p>
+        </div>
       </div>
 
-      <div
-        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
-      >
-        <span class="text-yellow-500"> ★ </span>
-
-        <span class="font-bold text-gray-900">
-          {{ averageRating }}
-        </span>
-
-        <span class="text-sm text-gray-400"> average rating </span>
+      <!-- Average Rating Scorecard Pill -->
+      <div class="inline-flex items-center gap-2 rounded-lg border border-amber-200/80 bg-amber-50/70 px-3 py-1.5 text-xs font-semibold text-amber-800 shadow-2xs">
+        <svg class="h-4 w-4 text-amber-500 fill-amber-500" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+        <span class="text-sm font-black text-gray-900">{{ averageRating }}</span>
+        <span class="text-gray-500 text-[11px]">Overall Rating</span>
       </div>
     </div>
 
     <!-- ================================================= -->
-    <!-- STATISTICS -->
+    <!-- STATISTICS (CLEAN SMALL-RADIUS METRICS) -->
     <!-- ================================================= -->
-
-    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-3 grid-cols-2 lg:grid-cols-4">
       <!-- Total -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500">Total Reviews</p>
-
-            <p class="mt-2 text-3xl font-bold text-gray-900">
-              {{ totalReviews }}
-            </p>
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
-          >
-            ★
+          <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Reviews</p>
+          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
           </div>
         </div>
+        <p class="mt-2 text-2xl font-black text-gray-900">{{ totalReviews }}</p>
       </div>
 
       <!-- Published -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500">Published</p>
-
-            <p class="mt-2 text-3xl font-bold text-green-600">
-              {{ publishedReviews }}
-            </p>
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-green-600"
-          >
-            ✓
+          <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Published</p>
+          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
+        <p class="mt-2 text-2xl font-black text-emerald-600">{{ publishedReviews }}</p>
       </div>
 
       <!-- Pending -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500">Pending</p>
-
-            <p class="mt-2 text-3xl font-bold text-yellow-600">
-              {{ pendingReviews }}
-            </p>
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-100 text-yellow-600"
-          >
-            !
+          <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Pending Review</p>
+          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
+        <p class="mt-2 text-2xl font-black text-amber-600">{{ pendingReviews }}</p>
       </div>
 
       <!-- Hidden -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500">Hidden</p>
-
-            <p class="mt-2 text-3xl font-bold text-red-600">
-              {{ hiddenReviews }}
-            </p>
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-600"
-          >
-            ×
+          <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Hidden / Flagged</p>
+          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 text-red-600">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            </svg>
           </div>
         </div>
+        <p class="mt-2 text-2xl font-black text-red-500">{{ hiddenReviews }}</p>
       </div>
     </div>
 
     <!-- ================================================= -->
-    <!-- FILTERS -->
+    <!-- FILTERS BAR -->
     <!-- ================================================= -->
-
-    <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
+    <div class="rounded-md border border-gray-100 bg-white p-3.5 shadow-xs">
+      <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-5">
         <!-- Search -->
-        <div class="lg:col-span-1">
-          <label
-            class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
-          >
-            Search
-          </label>
-
-          <div class="relative">
-            <span
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            >
-              🔍
-            </span>
-
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Search reviews..."
-              class="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-black"
-            />
-          </div>
+        <div class="relative sm:col-span-2">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Search feedback, product or customer..."
+            class="w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-8 pr-3 text-xs text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
         </div>
 
-        <!-- Rating -->
+        <!-- Rating Filter -->
         <div>
-          <label
-            class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
-          >
-            Rating
-          </label>
-
           <select
             v-model="selectedRating"
-            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
+            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
             <option value="All">All Ratings</option>
-
-            <option value="5">★★★★★ 5 Stars</option>
-
-            <option value="4">★★★★☆ 4 Stars</option>
-
-            <option value="3">★★★☆☆ 3 Stars</option>
-
-            <option value="2">★★☆☆☆ 2 Stars</option>
-
-            <option value="1">★☆☆☆☆ 1 Star</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
           </select>
         </div>
 
-        <!-- Status -->
+        <!-- Status Filter -->
         <div>
-          <label
-            class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
-          >
-            Status
-          </label>
-
           <select
             v-model="selectedStatus"
-            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
+            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
-            <option value="All">All Status</option>
-
+            <option value="All">All Statuses</option>
             <option value="Published">Published</option>
-
             <option value="Pending">Pending</option>
-
             <option value="Hidden">Hidden</option>
           </select>
         </div>
 
-        <!-- Product -->
-        <div>
-          <label
-            class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500"
-          >
-            Product
-          </label>
-
+        <!-- Product Filter -->
+        <div class="flex gap-2">
           <select
             v-model="selectedProduct"
-            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-black"
+            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
             <option value="All">All Products</option>
-
             <option v-for="product in products" :key="product" :value="product">
               {{ product }}
             </option>
           </select>
+
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition shadow-2xs shrink-0"
+            @click="clearFilters"
+          >
+            Reset
+          </button>
         </div>
-      </div>
-
-      <!-- Filter Footer -->
-      <div
-        class="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <p class="text-sm text-gray-500">
-          Showing
-          <span class="font-semibold text-gray-900">
-            {{ filteredReviews.length }}
-          </span>
-          review{{ filteredReviews.length === 1 ? "" : "s" }}
-        </p>
-
-        <button
-          @click="clearFilters"
-          class="text-sm font-semibold text-gray-600 hover:text-black hover:underline"
-        >
-          Clear Filters
-        </button>
       </div>
     </div>
 
+    <!-- Results Count -->
+    <div class="flex items-center justify-between px-1 text-xs text-gray-400">
+      <p>
+        Showing
+        <span class="font-bold text-gray-900">{{ filteredReviews.length }}</span>
+        verified review{{ filteredReviews.length === 1 ? "" : "s" }}
+      </p>
+    </div>
+
     <!-- ================================================= -->
-    <!-- REVIEW TABLE -->
+    <!-- REVIEWS TABLE (WITH BORDERLESS ACTION ICONS) -->
     <!-- ================================================= -->
-
-    <div
-      class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
-    >
-      <!-- Table Header -->
-
-      <div
-        class="flex flex-col gap-2 border-b border-gray-200 p-6 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <div>
-          <h2 class="text-lg font-bold text-gray-900">Customer Reviews</h2>
-
-          <p class="mt-1 text-sm text-gray-500">
-            Review and moderate customer feedback.
-          </p>
-        </div>
-
-        <span
-          class="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600"
-        >
-          {{ filteredReviews.length }} Results
-        </span>
-      </div>
-
-      <!-- Table -->
-
+    <div class="overflow-hidden rounded-md border border-gray-100 bg-white shadow-xs">
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[1200px]">
-          <thead class="bg-gray-50">
-            <tr class="border-b border-gray-200">
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Customer
+        <table class="w-full min-w-[1000px] text-left text-xs">
+          <thead class="border-b border-gray-100 bg-white">
+            <tr>
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                CUSTOMER
               </th>
-
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Product
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                PRODUCT
               </th>
-
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Rating
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                RATING
               </th>
-
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Review
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                COMMENT
               </th>
-
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Date
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                DATE
               </th>
-
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Status
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                STATUS
               </th>
-
-              <th
-                class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Actions
+              <th class="px-6 py-3.5 text-center text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                ACTIONS
               </th>
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-gray-100/80">
             <tr
               v-for="review in filteredReviews"
               :key="review.id"
-              class="transition hover:bg-gray-50"
+              class="transition hover:bg-gray-50/60"
             >
               <!-- Customer -->
-
-              <td class="px-6 py-5">
+              <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
                   <img
                     :src="review.avatar"
                     :alt="review.customer"
-                    class="h-11 w-11 rounded-full object-cover"
+                    class="h-9 w-9 rounded-full object-cover border border-gray-100 shadow-2xs shrink-0"
                   />
 
                   <div>
-                    <div class="flex items-center gap-2">
-                      <p class="font-semibold text-gray-900">
+                    <div class="flex items-center gap-1.5">
+                      <p class="font-bold text-gray-900 text-xs sm:text-sm">
                         {{ review.customer }}
                       </p>
 
                       <span
                         v-if="review.verified"
-                        class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700"
+                        title="Verified Buyer"
+                        class="inline-flex items-center rounded-md bg-emerald-50 px-1.5 py-0.2 text-[10px] font-bold text-emerald-600 border border-emerald-100"
                       >
-                        Verified
+                        ✓ Verified
                       </span>
                     </div>
 
-                    <p class="mt-1 text-xs text-gray-500">
+                    <p class="mt-0.5 text-[11px] text-gray-400">
                       {{ review.email }}
                     </p>
                   </div>
@@ -447,135 +379,107 @@ const viewReview = (review: Review) => {
               </td>
 
               <!-- Product -->
-
-              <td class="max-w-[220px] px-6 py-5">
-                <p
-                  class="truncate text-sm font-medium text-gray-900"
-                  :title="review.product"
-                >
+              <td class="max-w-[200px] px-6 py-4">
+                <p class="truncate font-medium text-gray-900 text-xs" :title="review.product">
                   {{ review.product }}
                 </p>
               </td>
 
-              <!-- Rating -->
-
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-2">
-                  <span class="text-sm tracking-wide text-yellow-500">
-                    {{ "★".repeat(review.rating)
-                    }}{{ "☆".repeat(5 - review.rating) }}
-                  </span>
-
-                  <span class="text-xs font-semibold text-gray-500">
-                    {{ review.rating }}.0
-                  </span>
+              <!-- Rating (Gold Stars SVGs) -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center gap-1">
+                  <div class="flex text-amber-400">
+                    <svg
+                      v-for="star in 5"
+                      :key="star"
+                      class="h-3.5 w-3.5"
+                      :class="star <= review.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </div>
+                  <span class="text-[11px] font-bold text-gray-500 ml-1">{{ review.rating }}.0</span>
                 </div>
               </td>
 
-              <!-- Review -->
-
-              <td class="max-w-[300px] px-6 py-5">
-                <p class="font-semibold text-gray-900">
+              <!-- Feedback Comment -->
+              <td class="max-w-[260px] px-6 py-4">
+                <p class="font-bold text-gray-900 text-xs line-clamp-1">
                   {{ review.title }}
                 </p>
-
-                <p class="mt-1 line-clamp-2 text-sm text-gray-500">
+                <p class="mt-0.5 line-clamp-1 text-[11px] text-gray-500">
                   {{ review.comment }}
                 </p>
               </td>
 
               <!-- Date -->
-
-              <td class="px-6 py-5 text-sm text-gray-500">
+              <td class="px-6 py-4 text-gray-500 whitespace-nowrap">
                 {{ review.date }}
               </td>
 
               <!-- Status -->
-
-              <td class="px-6 py-5">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                  :class="{
-                    'bg-green-100 text-green-700':
-                      review.status === 'Published',
-
-                    'bg-yellow-100 text-yellow-700':
-                      review.status === 'Pending',
-
-                    'bg-red-100 text-red-700': review.status === 'Hidden',
-                  }"
+                  class="rounded-md px-2.5 py-1 text-xs font-semibold"
+                  :class="getStatusBadgeClass(review.status)"
                 >
                   {{ review.status }}
                 </span>
               </td>
 
-              <!-- Actions -->
-
-              <td class="px-6 py-5">
-                <div class="flex justify-end gap-2">
-                  <!-- View -->
-
-                  <button
-                    @click="viewReview(review)"
-                    class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
-                  >
-                    View
-                  </button>
-
-                  <!-- Approve -->
-
+              <!-- ACTIONS (BORDERLESS NAKED INLINE ICONS) -->
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <div class="flex items-center justify-center gap-3">
+                  <!-- Approve / Publish Review (Green Checkmark) -->
                   <button
                     v-if="review.status !== 'Published'"
+                    type="button"
+                    title="Publish Review"
+                    class="text-emerald-500 hover:text-emerald-700 hover:scale-125 transition-transform p-0.5"
                     @click="changeStatus(review, 'Published')"
-                    class="rounded-lg bg-green-50 px-3 py-2 text-xs font-semibold text-green-600 hover:bg-green-100"
                   >
-                    Approve
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
                   </button>
 
-                  <!-- Hide -->
-
+                  <!-- Hide / Pause Review (Amber Eye-off) -->
                   <button
                     v-if="review.status === 'Published'"
+                    type="button"
+                    title="Hide Review from Store"
+                    class="text-amber-500 hover:text-amber-700 hover:scale-125 transition-transform p-0.5"
                     @click="changeStatus(review, 'Hidden')"
-                    class="rounded-lg bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-200"
                   >
-                    Hide
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
                   </button>
 
-                  <!-- Delete -->
-
+                  <!-- Delete Review (Red Cross / Trash) -->
                   <button
-                    @click="deleteReview(review.id)"
-                    class="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100"
+                    type="button"
+                    title="Delete Review"
+                    class="text-red-400 hover:text-red-600 hover:scale-125 transition-transform p-0.5"
+                    @click="openDeleteModal(review)"
                   >
-                    Delete
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                   </button>
-                </div>
-              </td>
-            </tr>
 
-            <!-- Empty -->
-
-            <tr v-if="filteredReviews.length === 0">
-              <td colspan="7" class="px-6 py-16 text-center">
-                <div class="mx-auto max-w-sm">
-                  <div
-                    class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-2xl"
-                  >
-                    ★
-                  </div>
-
-                  <h3 class="mt-4 font-bold text-gray-900">No reviews found</h3>
-
-                  <p class="mt-1 text-sm text-gray-500">
-                    Try changing your filters or search keywords.
-                  </p>
-
+                  <!-- View Full Review Modal (Blue Eye) -->
                   <button
-                    @click="clearFilters"
-                    class="mt-4 text-sm font-semibold text-black underline"
+                    type="button"
+                    title="Read Full Review"
+                    class="text-blue-400 hover:text-blue-600 hover:scale-125 transition-transform p-0.5"
+                    @click="openViewModal(review)"
                   >
-                    Clear Filters
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
                   </button>
                 </div>
               </td>
@@ -584,47 +488,165 @@ const viewReview = (review: Review) => {
         </table>
       </div>
 
-      <!-- ================================================= -->
-      <!-- FOOTER -->
-      <!-- ================================================= -->
-
+      <!-- Empty State -->
       <div
-        class="flex flex-col gap-3 border-t border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+        v-if="filteredReviews.length === 0"
+        class="py-14 text-center"
       >
-        <p class="text-sm text-gray-500">
-          Showing
-          <span class="font-semibold text-gray-900">
-            {{ filteredReviews.length }}
-          </span>
-          of
-          <span class="font-semibold text-gray-900">
-            {{ totalReviews }}
-          </span>
-          reviews
-        </p>
+        <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <h3 class="mt-3 text-xs font-bold text-gray-900">No reviews found</h3>
+        <p class="mt-0.5 text-[11px] text-gray-400">Try changing your filters or keywords.</p>
+      </div>
+    </div>
 
-        <div class="flex gap-2">
+    <!-- ================================================= -->
+    <!-- VIEW REVIEW DETAILS MODAL -->
+    <!-- ================================================= -->
+    <div
+      v-if="showViewModal && reviewToView"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4"
+    >
+      <div class="w-full max-w-md rounded-md bg-white p-5 shadow-xl border border-gray-100">
+        <div class="flex items-start justify-between border-b border-gray-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <img
+              :src="reviewToView.avatar"
+              :alt="reviewToView.customer"
+              class="h-9 w-9 rounded-full object-cover border border-gray-100 shadow-2xs"
+            />
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h3 class="text-xs font-bold text-gray-900">{{ reviewToView.customer }}</h3>
+                <span
+                  v-if="reviewToView.verified"
+                  class="text-[10px] text-emerald-600 font-bold"
+                >
+                  ✓ Verified Buyer
+                </span>
+              </div>
+              <p class="text-[11px] text-gray-400">{{ reviewToView.email }}</p>
+            </div>
+          </div>
+
           <button
-            disabled
-            class="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-400"
+            type="button"
+            class="text-gray-400 hover:text-gray-600 transition"
+            @click="closeViewModal"
           >
-            Previous
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-3 text-xs">
+          <div>
+            <span class="text-[11px] font-semibold text-gray-400">Catalog Product:</span>
+            <p class="font-bold text-gray-900 mt-0.5">{{ reviewToView.product }}</p>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1">
+              <svg
+                v-for="star in 5"
+                :key="star"
+                class="h-4 w-4"
+                :class="star <= reviewToView.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span class="font-bold text-gray-700 ml-1.5">{{ reviewToView.rating }}.0 / 5.0</span>
+            </div>
+
+            <span
+              class="rounded-md px-2.5 py-0.5 text-xs font-semibold"
+              :class="getStatusBadgeClass(reviewToView.status)"
+            >
+              {{ reviewToView.status }}
+            </span>
+          </div>
+
+          <div class="rounded-lg bg-gray-50/80 p-3 border border-gray-100">
+            <p class="font-bold text-gray-900 text-xs">{{ reviewToView.title }}</p>
+            <p class="mt-1 text-gray-600 leading-relaxed text-xs">{{ reviewToView.comment }}</p>
+          </div>
+
+          <p class="text-[11px] text-gray-400 text-right">Submitted on {{ reviewToView.date }}</p>
+        </div>
+
+        <div class="mt-5 flex justify-end gap-2 text-xs font-semibold border-t border-gray-100 pt-3">
+          <button
+            v-if="reviewToView.status !== 'Published'"
+            type="button"
+            class="rounded-lg bg-emerald-600 px-3 py-1.5 text-white hover:bg-emerald-700 transition shadow-2xs"
+            @click="changeStatus(reviewToView, 'Published'); closeViewModal();"
+          >
+            Publish Review
           </button>
 
           <button
-            class="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white"
+            v-if="reviewToView.status === 'Published'"
+            type="button"
+            class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-amber-700 hover:bg-amber-100 transition shadow-2xs"
+            @click="changeStatus(reviewToView, 'Hidden'); closeViewModal();"
           >
-            1
+            Hide from Store
           </button>
 
           <button
-            disabled
-            class="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-400"
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50 transition"
+            @click="closeViewModal"
           >
-            Next
+            Close
           </button>
         </div>
       </div>
     </div>
+
+    <!-- ================================================= -->
+    <!-- DELETE REVIEW MODAL -->
+    <!-- ================================================= -->
+    <div
+      v-if="showDeleteModal && reviewToDelete"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4"
+    >
+      <div class="w-full max-w-sm rounded-md bg-white p-5 shadow-xl border border-gray-100">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+
+        <h3 class="mt-3 text-sm font-bold text-gray-900">Delete Review?</h3>
+        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+          Are you sure you want to permanently delete this customer review from <span class="font-semibold text-gray-900">{{ reviewToDelete.customer }}</span>?
+        </p>
+
+        <div class="mt-5 flex justify-end gap-2 text-xs font-semibold">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50 transition"
+            @click="closeDeleteModal"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="rounded-lg bg-red-600 px-3 py-1.5 text-white hover:bg-red-700 transition shadow-2xs"
+            @click="confirmDeleteReview"
+          >
+            Delete Review
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>

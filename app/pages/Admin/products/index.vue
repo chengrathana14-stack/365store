@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { products } from "~/data/product";
+import type { ProductStatus, ViewMode } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
 
 /* =========================================
-   TYPES
-========================================= */
-
-
-
-/* =========================================
    STATE
 ========================================= */
 
 const search = ref("");
-
 const selectedBrand = ref("All");
-
 const selectedCategory = ref("All");
-
 const selectedStatus = ref<ProductStatus>("All");
-
 const selectedSort = ref("Newest");
-
 const viewMode = ref<ViewMode>("table");
+const showFilterPanel = ref(false);
+
+const currentPage = ref(1);
+const itemsPerPage = ref(8);
 
 const showDeleteModal = ref(false);
-
 const productToDelete = ref<number | null>(null);
+
+/* =========================================
+   RESET PAGE ON FILTER CHANGE
+========================================= */
+watch([search, selectedBrand, selectedCategory, selectedStatus, selectedSort], () => {
+  currentPage.value = 1;
+});
 
 /* =========================================
    BRAND LIST
 ========================================= */
 
-const brands = computed(() => {
+const brands = computed<string[]>(() => {
   return [
     "All",
     ...new Set(products.map((product) => product.brand)),
@@ -47,7 +47,7 @@ const brands = computed(() => {
    CATEGORY LIST
 ========================================= */
 
-const categories = computed(() => {
+const categories = computed<string[]>(() => {
   return [
     "All",
     ...new Set(products.map((product) => product.category)),
@@ -55,7 +55,7 @@ const categories = computed(() => {
 });
 
 /* =========================================
-   PRODUCT STATUS
+   PRODUCT STATUS HELPER
 ========================================= */
 
 const getProductStatus = (stock: number): ProductStatus => {
@@ -85,7 +85,8 @@ const filteredProducts = computed(() => {
       (product) =>
         product.name.toLowerCase().includes(keyword) ||
         product.brand.toLowerCase().includes(keyword) ||
-        product.category.toLowerCase().includes(keyword),
+        product.category.toLowerCase().includes(keyword) ||
+        `PRD-${String(product.id).padStart(6, "0")}`.toLowerCase().includes(keyword),
     );
   }
 
@@ -103,7 +104,7 @@ const filteredProducts = computed(() => {
     );
   }
 
-  /* Stock */
+  /* Stock Status */
   if (selectedStatus.value !== "All") {
     result = result.filter(
       (product) =>
@@ -113,34 +114,18 @@ const filteredProducts = computed(() => {
 
   /* Sort */
   if (selectedSort.value === "Name A-Z") {
-    result.sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
-  }
-
-  if (selectedSort.value === "Name Z-A") {
-    result.sort((a, b) =>
-      b.name.localeCompare(a.name),
-    );
-  }
-
-  if (selectedSort.value === "Price High") {
+    result.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (selectedSort.value === "Name Z-A") {
+    result.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (selectedSort.value === "Price High") {
     result.sort((a, b) => b.price - a.price);
-  }
-
-  if (selectedSort.value === "Price Low") {
+  } else if (selectedSort.value === "Price Low") {
     result.sort((a, b) => a.price - b.price);
-  }
-
-  if (selectedSort.value === "Stock High") {
+  } else if (selectedSort.value === "Stock High") {
     result.sort((a, b) => b.stock - a.stock);
-  }
-
-  if (selectedSort.value === "Stock Low") {
+  } else if (selectedSort.value === "Stock Low") {
     result.sort((a, b) => a.stock - b.stock);
-  }
-
-  if (selectedSort.value === "Rating") {
+  } else if (selectedSort.value === "Rating") {
     result.sort((a, b) => b.rating - a.rating);
   }
 
@@ -148,63 +133,58 @@ const filteredProducts = computed(() => {
 });
 
 /* =========================================
-   STATISTICS
+   PAGINATION
 ========================================= */
 
-const totalProducts = computed(() => {
-  return products.length;
+const totalPages = computed(() => {
+  return Math.ceil(filteredProducts.value.length / itemsPerPage.value) || 1;
 });
 
-const activeProducts = computed(() => {
-  return products.filter(
-    (product) => product.stock > 0,
-  ).length;
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  return filteredProducts.value.slice(start, start + itemsPerPage.value);
 });
 
-const lowStockProducts = computed(() => {
-  return products.filter(
-    (product) =>
-      product.stock > 0 &&
-      product.stock <= 10,
-  ).length;
+const paginationStart = computed(() => {
+  if (filteredProducts.value.length === 0) return 0;
+  return (currentPage.value - 1) * itemsPerPage.value + 1;
 });
 
-const outOfStockProducts = computed(() => {
-  return products.filter(
-    (product) => product.stock === 0,
-  ).length;
+const paginationEnd = computed(() => {
+  return Math.min(currentPage.value * itemsPerPage.value, filteredProducts.value.length);
+});
+
+/* =========================================
+   STATISTICS & BADGE COUNTS
+========================================= */
+
+const totalProducts = computed(() => products.length);
+
+const inStockCount = computed(() => {
+  return products.filter((p) => getProductStatus(p.stock) === "In Stock").length;
+});
+
+const lowStockCount = computed(() => {
+  return products.filter((p) => getProductStatus(p.stock) === "Low Stock").length;
+});
+
+const outOfStockCount = computed(() => {
+  return products.filter((p) => getProductStatus(p.stock) === "Out of Stock").length;
 });
 
 const totalStock = computed(() => {
-  return products.reduce(
-    (total, product) =>
-      total + product.stock,
-    0,
-  );
+  return products.reduce((total, product) => total + product.stock, 0);
 });
 
 const totalInventoryValue = computed(() => {
   return products.reduce(
-    (total, product) =>
-      total + product.price * product.stock,
+    (total, product) => total + product.price * product.stock,
     0,
   );
 });
 
-const discountedProducts = computed(() => {
-  return products.filter(
-    (product) => product.discount > 0,
-  ).length;
-});
-
-const featuredProducts = computed(() => {
-  return products.filter(
-    (product) => product.featured,
-  ).length;
-});
-
 /* =========================================
-   CLEAR FILTERS
+   FILTER ACTIONS
 ========================================= */
 
 const clearFilters = () => {
@@ -213,10 +193,11 @@ const clearFilters = () => {
   selectedCategory.value = "All";
   selectedStatus.value = "All";
   selectedSort.value = "Newest";
+  currentPage.value = 1;
 };
 
 /* =========================================
-   DELETE
+   DELETE MODAL
 ========================================= */
 
 const openDeleteModal = (id: number) => {
@@ -230,14 +211,9 @@ const closeDeleteModal = () => {
 };
 
 const deleteProduct = () => {
-  if (productToDelete.value === null) {
-    return;
-  }
+  if (productToDelete.value === null) return;
 
-  const product = products.find(
-    (item) => item.id === productToDelete.value,
-  );
-
+  const product = products.find((item) => item.id === productToDelete.value);
   if (product) {
     alert(`Product "${product.name}" deleted.`);
   }
@@ -255,1056 +231,658 @@ const formatPrice = (price: number) => {
     maximumFractionDigits: 2,
   })}`;
 };
-
-/* =========================================
-   STATUS CLASS
-========================================= */
-
-const statusClass = (stock: number) => {
-  if (stock === 0) {
-    return "bg-red-100 text-red-700";
-  }
-
-  if (stock <= 10) {
-    return "bg-orange-100 text-orange-700";
-  }
-
-  return "bg-green-100 text-green-700";
-};
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-5">
 
     <!-- =====================================
-         HEADER
+         PAGE HEADER
     ====================================== -->
-
-    <div
-      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-    >
-
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-
-        <div class="flex items-center gap-3">
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-black text-xl text-white"
-          >
-            🛍️
-          </div>
-
-          <div>
-
-            <h1 class="text-2xl font-bold text-gray-900">
-              Products
-            </h1>
-
-            <p class="text-sm text-gray-500">
-              Manage your sports products
-            </p>
-
-          </div>
-
-        </div>
-
+        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
+          Products
+        </h1>
+        <p class="text-xs text-gray-400 mt-0.5">
+          Manage your sports catalog, inventory, and availability
+        </p>
       </div>
 
       <NuxtLink
         to="/admin/products/create"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+        class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-95"
       >
-        <span class="mr-2 text-lg">
-          +
-        </span>
-
-        Add Product
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Add Product</span>
       </NuxtLink>
-
     </div>
 
-
     <!-- =====================================
-         STATISTICS
+         MINI KPI METRICS
     ====================================== -->
-
-    <div
-      class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-    >
-
-      <!-- Total -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <div class="flex items-center justify-between">
-
-          <div>
-
-            <p class="text-sm text-gray-500">
-              Total Products
-            </p>
-
-            <p class="mt-2 text-2xl font-bold">
-              {{ totalProducts }}
-            </p>
-
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-xl"
-          >
-            🛍️
-          </div>
-
-        </div>
-
+    <div class="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <!-- Total Products -->
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Products</p>
+        <p class="mt-1 text-2xl font-black text-gray-900">{{ totalProducts }}</p>
       </div>
-
 
       <!-- In Stock -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <div class="flex items-center justify-between">
-
-          <div>
-
-            <p class="text-sm text-gray-500">
-              In Stock
-            </p>
-
-            <p class="mt-2 text-2xl font-bold text-green-600">
-              {{ activeProducts }}
-            </p>
-
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-xl"
-          >
-            ✓
-          </div>
-
-        </div>
-
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">In Stock</p>
+        <p class="mt-1 text-2xl font-black text-emerald-600">{{ inStockCount }}</p>
       </div>
-
 
       <!-- Low Stock -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <div class="flex items-center justify-between">
-
-          <div>
-
-            <p class="text-sm text-gray-500">
-              Low Stock
-            </p>
-
-            <p class="mt-2 text-2xl font-bold text-orange-600">
-              {{ lowStockProducts }}
-            </p>
-
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-100 text-xl"
-          >
-            ⚠️
-          </div>
-
-        </div>
-
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Low Stock</p>
+        <p class="mt-1 text-2xl font-black text-amber-500">{{ lowStockCount }}</p>
       </div>
 
-
-      <!-- Out -->
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <div class="flex items-center justify-between">
-
-          <div>
-
-            <p class="text-sm text-gray-500">
-              Out of Stock
-            </p>
-
-            <p class="mt-2 text-2xl font-bold text-red-600">
-              {{ outOfStockProducts }}
-            </p>
-
-          </div>
-
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-xl"
-          >
-            🚫
-          </div>
-
-        </div>
-
+      <!-- Out of Stock -->
+      <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Out of Stock</p>
+        <p class="mt-1 text-2xl font-black text-red-500">{{ outOfStockCount }}</p>
       </div>
-
     </div>
 
-
     <!-- =====================================
-         SECONDARY STATS
+         MAIN CARD (MATCHING REFERENCE STYLE)
     ====================================== -->
+    <div class="overflow-hidden rounded-md border border-gray-100 bg-white shadow-xs">
 
-    <div
-      class="grid gap-4 sm:grid-cols-3"
-    >
-
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <p class="text-sm text-gray-500">
-          Total Stock Units
-        </p>
-
-        <p class="mt-2 text-xl font-bold">
-          {{ totalStock }}
-        </p>
-
-      </div>
-
-
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <p class="text-sm text-gray-500">
-          Inventory Value
-        </p>
-
-        <p class="mt-2 text-xl font-bold">
-          {{ formatPrice(totalInventoryValue) }}
-        </p>
-
-      </div>
-
-
-      <div
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-      >
-
-        <div class="flex items-center justify-between">
-
-          <div>
-
-            <p class="text-sm text-gray-500">
-              Promotions
-            </p>
-
-            <p class="mt-2 text-xl font-bold">
-              {{ discountedProducts }}
-              <span class="text-sm font-normal text-gray-400">
-                discounted
-              </span>
-            </p>
-
+      <!-- 1. TOP CONTROLS BAR -->
+      <div class="flex flex-col gap-3.5 p-4 sm:flex-row sm:items-center sm:justify-between border-b border-gray-100">
+        
+        <!-- Left: Search input, Filter button, Live badge -->
+        <div class="flex flex-wrap items-center gap-2">
+          
+          <!-- Search Box -->
+          <div class="relative w-60 sm:w-72">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Search product name, SKU, brand..."
+              class="w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-8 pr-3 text-xs text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
           </div>
 
-          <span
-            class="rounded-full bg-black px-3 py-1 text-xs font-semibold text-white"
+          <!-- Filter Funnel Icon Button -->
+          <button
+            type="button"
+            title="Filter options"
+            class="flex h-8 w-8 items-center justify-center rounded-lg border transition"
+            :class="
+              showFilterPanel || selectedBrand !== 'All' || selectedCategory !== 'All'
+                ? 'border-blue-500 bg-blue-50 text-blue-600'
+                : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+            "
+            @click="showFilterPanel = !showFilterPanel"
           >
-            {{ featuredProducts }} Featured
-          </span>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+          </button>
 
+          <!-- Live Badge -->
+          <div class="flex items-center gap-1.5 rounded-lg border border-emerald-100 bg-emerald-50/70 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            </span>
+            <span>Live</span>
+          </div>
         </div>
 
+        <!-- Right: Status Filter Pills Tab -->
+        <div class="flex items-center rounded-md bg-gray-100/80 p-1 text-xs font-medium">
+          <!-- All -->
+          <button
+            type="button"
+            class="rounded-lg px-3 py-1 transition"
+            :class="
+              selectedStatus === 'All'
+                ? 'bg-white font-bold text-blue-600 shadow-2xs'
+                : 'text-gray-500 hover:text-gray-800'
+            "
+            @click="selectedStatus = 'All'"
+          >
+            All
+          </button>
+
+          <!-- In Stock -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-lg px-3 py-1 transition"
+            :class="
+              selectedStatus === 'In Stock'
+                ? 'bg-white font-bold text-blue-600 shadow-2xs'
+                : 'text-gray-500 hover:text-gray-800'
+            "
+            @click="selectedStatus = 'In Stock'"
+          >
+            <span>In Stock</span>
+            <span
+              class="rounded-full px-1.5 py-0.2 text-[10px] font-bold"
+              :class="
+                selectedStatus === 'In Stock'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'bg-gray-200 text-gray-600'
+              "
+            >
+              {{ inStockCount }}
+            </span>
+          </button>
+
+          <!-- Low Stock -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-lg px-3 py-1 transition"
+            :class="
+              selectedStatus === 'Low Stock'
+                ? 'bg-white font-bold text-blue-600 shadow-2xs'
+                : 'text-gray-500 hover:text-gray-800'
+            "
+            @click="selectedStatus = 'Low Stock'"
+          >
+            <span>Low Stock</span>
+            <span
+              class="rounded-full px-1.5 py-0.2 text-[10px] font-bold"
+              :class="
+                selectedStatus === 'Low Stock'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'bg-gray-200 text-gray-600'
+              "
+            >
+              {{ lowStockCount }}
+            </span>
+          </button>
+
+          <!-- Out of Stock -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-lg px-3 py-1 transition"
+            :class="
+              selectedStatus === 'Out of Stock'
+                ? 'bg-white font-bold text-blue-600 shadow-2xs'
+                : 'text-gray-500 hover:text-gray-800'
+            "
+            @click="selectedStatus = 'Out of Stock'"
+          >
+            <span>Out of Stock</span>
+            <span
+              class="rounded-full px-1.5 py-0.2 text-[10px] font-bold"
+              :class="
+                selectedStatus === 'Out of Stock'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'bg-gray-200 text-gray-600'
+              "
+            >
+              {{ outOfStockCount }}
+            </span>
+          </button>
+        </div>
       </div>
 
-    </div>
-
-
-    <!-- =====================================
-         FILTERS
-    ====================================== -->
-
-    <div
-      class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-    >
-
+      <!-- 2. EXPANDABLE FILTER OPTIONS (Brand, Category, Sort, ViewMode) -->
       <div
-        class="grid gap-4 lg:grid-cols-2 xl:grid-cols-5"
+        v-if="showFilterPanel"
+        class="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gray-50/60 px-4 py-3 text-xs"
       >
-
-        <!-- Search -->
-        <div class="relative xl:col-span-2">
-
-          <span
-            class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-          >
-            🔍
-          </span>
-
-          <input
-            v-model="search"
-            type="text"
-            placeholder="Search product, brand or category..."
-            class="w-full rounded-xl border border-gray-200 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-black"
-          />
-
-        </div>
-
-
         <!-- Brand -->
-        <select
-          v-model="selectedBrand"
-          class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
-        >
-
-          <option
-            v-for="brand in brands"
-            :key="brand"
-            :value="brand"
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-500 font-medium">Brand:</span>
+          <select
+            v-model="selectedBrand"
+            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-700 outline-none focus:border-blue-500"
           >
-            {{ brand === "All" ? "All Brands" : brand }}
-          </option>
-
-        </select>
-
+            <option v-for="b in brands" :key="b" :value="b">
+              {{ b === "All" ? "All Brands" : b }}
+            </option>
+          </select>
+        </div>
 
         <!-- Category -->
-        <select
-          v-model="selectedCategory"
-          class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
-        >
-
-          <option
-            v-for="category in categories"
-            :key="category"
-            :value="category"
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-500 font-medium">Category:</span>
+          <select
+            v-model="selectedCategory"
+            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-700 outline-none focus:border-blue-500"
           >
-            {{ category === "All" ? "All Categories" : category }}
-          </option>
+            <option v-for="c in categories" :key="c" :value="c">
+              {{ c === "All" ? "All Categories" : c }}
+            </option>
+          </select>
+        </div>
 
-        </select>
-
-
-        <!-- Stock -->
-        <select
-          v-model="selectedStatus"
-          class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
-        >
-
-          <option value="All">
-            All Stock
-          </option>
-
-          <option value="In Stock">
-            In Stock
-          </option>
-
-          <option value="Low Stock">
-            Low Stock
-          </option>
-
-          <option value="Out of Stock">
-            Out of Stock
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <!-- Second filter row -->
-      <div
-        class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-      >
-
-        <div class="flex flex-wrap gap-3">
-
+        <!-- Sort -->
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-500 font-medium">Sort:</span>
           <select
             v-model="selectedSort"
-            class="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-black"
+            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-700 outline-none focus:border-blue-500"
           >
-
-            <option value="Newest">
-              Newest
-            </option>
-
-            <option value="Name A-Z">
-              Name A-Z
-            </option>
-
-            <option value="Name Z-A">
-              Name Z-A
-            </option>
-
-            <option value="Price High">
-              Highest Price
-            </option>
-
-            <option value="Price Low">
-              Lowest Price
-            </option>
-
-            <option value="Stock High">
-              Highest Stock
-            </option>
-
-            <option value="Stock Low">
-              Lowest Stock
-            </option>
-
-            <option value="Rating">
-              Highest Rating
-            </option>
-
+            <option value="Newest">Newest</option>
+            <option value="Name A-Z">Name A-Z</option>
+            <option value="Name Z-A">Name Z-A</option>
+            <option value="Price High">Price: High to Low</option>
+            <option value="Price Low">Price: Low to High</option>
+            <option value="Stock High">Stock: High to Low</option>
+            <option value="Stock Low">Stock: Low to High</option>
+            <option value="Rating">Rating</option>
           </select>
-
-
-          <button
-            class="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold hover:bg-gray-50"
-            @click="clearFilters"
-          >
-            Clear Filters
-          </button>
-
         </div>
 
-
-        <!-- View Mode -->
-        <div
-          class="flex w-fit rounded-xl border border-gray-200 p-1"
-        >
-
+        <!-- View Mode Toggle -->
+        <div class="flex items-center rounded-lg border border-gray-200 bg-white p-0.5 ml-auto">
           <button
-            class="rounded-lg px-4 py-2 text-sm"
-            :class="
-              viewMode === 'table'
-                ? 'bg-black text-white'
-                : 'text-gray-500 hover:bg-gray-100'
-            "
+            type="button"
+            class="rounded px-2 py-0.5 text-xs font-medium transition"
+            :class="viewMode === 'table' ? 'bg-gray-100 text-blue-600 font-bold' : 'text-gray-500 hover:text-gray-900'"
             @click="viewMode = 'table'"
           >
-            ☰ Table
+            Table
           </button>
-
           <button
-            class="rounded-lg px-4 py-2 text-sm"
-            :class="
-              viewMode === 'grid'
-                ? 'bg-black text-white'
-                : 'text-gray-500 hover:bg-gray-100'
-            "
+            type="button"
+            class="rounded px-2 py-0.5 text-xs font-medium transition"
+            :class="viewMode === 'grid' ? 'bg-gray-100 text-blue-600 font-bold' : 'text-gray-500 hover:text-gray-900'"
             @click="viewMode = 'grid'"
           >
-            ▦ Grid
+            Grid
           </button>
-
         </div>
 
+        <!-- Clear Button -->
+        <button
+          type="button"
+          class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100 transition"
+          @click="clearFilters"
+        >
+          Reset
+        </button>
       </div>
 
-    </div>
-
-
-    <!-- =====================================
-         RESULT HEADER
-    ====================================== -->
-
-    <div class="flex items-center justify-between">
-
-      <p class="text-sm text-gray-500">
-
-        Showing
-
-        <span class="font-semibold text-gray-900">
-          {{ filteredProducts.length }}
-        </span>
-
-        of
-
-        <span class="font-semibold text-gray-900">
-          {{ products.length }}
-        </span>
-
-        products
-
-      </p>
-
-    </div>
-
-
-    <!-- =====================================
-         TABLE VIEW
-    ====================================== -->
-
-    <div
-      v-if="viewMode === 'table'"
-      class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
-    >
-
-      <div class="overflow-x-auto">
-
-        <table
-          class="w-full min-w-[1100px] text-left text-sm"
-        >
-
-          <thead
-            class="border-b border-gray-200 bg-gray-50"
-          >
-
+      <!-- 3. TABLE VIEW -->
+      <div v-if="viewMode === 'table'" class="overflow-x-auto">
+        <table class="w-full min-w-[900px] text-left text-xs">
+          <!-- Table Header -->
+          <thead class="border-b border-gray-100 bg-white">
             <tr>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Product
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                PRODUCT CODE / DATE
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Brand
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                PRODUCT INFO
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Category
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                CATEGORY & BRAND
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Price
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                STOCK AVAILABLE
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Discount
+              <th class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                STATUS
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Rating
+              <th class="px-6 py-3.5 text-center text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                ACTIONS
               </th>
-
-              <th
-                class="px-6 py-4 text-xs font-semibold uppercase text-gray-500"
-              >
-                Stock
-              </th>
-
-              <th
-                class="px-6 py-4 text-right text-xs font-semibold uppercase text-gray-500"
-              >
-                Action
-              </th>
-
             </tr>
-
           </thead>
 
-
-          <tbody class="divide-y divide-gray-100">
-
+          <!-- Table Body -->
+          <tbody class="divide-y divide-gray-100/80">
             <tr
-              v-for="product in filteredProducts"
+              v-for="product in paginatedProducts"
               :key="product.id"
-              class="transition hover:bg-gray-50"
+              class="transition hover:bg-gray-50/60"
             >
+              <!-- 1. REQUEST NO. / DATE -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <p class="font-bold text-gray-900 text-xs sm:text-sm tracking-tight">
+                  REQ-1789{{ String(product.id).padStart(4, "0") }}-{{ 2300 + product.id }}
+                </p>
+                <p class="mt-0.5 flex items-center gap-1 text-[11px] text-gray-400">
+                  <svg class="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>13 Sept 2026, 15:51</span>
+                </p>
+              </td>
 
-              <!-- Product -->
-              <td class="px-6 py-5">
-
-                <div class="flex items-center gap-4">
-
-                  <div class="relative">
-
+              <!-- 2. PRODUCT INFO (Thumbnail + Name + SKU) -->
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <!-- Thumbnail -->
+                  <div class="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-100">
                     <img
                       :src="product.image"
                       :alt="product.name"
-                      class="h-16 w-16 rounded-xl object-cover"
+                      class="h-full w-full object-cover"
                     />
-
-                    <span
-                      v-if="product.isNew"
-                      class="absolute -right-2 -top-2 rounded-full bg-black px-2 py-1 text-[9px] font-bold text-white"
-                    >
-                      NEW
-                    </span>
-
                   </div>
 
-                  <div class="max-w-[260px]">
-
-                    <p
-                      class="font-semibold text-gray-900"
-                    >
+                  <div class="min-w-0 max-w-[200px]">
+                    <p class="truncate text-xs font-bold text-gray-900" :title="product.name">
                       {{ product.name }}
                     </p>
-
-                    <p class="mt-1 text-xs text-gray-400">
-                      ID: #{{ product.id }}
+                    <p class="mt-0.5 text-[11px] text-gray-400 truncate">
+                      ID: PRD-00{{ product.id }} • {{ product.brand }}
                     </p>
-
                   </div>
-
                 </div>
-
               </td>
 
-
-              <!-- Brand -->
-              <td class="px-6 py-5">
-                {{ product.brand }}
+              <!-- 3. REQUESTED BOOK (Category & Details) -->
+              <td class="px-6 py-4">
+                <p class="text-xs font-bold text-gray-900 line-clamp-1">
+                  {{ product.category }}
+                </p>
+                <p class="mt-0.5 text-[11px] text-gray-400">
+                  {{ formatPrice(product.price) }}
+                  <span v-if="product.discount > 0" class="text-red-500 font-semibold ml-1">
+                    (-{{ product.discount }}%)
+                  </span>
+                </p>
               </td>
 
-
-              <!-- Category -->
-              <td class="px-6 py-5">
-                {{ product.category }}
-              </td>
-
-
-              <!-- Price -->
-              <td class="px-6 py-5">
-
-                <div>
-
-                  <p class="font-bold">
-                    {{ formatPrice(product.price) }}
-                  </p>
-
-                  <p
-                    v-if="product.discount > 0"
-                    class="mt-1 text-xs text-gray-400"
-                  >
-                    Sale price
-                  </p>
-
-                </div>
-
-              </td>
-
-
-              <!-- Discount -->
-              <td class="px-6 py-5">
-
+              <!-- 4. STOCK AVAILABLE -->
+              <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  v-if="product.discount > 0"
-                  class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+                  class="inline-block rounded-md px-2.5 py-1 text-xs font-semibold"
+                  :class="
+                    product.stock === 0
+                      ? 'bg-red-50 text-red-600'
+                      : product.stock <= 10
+                        ? 'bg-amber-50 text-amber-600'
+                        : 'bg-emerald-50 text-emerald-600'
+                  "
                 >
-                  -{{ product.discount }}%
+                  {{ product.stock }} units
+                </span>
+              </td>
+
+              <!-- 5. STATUS -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <!-- Low Stock -->
+                <span
+                  v-if="product.stock > 0 && product.stock <= 10"
+                  class="inline-flex items-center gap-1.5 rounded-md border border-amber-200/80 bg-amber-50/50 px-2.5 py-1 text-xs font-medium text-amber-600"
+                >
+                  <svg class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Low Stock</span>
                 </span>
 
+                <!-- In Stock / Available -->
+                <span
+                  v-else-if="product.stock > 10"
+                  class="inline-flex items-center gap-1.5 rounded-md border border-emerald-200/80 bg-emerald-50/50 px-2.5 py-1 text-xs font-medium text-emerald-600"
+                >
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Available</span>
+                </span>
+
+                <!-- Out of stock -->
                 <span
                   v-else
-                  class="text-gray-400"
+                  class="inline-flex items-center gap-1.5 rounded-md border border-red-200/80 bg-red-50/50 px-2.5 py-1 text-xs font-medium text-red-600"
                 >
-                  —
+                  <svg class="h-3 w-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Out of Stock</span>
                 </span>
-
               </td>
 
-
-              <!-- Rating -->
-              <td class="px-6 py-5">
-
-                <div class="flex items-center gap-1">
-
-                  <span class="text-yellow-500">
-                    ★
-                  </span>
-
-                  <span class="font-semibold">
-                    {{ product.rating }}
-                  </span>
-
-                  <span class="text-xs text-gray-400">
-                    ({{ product.reviews }})
-                  </span>
-
-                </div>
-
-              </td>
-
-
-              <!-- Stock -->
-              <td class="px-6 py-5">
-
-                <div>
-
-                  <span
-                    class="font-bold"
-                    :class="
-                      product.stock === 0
-                        ? 'text-red-600'
-                        : product.stock <= 10
-                          ? 'text-orange-600'
-                          : 'text-green-600'
-                    "
-                  >
-                    {{ product.stock }}
-                  </span>
-
-                  <span class="ml-1 text-xs text-gray-400">
-                    units
-                  </span>
-
-                  <div
-                    class="mt-2 h-1.5 w-20 overflow-hidden rounded-full bg-gray-100"
-                  >
-
-                    <div
-                      class="h-full rounded-full"
-                      :class="
-                        product.stock === 0
-                          ? 'bg-red-500'
-                          : product.stock <= 10
-                            ? 'bg-orange-500'
-                            : 'bg-green-500'
-                      "
-                      :style="{
-                        width: `${Math.min(
-                          product.stock,
-                          100,
-                        )}%`,
-                      }"
-                    ></div>
-
-                  </div>
-
-                  <span
-                    class="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    :class="statusClass(product.stock)"
-                  >
-                    {{ getProductStatus(product.stock) }}
-                  </span>
-
-                </div>
-
-              </td>
-
-
-              <!-- Actions -->
-              <td class="px-6 py-5">
-
-                <div class="flex justify-end gap-2">
-
-                  <NuxtLink
-                    :to="`/admin/products/${product.id}`"
-                    title="View Product"
-                    class="rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold hover:bg-gray-50"
-                  >
-                    View
-                  </NuxtLink>
-
+              <!-- 6. ACTIONS (Naked, borderless inline icons: ✓ green, ✕ red, 👁 blue) -->
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <div class="flex items-center justify-center gap-3">
+                  <!-- Green Checkmark (Edit / Approve) -->
                   <NuxtLink
                     :to="`/admin/products/${product.id}/edit`"
                     title="Edit Product"
-                    class="rounded-lg bg-gray-100 px-3 py-2 text-sm font-semibold hover:bg-gray-200"
+                    class="text-emerald-500 hover:text-emerald-700 hover:scale-125 transition-transform p-0.5"
                   >
-                    Edit
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
                   </NuxtLink>
 
+                  <!-- Red Cross (Delete / Reject) -->
                   <button
+                    type="button"
                     title="Delete Product"
-                    class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600 hover:bg-red-100"
+                    class="text-red-400 hover:text-red-600 hover:scale-125 transition-transform p-0.5"
                     @click="openDeleteModal(product.id)"
                   >
-                    Delete
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </button>
 
+                  <!-- Blue Eye (View Details) -->
+                  <NuxtLink
+                    :to="`/admin/products/${product.id}`"
+                    title="View Product"
+                    class="text-blue-400 hover:text-blue-600 hover:scale-125 transition-transform p-0.5"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </NuxtLink>
                 </div>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
 
+      <!-- 4. GRID VIEW (When switched to grid) -->
+      <div
+        v-if="viewMode === 'grid' && filteredProducts.length"
+        class="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-4"
+      >
+        <div
+          v-for="product in paginatedProducts"
+          :key="product.id"
+          class="overflow-hidden rounded-md border border-gray-100 bg-white p-4 shadow-2xs transition hover:shadow-xs"
+        >
+          <div class="relative h-44 overflow-hidden rounded-lg bg-gray-50">
+            <img
+              :src="product.image"
+              :alt="product.name"
+              class="h-full w-full object-cover"
+            />
+            <span
+              class="absolute right-2 top-2 rounded-md px-2 py-0.5 text-[10px] font-semibold"
+              :class="
+                product.stock === 0
+                  ? 'bg-red-50 text-red-600'
+                  : product.stock <= 10
+                    ? 'bg-amber-50 text-amber-600'
+                    : 'bg-emerald-50 text-emerald-600'
+              "
+            >
+              {{ product.stock }} units
+            </span>
+          </div>
 
-      <!-- Empty -->
+          <div class="mt-3">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+              {{ product.brand }}
+            </p>
+            <h3 class="font-bold text-xs text-gray-900 line-clamp-1 mt-0.5">
+              {{ product.name }}
+            </h3>
+
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-gray-900">
+                {{ formatPrice(product.price) }}
+              </span>
+              <span class="text-[11px] text-gray-400">
+                {{ product.category }}
+              </span>
+            </div>
+
+            <!-- Borderless naked actions -->
+            <div class="mt-3 flex items-center justify-end gap-3 border-t border-gray-100 pt-2.5">
+              <NuxtLink
+                :to="`/admin/products/${product.id}/edit`"
+                title="Edit Product"
+                class="text-emerald-500 hover:text-emerald-700 transition"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </NuxtLink>
+
+              <button
+                type="button"
+                title="Delete Product"
+                class="text-red-400 hover:text-red-600 transition"
+                @click="openDeleteModal(product.id)"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <NuxtLink
+                :to="`/admin/products/${product.id}`"
+                title="View Product"
+                class="text-blue-400 hover:text-blue-600 transition"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. EMPTY STATE -->
       <div
         v-if="filteredProducts.length === 0"
         class="py-16 text-center"
       >
-
-        <div class="text-5xl">
-          🛍️
+        <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
-
-        <h3 class="mt-4 text-lg font-bold">
-          No products found
-        </h3>
-
-        <p class="mt-2 text-sm text-gray-500">
-          Try changing your search or filters.
-        </p>
-
+        <h3 class="mt-3 text-sm font-bold text-gray-900">No products found</h3>
+        <p class="mt-1 text-xs text-gray-400">Try changing your search keywords or filter status.</p>
         <button
-          class="mt-5 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
+          type="button"
+          class="mt-3 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition shadow-2xs"
           @click="clearFilters"
         >
           Clear Filters
         </button>
-
       </div>
 
-    </div>
-
-
-    <!-- =====================================
-         GRID VIEW
-    ====================================== -->
-
-    <div
-      v-if="
-        viewMode === 'grid' &&
-        filteredProducts.length
-      "
-      class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
-    >
-
+      <!-- 6. TABLE FOOTER -->
       <div
-        v-for="product in filteredProducts"
-        :key="product.id"
-        class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+        v-if="filteredProducts.length > 0"
+        class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between border-t border-gray-100 bg-white text-xs text-gray-400 font-medium"
       >
-
-        <!-- Image -->
-        <div
-          class="relative h-56 overflow-hidden bg-gray-100"
-        >
-
-          <img
-            :src="product.image"
-            :alt="product.name"
-            class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
-
-          <!-- New -->
-          <span
-            v-if="product.isNew"
-            class="absolute left-4 top-4 rounded-full bg-black px-3 py-1 text-xs font-bold text-white"
-          >
-            NEW
-          </span>
-
-          <!-- Discount -->
-          <span
-            v-if="product.discount > 0"
-            class="absolute right-4 top-4 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white"
-          >
-            -{{ product.discount }}%
-          </span>
-
-        </div>
-
-
-        <!-- Content -->
-        <div class="p-5">
-
-          <div
-            class="flex items-center justify-between gap-3"
-          >
-
-            <p class="text-xs font-semibold uppercase text-gray-400">
-              {{ product.brand }}
-            </p>
-
-            <span
-              class="rounded-full px-2.5 py-1 text-[10px] font-semibold"
-              :class="statusClass(product.stock)"
-            >
-              {{ getProductStatus(product.stock) }}
-            </span>
-
-          </div>
-
-
-          <h3
-            class="mt-2 min-h-[48px] font-bold text-gray-900"
-          >
-            {{ product.name }}
-          </h3>
-
-
-          <p class="mt-1 text-sm text-gray-500">
-            {{ product.category }}
-          </p>
-
-
-          <!-- Price -->
-          <div
-            class="mt-4 flex items-center justify-between"
-          >
-
-            <p class="text-lg font-bold">
-              {{ formatPrice(product.price) }}
-            </p>
-
-            <p class="text-sm text-gray-500">
-              {{ product.stock }} units
-            </p>
-
-          </div>
-
-
-          <!-- Rating -->
-          <div
-            class="mt-3 flex items-center gap-2"
-          >
-
-            <span class="text-yellow-500">
-              ★
-            </span>
-
-            <span class="text-sm font-semibold">
-              {{ product.rating }}
-            </span>
-
-            <span class="text-xs text-gray-400">
-              ({{ product.reviews }} reviews)
-            </span>
-
-          </div>
-
-
-          <!-- Actions -->
-          <div class="mt-5 grid grid-cols-3 gap-2">
-
-            <NuxtLink
-              :to="`/admin/products/${product.id}`"
-              class="rounded-xl border border-gray-200 py-2.5 text-center text-xs font-semibold hover:bg-gray-50"
-            >
-              View
-            </NuxtLink>
-
-            <NuxtLink
-              :to="`/admin/products/${product.id}/edit`"
-              class="rounded-xl bg-black py-2.5 text-center text-xs font-semibold text-white hover:bg-gray-800"
-            >
-              Edit
-            </NuxtLink>
-
-            <button
-              class="rounded-xl border border-red-200 bg-red-50 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-100"
-              @click="openDeleteModal(product.id)"
-            >
-              Delete
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- =====================================
-         EMPTY GRID
-    ====================================== -->
-
-    <div
-      v-if="
-        viewMode === 'grid' &&
-        filteredProducts.length === 0
-      "
-      class="rounded-2xl border border-dashed border-gray-300 bg-white py-16 text-center"
-    >
-
-      <div class="text-5xl">
-        🛍️
-      </div>
-
-      <h3 class="mt-4 text-lg font-bold">
-        No products found
-      </h3>
-
-      <p class="mt-2 text-sm text-gray-500">
-        Try changing your search or filters.
-      </p>
-
-      <button
-        class="mt-5 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
-        @click="clearFilters"
-      >
-        Clear Filters
-      </button>
-
-    </div>
-
-
-    <!-- =====================================
-         DELETE MODAL
-    ====================================== -->
-
-    <div
-      v-if="showDeleteModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-    >
-
-      <div
-        class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
-      >
-
-        <div
-          class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl"
-        >
-          🗑️
-        </div>
-
-
-        <h2 class="mt-5 text-xl font-bold">
-          Delete Product?
-        </h2>
-
-
-        <p class="mt-2 text-sm leading-6 text-gray-500">
-
-          Are you sure you want to delete this product?
-
-          <span class="font-semibold text-gray-900">
-            This action cannot be undone.
-          </span>
-
+        <p>
+          Showing {{ paginationStart }} to {{ paginationEnd }} of {{ filteredProducts.length }} products
         </p>
 
-
-        <div class="mt-6 flex justify-end gap-3">
-
+        <!-- Pagination Controls -->
+        <div class="flex items-center gap-2">
+          <!-- Prev -->
           <button
-            class="rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold hover:bg-gray-50"
+            type="button"
+            :disabled="currentPage === 1"
+            class="text-xs font-medium text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+            @click="currentPage--"
+          >
+            Prev
+          </button>
+
+          <!-- Pages -->
+          <div class="flex items-center gap-1">
+            <button
+              v-for="page in totalPages"
+              :key="page"
+              type="button"
+              class="h-7 min-w-[28px] px-2 rounded-md border text-xs font-semibold transition"
+              :class="
+                currentPage === page
+                  ? 'border-blue-500 bg-white text-blue-600 font-bold shadow-2xs'
+                  : 'border-transparent text-gray-400 hover:text-gray-700'
+              "
+              @click="currentPage = page"
+            >
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- Next -->
+          <button
+            type="button"
+            :disabled="currentPage === totalPages"
+            class="text-xs font-medium text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+            @click="currentPage++"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================
+         DELETE CONFIRMATION MODAL
+    ====================================== -->
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4"
+    >
+      <div class="w-full max-w-sm rounded-md bg-white p-5 shadow-xl border border-gray-100">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+
+        <h2 class="mt-3 text-sm font-bold text-gray-900">Delete Request?</h2>
+        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+          Are you sure you want to delete this product? This action cannot be undone.
+        </p>
+
+        <div class="mt-5 flex justify-end gap-2 text-xs font-semibold">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50 transition"
             @click="closeDeleteModal"
           >
             Cancel
           </button>
 
           <button
-            class="rounded-xl bg-red-500 px-5 py-3 text-sm font-semibold text-white hover:bg-red-600"
+            type="button"
+            class="rounded-lg bg-red-600 px-3 py-1.5 text-white hover:bg-red-700 transition"
             @click="deleteProduct"
           >
-            Delete Product
+            Delete
           </button>
-
         </div>
-
       </div>
-
     </div>
 
   </div>

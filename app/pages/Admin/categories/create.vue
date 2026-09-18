@@ -78,7 +78,7 @@ const cancel = () => {
 
       <!-- Main -->
       <div
-        class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
+        class="space-y-6 rounded-md border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
       >
 
         <div>
@@ -102,7 +102,7 @@ const cancel = () => {
             v-model="name"
             type="text"
             placeholder="Example: Football Boots"
-            class="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
+            class="w-full rounded-md border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
           />
         </div>
 
@@ -117,7 +117,7 @@ const cancel = () => {
             v-model="description"
             rows="6"
             placeholder="Describe this category..."
-            class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
+            class="w-full resize-none rounded-md border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
           ></textarea>
 
           <p class="mt-2 text-xs text-gray-400">
@@ -136,7 +136,7 @@ const cancel = () => {
 
             <button
               type="button"
-              class="rounded-xl border p-4 text-left transition"
+              class="rounded-md border p-4 text-left transition"
               :class="
                 status === 'Active'
                   ? 'border-black bg-gray-50'
@@ -147,7 +147,7 @@ const cancel = () => {
               <div class="flex items-center gap-3">
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-md bg-green-100 text-green-600"
                 >
                   ✓
                 </div>
@@ -167,7 +167,7 @@ const cancel = () => {
 
             <button
               type="button"
-              class="rounded-xl border p-4 text-left transition"
+              class="rounded-md border p-4 text-left transition"
               :class="
                 status === 'Inactive'
                   ? 'border-black bg-gray-50'
@@ -178,7 +178,7 @@ const cancel = () => {
               <div class="flex items-center gap-3">
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-md bg-red-100 text-red-600"
                 >
                   ×
                 </div>
@@ -205,17 +205,17 @@ const cancel = () => {
       <div class="space-y-6">
 
         <div
-          class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+          class="rounded-md border border-gray-200 bg-white p-6 shadow-sm"
         >
 
           <h2 class="font-bold">
             Preview
           </h2>
 
-          <div class="mt-5 rounded-2xl border border-gray-200 p-5">
+          <div class="mt-5 rounded-md border border-gray-200 p-5">
 
             <div
-              class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-2xl"
+              class="flex h-14 w-14 items-center justify-center rounded-md bg-gray-100 text-2xl"
             >
               📂
             </div>
@@ -245,7 +245,7 @@ const cancel = () => {
 
         </div>
 
-        <div class="rounded-2xl bg-gray-50 p-5">
+        <div class="rounded-md bg-gray-50 p-5">
           <p class="text-sm font-semibold">
             💡 Tip
           </p>
@@ -263,7 +263,7 @@ const cancel = () => {
     <!-- Error -->
     <div
       v-if="error"
-      class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
+      class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
     >
       {{ error }}
     </div>
@@ -271,7 +271,7 @@ const cancel = () => {
     <!-- Success -->
     <div
       v-if="success"
-      class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600"
+      class="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600"
     >
       Category created successfully!
     </div>
@@ -283,7 +283,7 @@ const cancel = () => {
 
       <button
         type="button"
-        class="rounded-xl border border-gray-200 px-6 py-3 text-sm font-semibold hover:bg-gray-50"
+        class="rounded-md border border-gray-200 px-6 py-3 text-sm font-semibold hover:bg-gray-50"
         @click="cancel"
       >
         Cancel
@@ -291,7 +291,7 @@ const cancel = () => {
 
       <button
         type="button"
-        class="rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800"
+        class="rounded-md bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800"
         @click="createCategory"
       >
         Create Category

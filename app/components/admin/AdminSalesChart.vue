@@ -13,7 +13,7 @@ const chartData = computed(() => {
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+  <div class="rounded-md border border-gray-200 bg-white p-6 shadow-xs">
     <!-- Header -->
     <div
       class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
@@ -26,7 +26,7 @@ const chartData = computed(() => {
 
       <select
         v-model="selectedPeriod"
-        class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-black"
+        class="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs outline-none focus:border-black shadow-2xs"
       >
         <option v-for="period in periods" :key="period" :value="period">
           {{ period }}
@@ -51,14 +51,14 @@ const chartData = computed(() => {
         <div class="relative flex h-full items-end">
           <!-- Tooltip -->
           <div
-            class="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 rounded-lg bg-black px-2 py-1 text-xs text-white group-hover:block"
+            class="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 rounded-md bg-black px-2 py-1 text-xs text-white group-hover:block"
           >
             {{ item.value }}%
           </div>
 
           <!-- Bar -->
           <div
-            class="w-full rounded-t-lg bg-black transition-all duration-300 group-hover:bg-gray-600"
+            class="w-full rounded-t-sm bg-black transition-all duration-300 group-hover:bg-gray-600"
             :style="{ height: `${item.value}%` }"
           ></div>
         </div>

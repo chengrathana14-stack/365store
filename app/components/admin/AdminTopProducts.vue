@@ -5,7 +5,7 @@ const products = topProductSeedData;
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+  <div class="rounded-md border border-gray-200 bg-white p-6 shadow-xs">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
@@ -31,7 +31,7 @@ const products = topProductSeedData;
       >
         <!-- Ranking -->
         <div
-          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold text-gray-700"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-gray-100 font-bold text-gray-700"
         >
           {{ index + 1 }}
         </div>

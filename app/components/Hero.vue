@@ -82,20 +82,38 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import type { HeroSlide } from "~/type/storefront";
 import { heroSlideSeedData } from "~/data/storefront";
+import { useApiBase } from "~/composables/useApi";
 
+const apiBase = useApiBase();
+const slides = ref<HeroSlide[]>(heroSlideSeedData);
 const currentSlide = ref(0);
 
-const slides = heroSlideSeedData;
+const fetchSlides = async () => {
+  try {
+    const res = await fetch(`${apiBase}/heroSlides`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        slides.value = data;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to fetch slides from frontend:", error);
+  }
+};
 
 let slideInterval: ReturnType<typeof setInterval>;
 
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % slides.length;
+  if (slides.value.length === 0) return;
+  currentSlide.value = (currentSlide.value + 1) % slides.value.length;
 };
 
 const prevSlide = () => {
-  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length;
+  if (slides.value.length === 0) return;
+  currentSlide.value = (currentSlide.value - 1 + slides.value.length) % slides.value.length;
 };
 
 const goToSlide = (index: number) => {
@@ -103,6 +121,7 @@ const goToSlide = (index: number) => {
 };
 
 onMounted(() => {
+  fetchSlides();
   slideInterval = setInterval(() => {
     nextSlide();
   }, 4000);

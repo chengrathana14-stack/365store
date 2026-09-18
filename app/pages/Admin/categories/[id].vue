@@ -108,13 +108,13 @@ const productStatusClass = (status: string) => {
     </NuxtLink>
 
     <!-- Category Header -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
       <div
         class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
       >
         <div class="flex items-center gap-5">
           <div
-            class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gray-100 text-4xl"
+            class="flex h-20 w-20 shrink-0 items-center justify-center rounded-md bg-gray-100 text-4xl"
           >
             📂
           </div>
@@ -149,7 +149,7 @@ const productStatusClass = (status: string) => {
 
         <div class="flex flex-wrap gap-3">
           <button
-            class="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold hover:bg-gray-50"
+            class="rounded-md border border-gray-200 px-4 py-3 text-sm font-semibold hover:bg-gray-50"
             @click="toggleStatus"
           >
             {{ category.status === "Active" ? "Deactivate" : "Activate" }}
@@ -157,13 +157,13 @@ const productStatusClass = (status: string) => {
 
           <NuxtLink
             :to="`/admin/categories/${category.id}/edit`"
-            class="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
+            class="rounded-md bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
           >
             Edit Category
           </NuxtLink>
 
           <button
-            class="rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50"
+            class="rounded-md border border-red-200 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50"
             @click="showDeleteModal = true"
           >
             Delete
@@ -174,7 +174,7 @@ const productStatusClass = (status: string) => {
 
     <!-- Statistics -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
         <p class="text-sm text-gray-500">Products</p>
 
         <p class="mt-2 text-2xl font-bold">
@@ -182,7 +182,7 @@ const productStatusClass = (status: string) => {
         </p>
       </div>
 
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
         <p class="text-sm text-gray-500">Total Sales</p>
 
         <p class="mt-2 text-2xl font-bold">
@@ -190,7 +190,7 @@ const productStatusClass = (status: string) => {
         </p>
       </div>
 
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
         <p class="text-sm text-gray-500">Revenue</p>
 
         <p class="mt-2 text-2xl font-bold">
@@ -198,7 +198,7 @@ const productStatusClass = (status: string) => {
         </p>
       </div>
 
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
         <p class="text-sm text-gray-500">Current Stock</p>
 
         <p class="mt-2 text-2xl font-bold">
@@ -206,7 +206,7 @@ const productStatusClass = (status: string) => {
         </p>
       </div>
 
-      <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
         <p class="text-sm text-gray-500">Units Sold</p>
 
         <p class="mt-2 text-2xl font-bold">
@@ -219,7 +219,7 @@ const productStatusClass = (status: string) => {
     <div class="grid gap-6 lg:grid-cols-3">
       <!-- Information -->
       <div
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
+        class="rounded-md border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
       >
         <h2 class="text-lg font-bold">Category Information</h2>
 
@@ -273,11 +273,11 @@ const productStatusClass = (status: string) => {
       </div>
 
       <!-- Alerts -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div class="rounded-md border border-gray-200 bg-white p-6 shadow-sm">
         <h2 class="text-lg font-bold">Inventory Alerts</h2>
 
         <div class="mt-5 space-y-3">
-          <div class="rounded-xl bg-yellow-50 p-4">
+          <div class="rounded-md bg-yellow-50 p-4">
             <div class="flex items-center justify-between">
               <span class="text-sm font-semibold text-yellow-700">
                 Low Stock
@@ -293,7 +293,7 @@ const productStatusClass = (status: string) => {
             </p>
           </div>
 
-          <div class="rounded-xl bg-red-50 p-4">
+          <div class="rounded-md bg-red-50 p-4">
             <div class="flex items-center justify-between">
               <span class="text-sm font-semibold text-red-700">
                 Out of Stock
@@ -314,7 +314,7 @@ const productStatusClass = (status: string) => {
 
     <!-- Products -->
     <div
-      class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+      class="overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm"
     >
       <div
         class="flex flex-col gap-4 border-b border-gray-200 p-6 sm:flex-row sm:items-center sm:justify-between"
@@ -336,7 +336,7 @@ const productStatusClass = (status: string) => {
             v-model="search"
             type="text"
             placeholder="Search products..."
-            class="w-full rounded-xl border border-gray-200 py-3 pl-11 pr-4 text-sm outline-none focus:border-black"
+            class="w-full rounded-md border border-gray-200 py-3 pl-11 pr-4 text-sm outline-none focus:border-black"
           />
         </div>
       </div>
@@ -398,7 +398,7 @@ const productStatusClass = (status: string) => {
               <td class="px-6 py-5">
                 <div class="flex items-center gap-3">
                   <div
-                    class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100"
+                    class="flex h-11 w-11 items-center justify-center rounded-md bg-gray-100"
                   >
                     ⚽
                   </div>
@@ -466,9 +466,9 @@ const productStatusClass = (status: string) => {
       v-if="showDeleteModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
     >
-      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+      <div class="w-full max-w-md rounded-md bg-white p-6 shadow-2xl">
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-xl"
+          class="flex h-12 w-12 items-center justify-center rounded-md bg-red-100 text-xl"
         >
           🗑️
         </div>
@@ -483,14 +483,14 @@ const productStatusClass = (status: string) => {
 
         <div class="mt-6 flex justify-end gap-3">
           <button
-            class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold hover:bg-gray-50"
+            class="rounded-md border border-gray-200 px-5 py-2.5 text-sm font-semibold hover:bg-gray-50"
             @click="showDeleteModal = false"
           >
             Cancel
           </button>
 
           <button
-            class="rounded-xl bg-red-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
+            class="rounded-md bg-red-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
             @click="deleteCategory"
           >
             Delete

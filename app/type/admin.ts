@@ -67,3 +67,12 @@ export interface UserActivity {
   date: string;
   icon: string;
 }
+
+export interface AdminNotification {
+  id: number;
+  type: "order" | "stock" | "user" | "review" | string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+}

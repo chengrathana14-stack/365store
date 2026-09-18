@@ -61,42 +61,42 @@ export const heroSlideSeedData: HeroSlide[] = [
 export const adminNavigation: NavigationSection[] = [
   {
     title: "Overview",
-    items: [{ name: "Dashboard", icon: "📊", path: "/admin" }],
+    items: [{ name: "Dashboard", icon: "dashboard", path: "/admin" }],
   },
   {
     title: "Shop Management",
     items: [
-      { name: "Products", icon: "👟", path: "/admin/products" },
-      { name: "Brands", icon: "🏷️", path: "/admin/brands" },
-      { name: "Categories", icon: "📂", path: "/admin/categories" },
-      { name: "Inventory", icon: "📦", path: "/admin/inventory" },
+      { name: "Products", icon: "products", path: "/admin/products" },
+      { name: "Brands", icon: "brands", path: "/admin/brands" },
+      { name: "Categories", icon: "categories", path: "/admin/categories" },
+      { name: "Inventory", icon: "inventory", path: "/admin/inventory" },
     ],
   },
   {
     title: "Sales",
-    items: [{ name: "Orders", icon: "🛒", path: "/admin/orders", badge: 8 }],
+    items: [{ name: "Orders", icon: "orders", path: "/admin/orders", badge: 8 }],
   },
   {
     title: "Customers",
     items: [
-      { name: "Users", icon: "👥", path: "/admin/users" },
-      { name: "Reviews", icon: "⭐", path: "/admin/reviews" },
+      { name: "Users", icon: "users", path: "/admin/users" },
+      { name: "Reviews", icon: "reviews", path: "/admin/reviews" },
     ],
   },
   {
     title: "Marketing",
     items: [
-      { name: "Discounts", icon: "🔥", path: "/admin/discounts" },
-      { name: "Notifications", icon: "🔔", path: "/admin/notifications" },
+      { name: "Discounts", icon: "discounts", path: "/admin/discounts" },
+      { name: "Notifications", icon: "notifications", path: "/admin/notifications" },
     ],
   },
   {
     title: "Analytics",
-    items: [{ name: "Reports", icon: "📈", path: "/admin/reports" }],
+    items: [{ name: "Reports", icon: "reports", path: "/admin/reports" }],
   },
   {
     title: "System",
-    items: [{ name: "Settings", icon: "⚙️", path: "/admin/settings" }],
+    items: [{ name: "Settings", icon: "settings", path: "/admin/settings" }],
   },
 ];
 

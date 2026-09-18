@@ -21,3 +21,60 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Silky Smooth Accordion Animations */
+.accordion-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 280ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              margin 200ms ease;
+  will-change: grid-template-rows, opacity;
+}
+
+.accordion-grid.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.accordion-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Custom slim scrollbar for shadcn-style UI */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
+
+/* Admin Role: Consistent Small Border Radius (Shadcn UI style: ~6px / 0.375rem) */
+.admin-theme {
+  --radius-3xl: 0.375rem;
+  --radius-2xl: 0.375rem;
+  --radius-xl: 0.375rem;
+  --radius-lg: 0.375rem;
+  --radius-md: 0.375rem;
+}
+
+.admin-theme .rounded-3xl,
+.admin-theme .rounded-2xl,
+.admin-theme .rounded-xl,
+.admin-theme .rounded-lg {
+  border-radius: 0.375rem !important;
+}
+

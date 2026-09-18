@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { userActivitySeedData, userOrderSummarySeedData } from "~/data/admin";
+import { userActivitySeedData, userOrderSummarySeedData, userSeedData } from "~/data/admin";
 import type { UserActivity, UserOrderSummary } from "~/type/admin";
 
 definePageMeta({
@@ -8,27 +8,41 @@ definePageMeta({
 });
 
 const route = useRoute();
-
 const userId = Number(route.params.id);
 
 // =====================================================
-// USER DATA
+// DYNAMIC USER DATA FROM SEED DATA
 // =====================================================
 
-const user = ref({
-  id: userId,
+const fallbackUser = userSeedData[0] || {
+  id: 1,
   name: "Dara Sok",
   email: "dara@gmail.com",
   phone: "+855 12 111 222",
-  address: "Phnom Penh, Cambodia",
-  role: "Customer",
-  status: "Active",
+  role: "Customer" as const,
+  status: "Active" as const,
+  orders: 12,
+  spent: 1250,
   joined: "January 12, 2026",
   avatar: "https://i.pravatar.cc/300?img=12",
-  orders: 12,
-  completedOrders: 10,
-  cancelledOrders: 2,
-  spent: 1250,
+};
+
+const matchedUser = userSeedData.find((u) => u.id === userId) || fallbackUser;
+
+const user = ref({
+  id: matchedUser.id,
+  name: matchedUser.name,
+  email: matchedUser.email,
+  phone: matchedUser.phone,
+  address: "Phnom Penh, Cambodia",
+  role: matchedUser.role,
+  status: matchedUser.status,
+  joined: matchedUser.joined,
+  avatar: matchedUser.avatar,
+  orders: matchedUser.orders,
+  completedOrders: Math.max(0, matchedUser.orders - 2),
+  cancelledOrders: matchedUser.orders > 2 ? 2 : 0,
+  spent: matchedUser.spent,
 });
 
 // =====================================================
@@ -51,10 +65,10 @@ const activities: UserActivity[] = userActivitySeedData;
 
 const statusClass = computed(() => {
   if (user.value.status === "Active") {
-    return "bg-green-100 text-green-700";
+    return "bg-emerald-50 text-emerald-600 border border-emerald-100";
   }
 
-  return "bg-red-100 text-red-700";
+  return "bg-red-50 text-red-600 border border-red-100";
 });
 
 // =====================================================
@@ -66,28 +80,22 @@ const toggleStatus = () => {
 };
 
 // =====================================================
-// EDIT USER
+// DELETE USER MODAL
 // =====================================================
 
-const editUser = () => {
-  navigateTo(`/admin/users/${user.value.id}/edit`);
+const showDeleteModal = ref(false);
+
+const openDeleteModal = () => {
+  showDeleteModal.value = true;
 };
 
-// =====================================================
-// DELETE USER
-// =====================================================
+const closeDeleteModal = () => {
+  showDeleteModal.value = false;
+};
 
 const deleteUser = () => {
-  const confirmed = confirm(
-    `Are you sure you want to delete ${user.value.name}?`,
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  alert("User deleted successfully.");
-
+  showDeleteModal.value = false;
+  alert(`User "${user.value.name}" deleted.`);
   navigateTo("/admin/users");
 };
 
@@ -97,22 +105,22 @@ const deleteUser = () => {
 
 const orderStatusClass = (status: string) => {
   if (status === "Delivered") {
-    return "bg-green-100 text-green-700";
+    return "bg-emerald-50 text-emerald-600 border border-emerald-100";
   }
 
   if (status === "Processing") {
-    return "bg-blue-100 text-blue-700";
+    return "bg-blue-50 text-blue-600 border border-blue-100";
   }
 
   if (status === "Pending") {
-    return "bg-yellow-100 text-yellow-700";
+    return "bg-amber-50 text-amber-600 border border-amber-100";
   }
 
   if (status === "Cancelled") {
-    return "bg-red-100 text-red-700";
+    return "bg-red-50 text-red-600 border border-red-100";
   }
 
-  return "bg-gray-100 text-gray-700";
+  return "bg-gray-50 text-gray-600 border border-gray-100";
 };
 
 // =====================================================
@@ -128,354 +136,260 @@ const formatPrice = (price: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+  <div class="space-y-5">
     <!-- ================================================= -->
     <!-- HEADER -->
     <!-- ================================================= -->
-
-    <div class="mb-8">
-      <!-- Back Button -->
-      <NuxtLink
-        to="/admin/users"
-        class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100 hover:text-black"
-      >
-        <span class="text-lg leading-none"> ← </span>
-
-        Back to Users
-      </NuxtLink>
-
-      <!-- Breadcrumb -->
-      <div class="mt-5 flex items-center gap-2 text-sm text-gray-500">
-        <NuxtLink to="/admin/users" class="transition hover:text-black">
-          Users
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <!-- Back Link -->
+        <NuxtLink
+          to="/admin/users"
+          class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 transition mb-2"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Back to Users</span>
         </NuxtLink>
 
-        <span>/</span>
+        <!-- Title & Identification -->
+        <div class="flex items-center gap-3 mt-1">
+          <img
+            :src="user.avatar"
+            :alt="user.name"
+            class="h-11 w-11 rounded-full object-cover border border-gray-100 shadow-2xs shrink-0"
+          />
 
-        <span class="font-medium text-gray-700">
-          {{ user.name }}
-        </span>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
+                {{ user.name }}
+              </h1>
+
+              <span
+                class="rounded-md px-2 py-0.5 text-xs font-semibold"
+                :class="statusClass"
+              >
+                {{ user.status }}
+              </span>
+            </div>
+
+            <p class="text-xs text-gray-400 mt-0.5">
+              Account ID: #USR-{{ user.id }} · Member since {{ user.joined }}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <!-- Page Title -->
-      <div
-        class="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-      >
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">User Profile</h1>
+      <!-- Header Actions -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          class="rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-2xs hover:bg-gray-50 transition"
+          @click="toggleStatus"
+        >
+          {{ user.status === "Active" ? "Suspend Account" : "Activate Account" }}
+        </button>
 
-          <p class="mt-1 text-sm text-gray-500">
-            View customer information, orders, and activity.
-          </p>
-        </div>
-
-        <!-- Header Actions -->
-        <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            class="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
-            @click="editUser"
-          >
-            Edit User
-          </button>
-
-          <button
-            type="button"
-            class="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
-            @click="deleteUser"
-          >
-            Delete
-          </button>
-        </div>
+        <button
+          type="button"
+          class="rounded-lg border border-red-200 bg-white px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition shadow-2xs"
+          @click="openDeleteModal"
+        >
+          Delete
+        </button>
       </div>
     </div>
 
     <!-- ================================================= -->
-    <!-- MAIN CONTENT -->
+    <!-- MAIN GRID -->
     <!-- ================================================= -->
-
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-      <!-- ================================================= -->
-      <!-- LEFT COLUMN -->
-      <!-- ================================================= -->
-
-      <div class="space-y-6">
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <!-- LEFT COLUMN (Profile Summary & Contact) -->
+      <div class="space-y-4">
         <!-- Profile Card -->
-        <div
-          class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm"
-        >
-          <!-- Avatar -->
+        <div class="rounded-md border border-gray-100 bg-white p-5 text-center shadow-xs">
           <img
             :src="user.avatar"
             :alt="user.name"
-            class="mx-auto h-28 w-28 rounded-full object-cover ring-4 ring-gray-100"
+            class="mx-auto h-20 w-20 rounded-full object-cover ring-4 ring-gray-50 border border-gray-100 shadow-2xs"
           />
 
-          <!-- Name -->
-          <h2 class="mt-5 text-xl font-bold text-gray-900">
+          <h2 class="mt-3 text-base font-bold text-gray-900">
             {{ user.name }}
           </h2>
 
-          <!-- Email -->
-          <p class="mt-1 break-all text-sm text-gray-500">
+          <p class="text-xs text-gray-400 break-all mt-0.5">
             {{ user.email }}
           </p>
 
-          <!-- Role & Status -->
-          <div class="mt-4 flex justify-center gap-2">
+          <div class="mt-3 flex justify-center gap-2">
             <span
-              class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700"
+              class="rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+              :class="user.role === 'Admin' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-blue-50 text-blue-700 border border-blue-100'"
             >
               {{ user.role }}
             </span>
 
             <span
-              class="rounded-full px-3 py-1 text-xs font-semibold"
+              class="rounded-md px-2 py-0.5 text-[10px] font-semibold"
               :class="statusClass"
             >
               {{ user.status }}
             </span>
           </div>
 
-          <!-- Toggle Status -->
           <button
             type="button"
-            class="mt-6 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+            class="mt-4 w-full rounded-lg px-3 py-2 text-xs font-semibold transition shadow-2xs"
+            :class="user.status === 'Active' ? 'bg-gray-900 text-white hover:bg-black' : 'bg-emerald-600 text-white hover:bg-emerald-700'"
             @click="toggleStatus"
           >
-            {{ user.status === "Active" ? "Block User" : "Activate User" }}
+            {{ user.status === "Active" ? "Suspend / Block User" : "Activate User" }}
           </button>
         </div>
 
         <!-- Contact Information -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h3 class="font-bold text-gray-900">Contact Information</h3>
+        <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">
+            Contact Details
+          </h3>
 
-          <div class="mt-5 space-y-5">
-            <!-- Email -->
+          <div class="mt-3.5 space-y-3 text-xs">
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">Email</p>
-
-              <p class="mt-1 break-all text-sm font-medium text-gray-900">
-                {{ user.email }}
-              </p>
+              <p class="text-[11px] font-semibold text-gray-400">Email Address</p>
+              <p class="mt-0.5 font-bold text-gray-900 break-all">{{ user.email }}</p>
             </div>
 
-            <!-- Phone -->
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">Phone</p>
-
-              <p class="mt-1 text-sm font-medium text-gray-900">
-                {{ user.phone }}
-              </p>
+              <p class="text-[11px] font-semibold text-gray-400">Phone Number</p>
+              <p class="mt-0.5 font-bold text-gray-900">{{ user.phone }}</p>
             </div>
 
-            <!-- Address -->
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">
-                Address
-              </p>
-
-              <p class="mt-1 text-sm font-medium text-gray-900">
-                {{ user.address }}
-              </p>
+              <p class="text-[11px] font-semibold text-gray-400">Delivery Address</p>
+              <p class="mt-0.5 font-medium text-gray-700">{{ user.address }}</p>
             </div>
 
-            <!-- Joined -->
             <div>
-              <p class="text-xs uppercase tracking-wide text-gray-400">
-                Joined
-              </p>
-
-              <p class="mt-1 text-sm font-medium text-gray-900">
-                {{ user.joined }}
-              </p>
+              <p class="text-[11px] font-semibold text-gray-400">Account Registration</p>
+              <p class="mt-0.5 font-medium text-gray-700">{{ user.joined }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ================================================= -->
-      <!-- RIGHT COLUMN -->
-      <!-- ================================================= -->
-
-      <div class="space-y-6 xl:col-span-2">
-        <!-- ================================================= -->
-        <!-- STATISTICS -->
-        <!-- ================================================= -->
-
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <!-- RIGHT COLUMN (KPI Stats, Order History & Activity) -->
+      <div class="space-y-4 xl:col-span-2">
+        <!-- KPI METRICS -->
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <!-- Total Orders -->
-          <div
-            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-          >
-            <p class="text-sm text-gray-500">Total Orders</p>
-
-            <p class="mt-2 text-2xl font-bold text-gray-900">
-              {{ user.orders }}
-            </p>
-
-            <p class="mt-1 text-xs text-gray-400">All orders</p>
+          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Orders</p>
+            <p class="mt-1 text-2xl font-black text-gray-900">{{ user.orders }}</p>
           </div>
 
-          <!-- Completed -->
-          <div
-            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-          >
-            <p class="text-sm text-gray-500">Completed</p>
-
-            <p class="mt-2 text-2xl font-bold text-green-600">
-              {{ user.completedOrders }}
-            </p>
-
-            <p class="mt-1 text-xs text-gray-400">Successful orders</p>
+          <!-- Completed Orders -->
+          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Completed</p>
+            <p class="mt-1 text-2xl font-black text-emerald-600">{{ user.completedOrders }}</p>
           </div>
 
-          <!-- Cancelled -->
-          <div
-            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-          >
-            <p class="text-sm text-gray-500">Cancelled</p>
-
-            <p class="mt-2 text-2xl font-bold text-red-600">
-              {{ user.cancelledOrders }}
-            </p>
-
-            <p class="mt-1 text-xs text-gray-400">Cancelled orders</p>
+          <!-- Cancelled Orders -->
+          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Cancelled</p>
+            <p class="mt-1 text-2xl font-black text-red-500">{{ user.cancelledOrders }}</p>
           </div>
 
           <!-- Total Spent -->
-          <div
-            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-          >
-            <p class="text-sm text-gray-500">Total Spent</p>
-
-            <p class="mt-2 text-2xl font-bold text-gray-900">
-              ${{ formatPrice(user.spent) }}
-            </p>
-
-            <p class="mt-1 text-xs text-gray-400">Customer spending</p>
+          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-xs">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Spent</p>
+            <p class="mt-1 text-2xl font-black text-gray-900">${{ formatPrice(user.spent) }}</p>
           </div>
         </div>
 
-        <!-- ================================================= -->
-        <!-- ORDER HISTORY -->
-        <!-- ================================================= -->
-
-        <div
-          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
-        >
-          <!-- Order Header -->
-          <div
-            class="flex flex-col gap-3 border-b border-gray-100 p-6 sm:flex-row sm:items-center sm:justify-between"
-          >
+        <!-- ORDER HISTORY TABLE -->
+        <div class="overflow-hidden rounded-md border border-gray-100 bg-white shadow-xs">
+          <div class="flex items-center justify-between border-b border-gray-100 p-4">
             <div>
-              <h2 class="text-lg font-bold text-gray-900">Order History</h2>
-
-              <p class="mt-1 text-sm text-gray-500">
-                Recent purchases made by this customer.
-              </p>
+              <h3 class="text-sm font-bold text-gray-900">Order History</h3>
+              <p class="text-xs text-gray-400 mt-0.5">Purchases placed by this customer</p>
             </div>
 
             <NuxtLink
               to="/admin/orders"
-              class="text-sm font-semibold text-gray-700 transition hover:text-black hover:underline"
+              class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition"
             >
-              View All
+              View All Orders →
             </NuxtLink>
           </div>
 
-          <!-- Table -->
           <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px] text-left">
-              <thead class="bg-gray-50">
-                <tr class="border-b border-gray-100">
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Order
-                  </th>
-
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Date
-                  </th>
-
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Items
-                  </th>
-
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Total
-                  </th>
-
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Status
-                  </th>
-
-                  <th
-                    class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
-                  >
-                    Action
-                  </th>
+            <table class="w-full min-w-[700px] text-left text-xs">
+              <thead class="border-b border-gray-100 bg-white text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                <tr>
+                  <th class="px-6 py-3.5">ORDER ID</th>
+                  <th class="px-6 py-3.5">DATE</th>
+                  <th class="px-6 py-3.5">ITEMS</th>
+                  <th class="px-6 py-3.5">TOTAL</th>
+                  <th class="px-6 py-3.5">STATUS</th>
+                  <th class="px-6 py-3.5 text-center">ACTION</th>
                 </tr>
               </thead>
 
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-gray-100/80">
                 <tr
                   v-for="order in orders"
                   :key="order.id"
-                  class="transition hover:bg-gray-50"
+                  class="transition hover:bg-gray-50/60"
                 >
-                  <!-- Order -->
-                  <td class="px-6 py-4">
+                  <!-- Order ID -->
+                  <td class="px-6 py-4 font-bold text-gray-900">
                     <NuxtLink
                       :to="`/admin/orders/${order.id.replace('#ORD-', '')}`"
-                      class="text-sm font-semibold text-gray-900 hover:underline"
+                      class="hover:text-blue-600 transition"
                     >
                       {{ order.id }}
                     </NuxtLink>
                   </td>
 
                   <!-- Date -->
-                  <td class="px-6 py-4 text-sm text-gray-500">
+                  <td class="px-6 py-4 text-gray-500">
                     {{ order.date }}
                   </td>
 
                   <!-- Items -->
-                  <td class="px-6 py-4 text-sm text-gray-700">
-                    {{ order.items }}
+                  <td class="px-6 py-4 font-medium text-gray-700">
+                    {{ order.items }} items
                   </td>
 
                   <!-- Total -->
-                  <td class="px-6 py-4 text-sm font-semibold text-gray-900">
+                  <td class="px-6 py-4 font-bold text-gray-900">
                     ${{ formatPrice(order.total) }}
                   </td>
 
                   <!-- Status -->
-                  <td class="px-6 py-4">
+                  <td class="px-6 py-4 whitespace-nowrap">
                     <span
-                      class="rounded-full px-3 py-1 text-xs font-semibold"
+                      class="rounded-md px-2.5 py-1 text-xs font-semibold"
                       :class="orderStatusClass(order.status)"
                     >
                       {{ order.status }}
                     </span>
                   </td>
 
-                  <!-- Action -->
-                  <td class="px-6 py-4">
+                  <!-- ACTIONS: BORDERLESS BLUE EYE ICON -->
+                  <td class="px-6 py-4 whitespace-nowrap text-center">
                     <NuxtLink
                       :to="`/admin/orders/${order.id.replace('#ORD-', '')}`"
-                      class="text-sm font-semibold text-gray-700 hover:text-black hover:underline"
+                      title="View Order Details"
+                      class="inline-flex text-blue-400 hover:text-blue-600 hover:scale-125 transition-transform p-0.5"
                     >
-                      View
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
                     </NuxtLink>
                   </td>
                 </tr>
@@ -484,68 +398,82 @@ const formatPrice = (price: number) => {
           </div>
 
           <!-- Empty State -->
-          <div v-if="orders.length === 0" class="p-10 text-center">
-            <div class="text-4xl">🛒</div>
-
-            <h3 class="mt-3 font-semibold text-gray-900">No orders yet</h3>
-
-            <p class="mt-1 text-sm text-gray-500">
-              This customer hasn't placed any orders.
-            </p>
+          <div v-if="orders.length === 0" class="py-12 text-center">
+            <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <h3 class="mt-2 text-xs font-bold text-gray-900">No orders yet</h3>
+            <p class="mt-0.5 text-[11px] text-gray-400">This customer hasn't placed any purchases.</p>
           </div>
         </div>
 
-        <!-- ================================================= -->
-        <!-- RECENT ACTIVITY -->
-        <!-- ================================================= -->
+        <!-- RECENT ACTIVITY LOG -->
+        <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+          <h3 class="text-sm font-bold text-gray-900">Recent Customer Activity</h3>
+          <p class="text-xs text-gray-400 mt-0.5">Audit log of customer engagements and transactions</p>
 
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div>
-            <h2 class="text-lg font-bold text-gray-900">Recent Activity</h2>
-
-            <p class="mt-1 text-sm text-gray-500">
-              Recent activity from this customer.
-            </p>
-          </div>
-
-          <!-- Activity -->
-          <div class="mt-6">
+          <div class="mt-4 space-y-4">
             <div
               v-for="(activity, index) in activities"
               :key="activity.title + activity.date"
-              class="relative flex gap-4 pb-6 last:pb-0"
+              class="relative flex gap-3 text-xs"
             >
-              <!-- Timeline Line -->
-              <div
-                v-if="index !== activities.length - 1"
-                class="absolute left-5 top-10 h-full w-px bg-gray-200"
-              ></div>
-
-              <!-- Icon -->
-              <div
-                class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-lg"
-              >
-                {{ activity.icon }}
+              <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 font-bold shadow-2xs">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
 
-              <!-- Activity Content -->
-              <div class="min-w-0 flex-1">
-                <div class="flex flex-col justify-between gap-1 sm:flex-row">
-                  <p class="font-semibold text-gray-900">
-                    {{ activity.title }}
-                  </p>
-
-                  <span class="text-xs text-gray-400">
-                    {{ activity.date }}
-                  </span>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <p class="font-bold text-gray-900">{{ activity.title }}</p>
+                  <span class="text-[11px] text-gray-400">{{ activity.date }}</span>
                 </div>
-
-                <p class="mt-1 text-sm text-gray-500">
-                  {{ activity.description }}
-                </p>
+                <p class="text-[11px] text-gray-500 mt-0.5">{{ activity.description }}</p>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         DELETE USER MODAL
+    ========================================== -->
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4"
+    >
+      <div class="w-full max-w-sm rounded-md bg-white p-5 shadow-xl border border-gray-100">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+
+        <h3 class="mt-3 text-sm font-bold text-gray-900">Delete Account?</h3>
+        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+          Are you sure you want to permanently delete <span class="font-semibold text-gray-900">{{ user.name }}</span>?
+        </p>
+
+        <div class="mt-5 flex justify-end gap-2 text-xs font-semibold">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50 transition"
+            @click="closeDeleteModal"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="rounded-lg bg-red-600 px-3 py-1.5 text-white hover:bg-red-700 transition shadow-2xs"
+            @click="deleteUser"
+          >
+            Delete Account
+          </button>
         </div>
       </div>
     </div>
