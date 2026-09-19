@@ -94,105 +94,18 @@
           <div class="flex flex-col items-center rounded-2xl border border-neutral-800 bg-white p-5 text-neutral-900 shadow-inner">
             <!-- Merchant Info Header -->
             <div class="text-center mb-3">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Merchant</span>
-              <h4 class="text-base font-black text-black">365 SPORTS OFFICIAL STORE</h4>
-              <p class="text-xs text-gray-500">ID: 365-SPORTS-KHQR-99</p>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Official Merchant</span>
+              <h4 class="text-base font-black text-black">CHENG ROTANA</h4>
+              <p class="text-xs text-gray-500">Bakong Account · KHQR</p>
             </div>
 
-            <!-- Authentic Crisp QR Canvas -->
-            <div class="relative flex items-center justify-center rounded-xl bg-white p-2 border-2 border-dashed border-gray-300 shadow-xs">
-              <!-- Corner brackets styling -->
-              <div class="absolute -top-1 -left-1 h-3 w-3 border-t-2 border-l-2 border-red-600"></div>
-              <div class="absolute -top-1 -right-1 h-3 w-3 border-t-2 border-r-2 border-red-600"></div>
-              <div class="absolute -bottom-1 -left-1 h-3 w-3 border-b-2 border-l-2 border-red-600"></div>
-              <div class="absolute -bottom-1 -right-1 h-3 w-3 border-b-2 border-r-2 border-red-600"></div>
-
-              <!-- High Quality Stylized SVG QR -->
-              <svg
-                class="h-48 w-48 sm:h-52 sm:w-52"
-                viewBox="0 0 200 200"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <!-- Outer Finder Pattern Top-Left -->
-                <rect x="10" y="10" width="50" height="50" rx="6" fill="#000" />
-                <rect x="18" y="18" width="34" height="34" rx="4" fill="#fff" />
-                <rect x="24" y="24" width="22" height="22" rx="2" fill="#E11D48" />
-
-                <!-- Outer Finder Pattern Top-Right -->
-                <rect x="140" y="10" width="50" height="50" rx="6" fill="#000" />
-                <rect x="148" y="18" width="34" height="34" rx="4" fill="#fff" />
-                <rect x="154" y="24" width="22" height="22" rx="2" fill="#E11D48" />
-
-                <!-- Outer Finder Pattern Bottom-Left -->
-                <rect x="10" y="140" width="50" height="50" rx="6" fill="#000" />
-                <rect x="18" y="148" width="34" height="34" rx="4" fill="#fff" />
-                <rect x="24" y="154" width="22" height="22" rx="2" fill="#E11D48" />
-
-                <!-- Stylized QR Matrix Dots -->
-                <g fill="#18181B">
-                  <!-- Row patterns -->
-                  <rect x="70" y="15" width="8" height="8" rx="2" />
-                  <rect x="90" y="15" width="16" height="8" rx="2" />
-                  <rect x="115" y="15" width="8" height="8" rx="2" />
-
-                  <rect x="68" y="30" width="12" height="12" rx="2" />
-                  <rect x="95" y="32" width="10" height="10" rx="2" />
-                  <rect x="115" y="30" width="14" height="8" rx="2" />
-
-                  <rect x="75" y="50" width="18" height="8" rx="2" />
-                  <rect x="105" y="50" width="8" height="18" rx="2" />
-                  <rect x="120" y="50" width="12" height="12" rx="2" />
-
-                  <!-- Left columns -->
-                  <rect x="15" y="70" width="14" height="8" rx="2" />
-                  <rect x="35" y="75" width="18" height="12" rx="2" />
-                  <rect x="20" y="95" width="10" height="18" rx="2" />
-                  <rect x="38" y="95" width="14" height="10" rx="2" />
-                  <rect x="15" y="120" width="20" height="10" rx="2" />
-
-                  <!-- Center Body -->
-                  <rect x="65" y="70" width="12" height="12" rx="2" />
-                  <rect x="125" y="70" width="15" height="10" rx="2" />
-                  <rect x="65" y="120" width="14" height="10" rx="2" />
-                  <rect x="120" y="120" width="12" height="12" rx="2" />
-
-                  <!-- Right columns -->
-                  <rect x="145" y="70" width="18" height="12" rx="2" />
-                  <rect x="170" y="75" width="14" height="8" rx="2" />
-                  <rect x="145" y="95" width="12" height="20" rx="2" />
-                  <rect x="165" y="95" width="20" height="12" rx="2" />
-                  <rect x="150" y="125" width="18" height="10" rx="2" />
-
-                  <!-- Bottom Right cluster -->
-                  <rect x="70" y="145" width="15" height="10" rx="2" />
-                  <rect x="95" y="145" width="10" height="15" rx="2" />
-                  <rect x="115" y="145" width="15" height="10" rx="2" />
-                  <rect x="140" y="145" width="12" height="12" rx="2" />
-                  <rect x="160" y="145" width="25" height="8" rx="2" />
-
-                  <rect x="75" y="168" width="12" height="15" rx="2" />
-                  <rect x="95" y="168" width="18" height="12" rx="2" />
-                  <rect x="125" y="168" width="10" height="18" rx="2" />
-                  <rect x="145" y="165" width="20" height="10" rx="2" />
-                  <rect x="175" y="165" width="12" height="15" rx="2" />
-                </g>
-
-                <!-- Center Brand Badge -->
-                <circle cx="100" cy="100" r="22" fill="#FFFFFF" stroke="#000000" stroke-width="2" />
-                <circle cx="100" cy="100" r="18" fill="#101310" />
-                <text
-                  x="100"
-                  y="104"
-                  fill="#B7F34A"
-                  font-size="11"
-                  font-weight="900"
-                  text-anchor="middle"
-                  font-family="sans-serif"
-                >
-                  365
-                </text>
-              </svg>
+            <!-- Authentic Real KHQR Image -->
+            <div class="relative flex items-center justify-center rounded-2xl bg-white p-2 border-2 border-gray-200 shadow-md max-w-[240px] sm:max-w-[260px] overflow-hidden">
+              <img
+                src="/images/khqr.png"
+                alt="CHENG ROTANA KHQR"
+                class="w-full h-auto object-contain rounded-xl"
+              />
 
               <!-- Live scan animation line -->
               <div

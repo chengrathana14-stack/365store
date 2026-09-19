@@ -194,66 +194,24 @@
             <div v-if="paymentMethod === 'khqr'" class="mt-6 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 text-white">
               <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <!-- QR Visual Display -->
-                <div class="flex flex-col items-center rounded-xl bg-white p-4 text-black shadow-lg">
+                <div class="flex flex-col items-center rounded-2xl bg-white p-4 text-black shadow-lg">
                   <div class="flex items-center gap-1.5 mb-2">
                     <span class="text-xs font-black text-red-600">KHQR</span>
-                    <span class="text-[10px] font-bold text-gray-400">· 365 Sports Official</span>
+                    <span class="text-[11px] font-bold text-gray-700">· CHENG ROTANA</span>
                   </div>
 
-                  <!-- QR SVG -->
-                  <div class="relative p-1 border border-gray-200 rounded-lg">
-                    <svg class="h-44 w-44" viewBox="0 0 200 200" fill="none">
-                      <rect x="10" y="10" width="50" height="50" rx="6" fill="#000" />
-                      <rect x="18" y="18" width="34" height="34" rx="4" fill="#fff" />
-                      <rect x="24" y="24" width="22" height="22" rx="2" fill="#E11D48" />
-
-                      <rect x="140" y="10" width="50" height="50" rx="6" fill="#000" />
-                      <rect x="148" y="18" width="34" height="34" rx="4" fill="#fff" />
-                      <rect x="154" y="24" width="22" height="22" rx="2" fill="#E11D48" />
-
-                      <rect x="10" y="140" width="50" height="50" rx="6" fill="#000" />
-                      <rect x="18" y="148" width="34" height="34" rx="4" fill="#fff" />
-                      <rect x="24" y="154" width="22" height="22" rx="2" fill="#E11D48" />
-
-                      <g fill="#18181B">
-                        <rect x="70" y="15" width="8" height="8" rx="2" />
-                        <rect x="90" y="15" width="16" height="8" rx="2" />
-                        <rect x="115" y="15" width="8" height="8" rx="2" />
-                        <rect x="68" y="30" width="12" height="12" rx="2" />
-                        <rect x="95" y="32" width="10" height="10" rx="2" />
-                        <rect x="115" y="30" width="14" height="8" rx="2" />
-                        <rect x="75" y="50" width="18" height="8" rx="2" />
-                        <rect x="105" y="50" width="8" height="18" rx="2" />
-                        <rect x="15" y="70" width="14" height="8" rx="2" />
-                        <rect x="35" y="75" width="18" height="12" rx="2" />
-                        <rect x="20" y="95" width="10" height="18" rx="2" />
-                        <rect x="65" y="70" width="12" height="12" rx="2" />
-                        <rect x="125" y="70" width="15" height="10" rx="2" />
-                        <rect x="65" y="120" width="14" height="10" rx="2" />
-                        <rect x="145" y="70" width="18" height="12" rx="2" />
-                        <rect x="170" y="75" width="14" height="8" rx="2" />
-                        <rect x="145" y="95" width="12" height="20" rx="2" />
-                        <rect x="165" y="95" width="20" height="12" rx="2" />
-                        <rect x="70" y="145" width="15" height="10" rx="2" />
-                        <rect x="95" y="145" width="10" height="15" rx="2" />
-                        <rect x="115" y="145" width="15" height="10" rx="2" />
-                        <rect x="140" y="145" width="12" height="12" rx="2" />
-                        <rect x="160" y="145" width="25" height="8" rx="2" />
-                        <rect x="75" y="168" width="12" height="15" rx="2" />
-                        <rect x="95" y="168" width="18" height="12" rx="2" />
-                        <rect x="125" y="168" width="10" height="18" rx="2" />
-                        <rect x="145" y="165" width="20" height="10" rx="2" />
-                      </g>
-
-                      <circle cx="100" cy="100" r="20" fill="#FFFFFF" stroke="#000000" stroke-width="2" />
-                      <circle cx="100" cy="100" r="16" fill="#101310" />
-                      <text x="100" y="104" fill="#B7F34A" font-size="10" font-weight="900" text-anchor="middle">365</text>
-                    </svg>
+                  <!-- Real KHQR Image -->
+                  <div class="relative p-1 border-2 border-gray-200 rounded-xl overflow-hidden max-w-[210px] sm:max-w-[230px] bg-white shadow-xs">
+                    <img
+                      src="/images/khqr.png"
+                      alt="CHENG ROTANA KHQR"
+                      class="w-full h-auto object-contain rounded-lg"
+                    />
 
                     <!-- Scanning Line animation if verifying -->
                     <div
                       v-if="isProcessingPayment"
-                      class="absolute inset-x-2 h-1 bg-lime-400 animate-pulse shadow-[0_0_10px_#b7f34a]"
+                      class="absolute inset-x-0 h-1 bg-lime-400 animate-pulse shadow-[0_0_12px_#b7f34a]"
                       style="top: 50%"
                     ></div>
                   </div>
