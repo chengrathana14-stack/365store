@@ -157,13 +157,13 @@
 
             <!-- Action Buttons -->
             <div class="mt-6 pt-4 border-t border-white/10 space-y-2">
-              <!-- Primary: Instant Buy with QR -->
+              <!-- Primary: Instant Buy Now -->
               <button
                 type="button"
-                @click="handleInstantQr"
-                class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(183,243,74,0.4)] active:scale-98"
+                @click="handleBuyNow"
+                class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(183,243,74,0.4)] active:scale-98"
               >
-                <span>⚡ Instant Buy with QR (KHQR)</span>
+                <span>Buy Now</span>
               </button>
 
               <!-- Secondary: Add to Cart & Full Details -->
@@ -228,7 +228,7 @@ const handleAddToCart = () => {
   }, 1500);
 };
 
-const handleInstantQr = () => {
+const handleBuyNow = () => {
   if (!selectedProduct.value) return;
   const product = selectedProduct.value;
   const currentTotal = product.price * qty.value;

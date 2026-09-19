@@ -213,13 +213,13 @@
               </p>
             </div>
 
-            <!-- PRIMARY ACTION 1: ⚡ INSTANT BUY WITH QR -->
+            <!-- PRIMARY ACTION 1: INSTANT BUY NOW (CARD OR QR) -->
             <button
               type="button"
               @click="handleInstantCartQr"
               class="mt-6 w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-4 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 hover:shadow-[0_0_25px_rgba(183,243,74,0.5)] active:scale-98"
             >
-              <span>⚡ Instant Pay with QR (KHQR)</span>
+              <span>⚡ Instant Buy Now (Card or QR)</span>
             </button>
 
             <!-- PRIMARY ACTION 2: Standard Checkout -->

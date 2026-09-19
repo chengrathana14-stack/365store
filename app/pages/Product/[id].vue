@@ -252,15 +252,14 @@
             <!-- PRIMARY ACTIONS: BUY NOW WITH QR + ADD TO CART -->
             <div class="mt-8 pt-6 border-t border-white/10">
               <div class="flex flex-col sm:flex-row gap-3">
-                <!-- ⚡ INSTANT BUY WITH QR -->
+                <!-- BUY NOW -->
                 <button
                   type="button"
                   :disabled="product.stock === 0"
-                  @click="handleInstantQr"
+                  @click="handleBuyNow"
                   class="flex-1 flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(183,243,74,0.5)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span class="text-lg">⚡</span>
-                  <span class="text-sm">Instant Buy with QR</span>
+                  <span class="text-sm font-black uppercase tracking-wider">Buy Now</span>
                 </button>
 
                 <!-- ADD TO CART -->
@@ -298,8 +297,8 @@
               <div class="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-5 text-center">
                 <div class="flex flex-col items-center">
                   <span class="text-xl">⚡</span>
-                  <span class="mt-1 text-[11px] font-black text-white">Bakong KHQR</span>
-                  <span class="text-[10px] text-gray-400">Scan & pay in 5s</span>
+                  <span class="mt-1 text-[11px] font-black text-white">Card or KHQR</span>
+                  <span class="text-[10px] text-gray-400">Instant Checkout</span>
                 </div>
 
                 <div class="flex flex-col items-center">
@@ -502,7 +501,7 @@ const handleWishlist = () => {
   toggleWishlist(product.value);
 };
 
-const handleInstantQr = () => {
+const handleBuyNow = () => {
   if (!product.value) return;
   const sizeToUse = selectedSize.value || product.value.size?.[0] || "";
   const total = product.value.price * quantity.value;

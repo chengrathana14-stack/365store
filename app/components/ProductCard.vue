@@ -138,10 +138,10 @@
         <button
           type="button"
           :disabled="product.stock === 0"
-          @click="handleInstantQr"
+          @click="handleBuyNow"
           class="flex h-8.5 items-center justify-center gap-1 rounded-xl bg-lime-400 text-[11px] font-black uppercase text-black transition hover:bg-lime-300 hover:shadow-[0_0_15px_rgba(183,243,74,0.4)] active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-500"
         >
-          <span>⚡ QR Pay</span>
+          <span>Buy Now</span>
         </button>
       </div>
     </div>
@@ -189,7 +189,7 @@ const handleAddToCart = () => {
   }, 1400);
 };
 
-const handleInstantQr = () => {
+const handleBuyNow = () => {
   if (props.product.stock <= 0) return;
   const defaultSize = props.product.size?.[0] || "";
   openQrPayment({
