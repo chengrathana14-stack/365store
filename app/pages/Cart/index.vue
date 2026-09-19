@@ -1,92 +1,82 @@
 <template>
-  <div class="min-h-screen bg-gray-100 py-10">
+  <div class="min-h-screen py-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- ========================================= -->
       <!-- Page Title -->
-      <!-- ========================================= -->
+      <div class="mb-8 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="h-6 w-1 rounded-full bg-lime-500"></span>
+            <h1 class="text-2xl sm:text-3xl font-black text-gray-950 uppercase tracking-tight">Shopping Bag</h1>
+          </div>
+          <p class="mt-1 text-xs sm:text-sm text-gray-500">Review your selected performance gear before payment</p>
+        </div>
 
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-
-        <p class="mt-2 text-gray-500">Review your items before checkout</p>
+        <NuxtLink
+          to="/Product"
+          class="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-700 hover:text-black transition"
+        >
+          <span>← Continue Shopping</span>
+        </NuxtLink>
       </div>
 
-      <!-- ========================================= -->
-      <!-- EMPTY CART -->
-      <!-- ========================================= -->
-
+      <!-- EMPTY CART STATE -->
       <div
         v-if="cart.length === 0"
-        class="rounded-2xl bg-white px-6 py-20 text-center shadow-sm"
+        class="rounded-2xl border border-gray-200/90 bg-white/90 backdrop-blur-md px-6 py-20 text-center shadow-sm"
       >
-        <div class="text-6xl text-gray-300">🛒</div>
+        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-neutral-100 text-3xl">
+          🛒
+        </div>
 
-        <h2 class="mt-5 text-2xl font-bold text-gray-900">
-          Your cart is empty
+        <h2 class="mt-5 text-2xl font-black text-gray-950">
+          Your cart is currently empty
         </h2>
 
-        <p class="mx-auto mt-2 max-w-md text-gray-500">
-          You haven't added any products to your cart yet. Explore our products
-          and start shopping.
+        <p class="mx-auto mt-2 max-w-md text-xs sm:text-sm text-gray-500">
+          Looks like you haven't added any gear yet. Check out our trending popular footwear and sportswear collections.
         </p>
 
         <NuxtLink
           to="/Product"
-          class="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+          class="mt-6 inline-flex rounded-xl bg-black px-7 py-3 text-xs font-black uppercase tracking-wider text-lime-400 transition hover:bg-neutral-800 active:scale-95"
         >
-          Start Shopping
+          Explore Catalog &rarr;
         </NuxtLink>
       </div>
 
-      <!-- ========================================= -->
-      <!-- CART -->
-      <!-- ========================================= -->
-
-      <div v-else class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <!-- ======================================= -->
-        <!-- Cart Items -->
-        <!-- ======================================= -->
-
-        <div class="space-y-4 lg:col-span-2">
-          <!-- Cart Header -->
-
+      <!-- CART WITH ITEMS -->
+      <div v-else class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <!-- LEFT: Items List (8 cols) -->
+        <div class="space-y-4 lg:col-span-8">
+          <!-- Cart Header Bar -->
           <div
-            class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm"
+            class="flex items-center justify-between rounded-xl border border-gray-200/80 bg-white/90 backdrop-blur-md px-5 py-3.5 shadow-xs"
           >
             <div>
-              <h2 class="font-bold text-gray-900">Cart Items</h2>
-
-              <p class="text-sm text-gray-500">
-                {{ cartCount }}
-
-                {{ cartCount === 1 ? "item" : "items" }}
-              </p>
+              <h2 class="text-sm font-black text-gray-950 uppercase tracking-wider">
+                Cart Items ({{ cartCount }})
+              </h2>
             </div>
 
             <!-- Clear Cart -->
-
             <button
-              @click="clearCart"
-              class="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+              @click="handleClearCart"
+              class="text-xs font-bold text-red-500 hover:text-red-700 transition"
             >
               Clear Cart
             </button>
           </div>
 
-          <!-- ======================================= -->
-          <!-- Cart Product -->
-          <!-- ======================================= -->
-
+          <!-- Product Item Card -->
           <div
             v-for="item in cart"
             :key="`${item.product.id}-${item.size}`"
-            class="flex flex-col gap-5 rounded-xl bg-white p-5 shadow-sm sm:flex-row"
+            class="flex flex-col sm:flex-row gap-5 rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-md p-5 shadow-xs transition hover:border-gray-300"
           >
-            <!-- Product Image -->
-
+            <!-- Product Thumbnail -->
             <NuxtLink
               :to="`/Product/${item.product.id}`"
-              class="h-32 w-full shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:w-32"
+              class="h-32 w-full sm:w-32 shrink-0 overflow-hidden rounded-xl bg-neutral-100 border border-gray-200"
             >
               <img
                 :src="item.product.image"
@@ -95,215 +85,156 @@
               />
             </NuxtLink>
 
-            <!-- Product Info -->
-
-            <div class="flex-1">
-              <!-- Top -->
-
+            <!-- Details -->
+            <div class="flex-1 flex flex-col justify-between">
               <div class="flex justify-between gap-4">
                 <div>
-                  <!-- Brand -->
-
-                  <p
-                    class="text-xs font-bold uppercase tracking-wider text-gray-400"
-                  >
-                    {{ item.product.brand }}
-                  </p>
-
-                  <!-- Name -->
-
+                  <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    {{ item.product.brand }} · {{ item.product.category }}
+                  </span>
                   <NuxtLink :to="`/Product/${item.product.id}`">
-                    <h2
-                      class="mt-1 text-lg font-bold text-gray-900 transition hover:text-blue-600"
-                    >
+                    <h3 class="mt-1 text-base font-black text-gray-950 transition hover:text-lime-600">
                       {{ item.product.name }}
-                    </h2>
+                    </h3>
                   </NuxtLink>
-
-                  <!-- Category -->
-
-                  <p class="mt-1 text-sm text-gray-500">
-                    {{ item.product.category }}
-                  </p>
-
-                  <p class="mt-1 text-sm font-semibold text-gray-700">
-                    Size: {{ item.size }}
+                  <p class="mt-1 text-xs font-bold text-gray-700">
+                    Size: <span class="rounded bg-neutral-100 px-2 py-0.5 font-mono">{{ item.size || 'Standard' }}</span>
                   </p>
                 </div>
 
-                <!-- Delete -->
-
+                <!-- Delete Item -->
                 <button
                   @click="removeFromCart(item.product.id, item.size)"
-                  class="flex h-9 w-9 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-50 hover:text-red-700"
-                  title="Remove item"
+                  class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 transition"
+                  title="Remove"
                 >
-                  🗑
+                  ✕
                 </button>
               </div>
 
-              <!-- Bottom -->
-
-              <div
-                class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <!-- Quantity -->
-
-                <div
-                  class="flex w-fit items-center overflow-hidden rounded-lg border border-gray-200"
-                >
-                  <!-- Minus -->
-
+              <!-- Quantity and Subtotal -->
+              <div class="mt-4 flex items-center justify-between pt-3 border-t border-gray-100">
+                <div class="flex items-center rounded-lg border border-gray-200 bg-white">
                   <button
                     @click="decreaseQuantity(item.product.id, item.size)"
                     :disabled="item.quantity <= 1"
-                    class="px-4 py-2 text-lg text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="px-3 py-1 text-sm font-bold text-gray-600 hover:bg-gray-100 disabled:opacity-30"
                   >
                     −
                   </button>
-
-                  <!-- Quantity -->
-
-                  <span
-                    class="min-w-12 border-x border-gray-200 px-4 py-2 text-center font-semibold text-gray-900"
-                  >
+                  <span class="min-w-8 text-center text-xs font-black text-gray-950">
                     {{ item.quantity }}
                   </span>
-
-                  <!-- Plus -->
-
                   <button
                     @click="increaseQuantity(item.product.id, item.size)"
                     :disabled="item.quantity >= item.product.stock"
-                    class="px-4 py-2 text-lg text-gray-600 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="px-3 py-1 text-sm font-bold text-gray-600 hover:bg-gray-100 disabled:opacity-30"
                   >
                     +
                   </button>
                 </div>
 
-                <!-- Price -->
-
                 <div class="text-right">
-                  <p class="text-xl font-bold text-gray-900">
-                    $
-                    {{ (item.product.price * item.quantity).toFixed(2) }}
-                  </p>
-
-                  <p class="text-xs text-gray-400">
-                    ${{ item.product.price.toFixed(2) }}
-                    each
-                  </p>
+                  <span class="text-base font-black text-gray-950">
+                    ${{ (item.product.price * item.quantity).toFixed(2) }}
+                  </span>
+                  <span class="block text-[11px] text-gray-400">
+                    ${{ item.product.price.toFixed(2) }} each
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- ======================================= -->
-          <!-- Continue Shopping -->
-          <!-- ======================================= -->
-
-          <div class="pt-4">
-            <NuxtLink
-              to="/Product"
-              class="inline-flex items-center gap-2 font-medium text-blue-600 transition hover:text-blue-800"
-            >
-              ← Continue Shopping
-            </NuxtLink>
-          </div>
         </div>
 
-        <!-- ======================================= -->
-        <!-- Order Summary -->
-        <!-- ======================================= -->
+        <!-- RIGHT: Order Summary (4 cols) -->
+        <div class="lg:col-span-4">
+          <div class="sticky top-24 rounded-2xl border border-gray-200/80 bg-white/95 backdrop-blur-md p-6 shadow-lg">
+            <h2 class="text-lg font-black uppercase tracking-tight text-gray-950">Order Summary</h2>
 
-        <div class="lg:col-span-1">
-          <div class="sticky top-24 rounded-xl bg-white p-6 shadow-sm">
-            <h2 class="mb-6 text-xl font-bold text-gray-900">Order Summary</h2>
-
-            <!-- Subtotal -->
-
-            <div class="mb-4 flex justify-between text-gray-600">
-              <span> Subtotal </span>
-
-              <span> ${{ subtotal.toFixed(2) }} </span>
-            </div>
-
-            <!-- Shipping -->
-
-            <div class="mb-4 flex justify-between text-gray-600">
-              <span> Shipping </span>
-
-              <span> ${{ shipping.toFixed(2) }} </span>
-            </div>
-
-            <!-- Discount -->
-
-            <div class="mb-4 flex justify-between text-green-600">
-              <span> Discount </span>
-
-              <span> -${{ discount.toFixed(2) }} </span>
-            </div>
-
-            <!-- Total -->
-
-            <div class="mt-4 border-t pt-4">
-              <div class="flex items-center justify-between">
-                <span class="text-lg font-semibold text-gray-900"> Total </span>
-
-                <span class="text-2xl font-bold text-blue-600">
-                  ${{ total.toFixed(2) }}
+            <!-- Costs breakdown -->
+            <div class="mt-5 space-y-3 text-xs">
+              <div class="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span class="font-bold text-gray-900">${{ subtotal.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-gray-600">
+                <span>Estimated Shipping</span>
+                <span class="font-bold text-gray-900">
+                  {{ shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}` }}
                 </span>
+              </div>
+              <div v-if="discount > 0" class="flex justify-between text-emerald-600 font-bold">
+                <span>Promo Discount (10%)</span>
+                <span>-${{ discount.toFixed(2) }}</span>
+              </div>
+
+              <div class="border-t border-gray-200 pt-3">
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm font-black text-gray-950 uppercase">Total</span>
+                  <div class="text-right">
+                    <span class="text-2xl font-black text-gray-950">
+                      ${{ total.toFixed(2) }}
+                    </span>
+                    <span class="block text-[10px] text-gray-500 font-bold">
+                      ≈ {{ Math.round(total * 4100).toLocaleString() }} KHR
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- ===================================== -->
-            <!-- Promo -->
-            <!-- ===================================== -->
-
-            <div class="mt-6">
-              <label class="mb-2 block text-sm font-medium text-gray-700">
+            <!-- Promo Code Input -->
+            <div class="mt-6 border-t border-gray-100 pt-5">
+              <label class="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1.5">
                 Promo Code
               </label>
-
-              <div class="flex">
+              <div class="flex gap-2">
                 <input
                   v-model="promoCode"
                   type="text"
-                  placeholder="Enter code"
-                  class="w-full rounded-l-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Try: SPORT10"
+                  class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs uppercase font-mono tracking-wider focus:border-black focus:outline-none"
                 />
-
                 <button
+                  type="button"
                   @click="applyPromo"
-                  class="rounded-r-lg bg-gray-900 px-4 py-2 text-white transition hover:bg-gray-800"
+                  class="rounded-lg bg-black px-4 text-xs font-black uppercase text-lime-400 hover:bg-neutral-800 transition"
                 >
                   Apply
                 </button>
               </div>
-
               <p
                 v-if="promoMessage"
-                class="mt-2 text-sm"
-                :class="promoApplied ? 'text-green-600' : 'text-red-500'"
+                class="mt-1.5 text-xs font-bold"
+                :class="promoApplied ? 'text-emerald-600' : 'text-red-500'"
               >
                 {{ promoMessage }}
               </p>
             </div>
 
-            <!-- ===================================== -->
-            <!-- Checkout -->
-            <!-- ===================================== -->
-
+            <!-- PRIMARY ACTION 1: ⚡ INSTANT BUY WITH QR -->
             <button
-              @click="checkout"
-              class="mt-6 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
+              type="button"
+              @click="handleInstantCartQr"
+              class="mt-6 w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-md shadow-lime-400/20 transition hover:bg-lime-300 active:scale-98"
             >
-              Proceed to Checkout
+              <span>⚡ Instant Pay with QR (KHQR)</span>
             </button>
 
-            <p class="mt-4 text-center text-xs text-gray-400">
-              Secure checkout · Safe payment
-            </p>
+            <!-- PRIMARY ACTION 2: Standard Checkout -->
+            <NuxtLink
+              to="/Order"
+              class="mt-2.5 block w-full rounded-xl bg-black py-3 text-center text-xs font-black uppercase tracking-wider text-white transition hover:bg-neutral-800 active:scale-98"
+            >
+              Standard Checkout &rarr;
+            </NuxtLink>
+
+            <!-- Trust badges -->
+            <div class="mt-6 border-t border-gray-100 pt-4 text-center text-[11px] text-gray-500 space-y-1">
+              <p>🔒 256-Bit Encrypted KHQR & Card Payments</p>
+              <p>✓ 100% Genuine Performance Products</p>
+            </div>
           </div>
         </div>
       </div>
@@ -313,13 +244,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { navigateTo } from "#app/composables/router";
-
-// ===============================================
-// Cart
-// ===============================================
-
 import { useCart } from "~/composables/useCart";
+import { useQrPayment } from "~/composables/useQrPayment";
+import { useToast } from "~/composables/useToast";
+
+definePageMeta({
+  layout: "user",
+});
 
 const {
   cart,
@@ -331,69 +262,57 @@ const {
   clearCart,
 } = useCart();
 
-// ===============================================
-// Shipping
-// ===============================================
+const { openQrPayment } = useQrPayment();
+const { success, error } = useToast();
 
 const shipping = computed(() => {
-  if (subtotal.value === 0) {
-    return 0;
-  }
-
+  if (subtotal.value === 0) return 0;
   return subtotal.value >= 100 ? 0 : 5;
 });
 
-// ===============================================
-// Promo
-// ===============================================
-
 const promoCode = ref("");
-
 const promoApplied = ref(false);
-
 const promoMessage = ref("");
 
-// ===============================================
-// Discount
-// ===============================================
-
 const discount = computed(() => {
-  if (!promoApplied.value) {
-    return 0;
-  }
-
+  if (!promoApplied.value) return 0;
   return subtotal.value * 0.1;
 });
 
-// ===============================================
-// Total
-// ===============================================
-
 const total = computed(() => {
-  return subtotal.value + shipping.value - discount.value;
+  return Math.max(0, subtotal.value + shipping.value - discount.value);
 });
-
-// ===============================================
-// Apply Promo
-// ===============================================
 
 const applyPromo = () => {
   if (promoCode.value.trim().toUpperCase() === "SPORT10") {
     promoApplied.value = true;
-
-    promoMessage.value = "Promo code applied! 10% discount.";
+    promoMessage.value = "✓ SPORT10 applied: 10% discount!";
+    success("Promo applied", "10% off your entire order!");
   } else {
     promoApplied.value = false;
-
-    promoMessage.value = "Invalid promo code.";
+    promoMessage.value = "Invalid code. Try SPORT10";
+    error("Invalid code", "Use code SPORT10 for 10% off.");
   }
 };
 
-// ===============================================
-// Checkout
-// ===============================================
+const handleClearCart = () => {
+  if (confirm("Are you sure you want to clear your shopping bag?")) {
+    clearCart();
+    success("Cart cleared", "All items removed from your cart.");
+  }
+};
 
-const checkout = () => {
-  navigateTo("/Order");
+const handleInstantCartQr = () => {
+  if (cart.value.length === 0) return;
+  openQrPayment({
+    items: cart.value.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+      size: item.size,
+    })),
+    subtotal: subtotal.value,
+    shipping: shipping.value,
+    total: total.value,
+  });
 };
 </script>

@@ -1,22 +1,22 @@
 <template>
   <div
-    class="group relative flex flex-col w-full overflow-hidden rounded-md bg-white border border-gray-200/90 shadow-xs transition-all duration-200 hover:shadow-sm hover:border-gray-300"
+    class="group relative flex flex-col w-full overflow-hidden rounded-xl bg-white/90 backdrop-blur-xs border border-gray-200/90 shadow-xs transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-black/20"
   >
     <!-- Top Image Container -->
-    <div class="relative block w-full aspect-square overflow-hidden bg-neutral-50 rounded-t-md">
+    <div class="relative block w-full aspect-square overflow-hidden bg-neutral-100/70 rounded-t-xl">
       <!-- Badges -->
-      <div class="absolute left-2 top-2 z-10 flex flex-col gap-1 pointer-events-none">
+      <div class="absolute left-2.5 top-2.5 z-10 flex flex-col gap-1 pointer-events-none">
         <span
           v-if="product.discount"
-          class="inline-flex items-center rounded-xs bg-red-600 px-1.5 py-0.5 text-[10px] font-bold text-white tracking-wide"
+          class="inline-flex items-center rounded-xs bg-red-600 px-2 py-0.5 text-[11px] font-extrabold text-white tracking-wide shadow-xs"
         >
           -{{ product.discount }}%
         </span>
         <span
           v-if="product.isNew"
-          class="inline-flex items-center rounded-none bg-black px-2 py-0.5 text-[11px] font-semibold text-white tracking-normal"
+          class="inline-flex items-center rounded-none bg-black px-2 py-0.5 text-[11px] font-semibold text-white tracking-normal shadow-xs"
         >
-          New
+          NEW
         </span>
       </div>
 
@@ -24,13 +24,13 @@
       <button
         type="button"
         @click.stop.prevent="toggleWishlist(product)"
-        class="absolute right-2 top-2 z-20 flex h-7.5 w-7.5 items-center justify-center rounded-md bg-white/95 border border-gray-200/70 shadow-xs transition-transform duration-150 hover:scale-105 hover:bg-white active:scale-95"
+        class="absolute right-2.5 top-2.5 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 border border-gray-200 shadow-xs transition-transform duration-150 hover:scale-110 hover:bg-white active:scale-95"
         :title="isFavorite(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="h-3.5 w-3.5 transition-colors"
+          class="h-4 w-4 transition-colors"
           :class="
             isFavorite(product.id)
               ? 'fill-red-500 stroke-red-500'
@@ -56,14 +56,29 @@
         <img
           :src="isHovered && product.hoverimg ? product.hoverimg : product.image"
           :alt="product.name"
-          class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+          class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
       </NuxtLink>
+
+      <!-- Quick Check Detail Button (appears on card hover) -->
+      <div class="absolute inset-x-3 bottom-3 z-20 opacity-0 translate-y-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
+        <button
+          type="button"
+          @click.stop.prevent="openQuickDetail(product)"
+          class="w-full flex items-center justify-center gap-1.5 rounded-lg bg-black/85 py-2 text-xs font-bold text-white shadow-lg backdrop-blur-xs transition hover:bg-black hover:text-lime-400"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <span>Check Details</span>
+        </button>
+      </div>
     </div>
 
     <!-- Product Details -->
-    <div class="flex flex-1 flex-col p-3">
+    <div class="flex flex-1 flex-col p-3.5">
       <!-- Brand & Rating row -->
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">
@@ -76,7 +91,7 @@
               d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
             />
           </svg>
-          <span class="font-semibold">{{ product.rating }}</span>
+          <span class="font-bold text-gray-800">{{ product.rating }}</span>
         </div>
       </div>
 
@@ -92,7 +107,7 @@
 
       <!-- Price -->
       <div class="mt-2 flex items-baseline gap-2">
-        <span class="text-sm sm:text-base font-extrabold text-gray-900">
+        <span class="text-sm sm:text-base font-black text-gray-950">
           ${{ product.price.toFixed(2) }}
         </span>
         <span
@@ -109,13 +124,13 @@
         </span>
       </div>
 
-      <!-- Buttons: Add to Cart & Buy Now -->
-      <div class="mt-2.5 grid grid-cols-2 gap-1.5">
+      <!-- Buttons: Add to Cart & Instant QR Buy -->
+      <div class="mt-3 grid grid-cols-2 gap-1.5">
         <button
           type="button"
           :disabled="product.stock === 0"
           @click="handleAddToCart"
-          class="flex h-7 sm:h-8 items-center justify-center rounded-md border border-gray-200 bg-white text-[10px] sm:text-[11px] font-semibold text-gray-800 transition hover:border-black hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+          class="flex h-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-[11px] font-bold text-gray-800 transition hover:border-black hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {{ justAdded ? "Added!" : "Add to Cart" }}
         </button>
@@ -123,10 +138,10 @@
         <button
           type="button"
           :disabled="product.stock === 0"
-          @click="handleBuyNow"
-          class="flex h-7 sm:h-8 items-center justify-center rounded-md bg-black text-[10px] sm:text-[11px] font-semibold text-white transition hover:bg-lime-400 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+          @click="handleInstantQr"
+          class="flex h-8 items-center justify-center gap-1 rounded-lg bg-black text-[11px] font-black text-white transition hover:bg-lime-400 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
         >
-          Buy Now
+          <span>⚡ QR Pay</span>
         </button>
       </div>
     </div>
@@ -138,6 +153,9 @@ import { ref, computed } from "vue";
 import type { Product } from "~/type/product";
 import { useWishlist } from "~/composables/useWishlist";
 import { useCart } from "~/composables/useCart";
+import { useQuickDetail } from "~/composables/useQuickDetail";
+import { useQrPayment } from "~/composables/useQrPayment";
+import { useToast } from "~/composables/useToast";
 
 const props = defineProps<{
   product: Product;
@@ -148,6 +166,9 @@ const justAdded = ref(false);
 
 const { isFavorite, toggleWishlist } = useWishlist();
 const { addToCart } = useCart();
+const { openQuickDetail } = useQuickDetail();
+const { openQrPayment } = useQrPayment();
+const { success } = useToast();
 
 const originalPrice = computed(() => {
   if (!props.product.discount) {
@@ -160,6 +181,7 @@ const handleAddToCart = () => {
   if (props.product.stock <= 0) return;
   const defaultSize = props.product.size?.[0] || "";
   addToCart(props.product, 1, defaultSize);
+  success("Added to cart", `${props.product.name} (Size: ${defaultSize})`);
 
   justAdded.value = true;
   setTimeout(() => {
@@ -167,10 +189,20 @@ const handleAddToCart = () => {
   }, 1400);
 };
 
-const handleBuyNow = () => {
+const handleInstantQr = () => {
   if (props.product.stock <= 0) return;
   const defaultSize = props.product.size?.[0] || "";
-  addToCart(props.product, 1, defaultSize);
-  navigateTo("/Cart");
+  openQrPayment({
+    items: [
+      {
+        product: props.product,
+        quantity: 1,
+        size: defaultSize,
+      },
+    ],
+    subtotal: props.product.price,
+    shipping: 0,
+    total: props.product.price,
+  });
 };
 </script>
