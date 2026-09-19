@@ -228,7 +228,7 @@ const activeFilterCount = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#f8f9fa] pb-16">
+  <div class="min-h-screen pb-16 text-white">
     <!-- CATEGORY SLIDER -->
     <Categories
       :selected-category="selectedCategories.length === 1 ? (selectedCategories[0] ?? '') : (selectedCategories.length === 0 ? 'All' : '')"
@@ -239,14 +239,14 @@ const activeFilterCount = computed(() => {
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
       <!-- SEARCH & SORT BAR -->
       <div
-        class="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-md border border-gray-200 bg-white p-3 shadow-xs"
+        class="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-xl p-3.5 shadow-xl"
       >
         <div class="relative flex-1">
           <input
             v-model="search"
             type="text"
             placeholder="Search sports shoes, gear..."
-            class="w-full rounded-md border border-gray-200 bg-gray-50/60 py-2 pl-10 pr-4 text-xs sm:text-sm outline-none transition focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
+            class="w-full rounded-xl border border-white/15 bg-white/5 py-2.5 pl-10 pr-4 text-xs sm:text-sm text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:bg-white/10 focus:ring-1 focus:ring-lime-400/40"
           />
           <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -259,7 +259,7 @@ const activeFilterCount = computed(() => {
           <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 hidden sm:inline">Sort:</span>
           <select
             v-model="sortBy"
-            class="w-full sm:w-auto rounded-md border border-gray-200 bg-white py-2 px-3 text-xs sm:text-sm font-medium text-gray-700 outline-none transition focus:border-black"
+            class="w-full sm:w-auto rounded-xl border border-white/15 bg-[#0d1017] py-2.5 px-3.5 text-xs sm:text-sm font-medium text-white outline-none transition focus:border-lime-400"
           >
             <option value="featured">Featured</option>
             <option value="low">Price: Low to High</option>
@@ -272,7 +272,7 @@ const activeFilterCount = computed(() => {
       <!-- Backdrop for Mobile Sidebar Drawer -->
       <div
         v-if="isMobileSidebarOpen"
-        class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs transition-opacity lg:hidden"
+        class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs transition-opacity lg:hidden"
         @click="isMobileSidebarOpen = false"
       />
 
@@ -280,16 +280,16 @@ const activeFilterCount = computed(() => {
       <div class="flex w-full flex-col lg:flex-row gap-6">
         <!-- FILTER SIDEBAR (Drawer on mobile, Sticky Sidebar on desktop) -->
         <aside
-          class="fixed inset-y-0 left-0 z-50 w-72 sm:w-80 bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:w-64 lg:shrink-0 lg:shadow-none lg:transition-none"
+          class="fixed inset-y-0 left-0 z-50 w-72 sm:w-80 bg-[#0d1017] shadow-2xl transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:w-64 lg:shrink-0 lg:shadow-none lg:transition-none"
           :class="isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
         >
           <div
-            class="h-full overflow-y-auto p-4 lg:h-auto lg:overflow-visible lg:p-4 lg:rounded-md lg:border lg:border-gray-200 lg:bg-white lg:shadow-xs lg:sticky lg:top-20"
+            class="h-full overflow-y-auto p-4 lg:h-auto lg:overflow-visible lg:p-5 lg:rounded-2xl lg:border lg:border-white/10 lg:bg-[#0d1017]/90 lg:backdrop-blur-xl lg:shadow-xl lg:sticky lg:top-20"
           >
             <!-- Sidebar Header -->
-            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
               <div>
-                <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider">Filters</h2>
+                <h2 class="text-xs font-black text-white uppercase tracking-wider">Filters</h2>
                 <p class="text-[11px] text-gray-400">Refine selection</p>
               </div>
 

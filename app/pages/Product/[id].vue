@@ -5,7 +5,7 @@
       <div class="mb-6 flex items-center justify-between">
         <NuxtLink
           to="/Product"
-          class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-700 transition hover:-translate-x-1 hover:text-black"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-400 transition hover:-translate-x-1 hover:text-white"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -14,26 +14,26 @@
         </NuxtLink>
 
         <!-- QR Quick Indicator -->
-        <div class="flex items-center gap-1.5 rounded-full border border-lime-500/30 bg-lime-400/10 px-3 py-1 text-[11px] font-bold text-lime-700">
-          <span class="h-2 w-2 rounded-full bg-lime-500 animate-pulse"></span>
-          <span>Instant KHQR / Bakong Ready</span>
+        <div class="flex items-center gap-2 rounded-full border border-lime-400/30 bg-lime-400/10 px-3.5 py-1 text-xs font-black uppercase text-lime-400 shadow-[0_0_12px_rgba(183,243,74,0.2)]">
+          <span class="h-2 w-2 rounded-full bg-lime-400 animate-pulse"></span>
+          <span>KHQR · Bakong Instant Checkout</span>
         </div>
       </div>
 
       <!-- Main Product Container -->
       <div
         v-if="product"
-        class="overflow-hidden rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-md shadow-lg"
+        class="overflow-hidden rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl shadow-2xl text-white"
       >
         <div class="grid grid-cols-1 lg:grid-cols-12">
-          <!-- LEFT: Interactive Image Gallery (5 cols) -->
-          <div class="lg:col-span-6 p-5 sm:p-8 bg-neutral-50/60 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-gray-200/70">
+          <!-- LEFT: Interactive Image Gallery (6 cols) -->
+          <div class="lg:col-span-6 p-6 sm:p-10 bg-black/40 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10">
             <!-- Main Zoomable Image -->
-            <div class="relative aspect-square w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm group">
+            <div class="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 shadow-xl group">
               <!-- Discount Badge -->
               <span
                 v-if="product.discount"
-                class="absolute left-3.5 top-3.5 z-10 rounded-md bg-red-600 px-2.5 py-1 text-xs font-black text-white tracking-wide shadow-md"
+                class="absolute left-4 top-4 z-10 rounded-lg bg-red-600 px-3 py-1 text-xs font-black text-white tracking-wide shadow-lg"
               >
                 -{{ product.discount }}% OFF
               </span>
@@ -41,28 +41,28 @@
               <!-- New Badge -->
               <span
                 v-if="product.isNew"
-                class="absolute right-3.5 top-3.5 z-10 rounded-md bg-black px-2.5 py-1 text-xs font-black text-white tracking-wide shadow-md"
+                class="absolute right-4 top-4 z-10 rounded-lg bg-lime-400 px-3 py-1 text-xs font-black text-black tracking-wide shadow-lg shadow-lime-400/30"
               >
-                NEW ARRIVAL
+                NEW GEAR
               </span>
 
               <img
                 :src="selectedImage || product.image"
                 :alt="product.name"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-108"
               />
             </div>
 
             <!-- Thumbnail Carousel / Switcher -->
-            <div class="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
+            <div class="mt-5 flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
               <button
                 type="button"
                 @click="selectedImage = product.image"
-                class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition duration-150"
+                class="h-18 w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-neutral-900 transition duration-200"
                 :class="
                   (selectedImage || product.image) === product.image
-                    ? 'border-black ring-2 ring-lime-400'
-                    : 'border-gray-200 hover:border-gray-400'
+                    ? 'border-lime-400 ring-2 ring-lime-400/40 shadow-[0_0_12px_rgba(183,243,74,0.3)]'
+                    : 'border-white/15 hover:border-white/40'
                 "
               >
                 <img :src="product.image" :alt="product.name" class="h-full w-full object-cover" />
@@ -72,11 +72,11 @@
                 v-if="product.hoverimg"
                 type="button"
                 @click="selectedImage = product.hoverimg"
-                class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition duration-150"
+                class="h-18 w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-neutral-900 transition duration-200"
                 :class="
                   selectedImage === product.hoverimg
-                    ? 'border-black ring-2 ring-lime-400'
-                    : 'border-gray-200 hover:border-gray-400'
+                    ? 'border-lime-400 ring-2 ring-lime-400/40 shadow-[0_0_12px_rgba(183,243,74,0.3)]'
+                    : 'border-white/15 hover:border-white/40'
                 "
               >
                 <img :src="product.hoverimg" :alt="product.name" class="h-full w-full object-cover" />
@@ -88,11 +88,11 @@
                   :key="idx"
                   type="button"
                   @click="selectedImage = img"
-                  class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition duration-150"
+                  class="h-18 w-18 shrink-0 overflow-hidden rounded-xl border-2 bg-neutral-900 transition duration-200"
                   :class="
                     selectedImage === img
-                      ? 'border-black ring-2 ring-lime-400'
-                      : 'border-gray-200 hover:border-gray-400'
+                      ? 'border-lime-400 ring-2 ring-lime-400/40 shadow-[0_0_12px_rgba(183,243,74,0.3)]'
+                      : 'border-white/15 hover:border-white/40'
                   "
                 >
                   <img :src="img" :alt="product.name" class="h-full w-full object-cover" />
@@ -101,43 +101,43 @@
             </div>
           </div>
 
-          <!-- RIGHT: Product Info & Buy/QR Panel (7 cols) -->
+          <!-- RIGHT: Product Info & Buy/QR Panel (6 cols) -->
           <div class="lg:col-span-6 flex flex-col justify-between p-6 sm:p-10">
             <div>
               <!-- Brand & Stock Status -->
               <div class="flex items-center justify-between">
-                <span class="text-xs font-black uppercase tracking-widest text-gray-500">
+                <span class="text-xs font-black uppercase tracking-widest text-lime-400">
                   {{ product.brand }} · {{ product.category }}
                 </span>
 
                 <span
                   v-if="product.stock > 0"
-                  class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400"
                 >
-                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                  {{ product.stock }} items available
+                  <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  {{ product.stock }} in stock
                 </span>
                 <span
                   v-else
-                  class="inline-flex items-center rounded-full bg-red-50 border border-red-200 px-3 py-1 text-xs font-bold text-red-600"
+                  class="inline-flex items-center rounded-full bg-red-500/10 border border-red-500/30 px-3 py-1 text-xs font-bold text-red-400"
                 >
                   Sold out
                 </span>
               </div>
 
               <!-- Product Title -->
-              <h1 class="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 tracking-tight leading-tight">
+              <h1 class="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
                 {{ product.name }}
               </h1>
 
               <!-- Star Rating & Review count -->
-              <div class="mt-3 flex items-center gap-3">
+              <div class="mt-3 flex items-center gap-3 text-xs">
                 <div class="flex items-center text-amber-400">
                   <svg
                     v-for="star in 5"
                     :key="star"
                     class="h-4 w-4"
-                    :class="star <= Math.round(product.rating) ? 'fill-amber-400' : 'fill-gray-200'"
+                    :class="star <= Math.round(product.rating) ? 'fill-amber-400' : 'fill-gray-700'"
                     viewBox="0 0 20 20"
                   >
                     <path
@@ -145,43 +145,43 @@
                     />
                   </svg>
                 </div>
-                <span class="text-sm font-bold text-gray-900">{{ product.rating }}</span>
-                <span class="text-xs text-gray-500">({{ product.reviews }} verified reviews)</span>
-                <span class="text-gray-300">|</span>
-                <span class="text-xs font-semibold text-emerald-600">✓ In Stock</span>
+                <span class="font-bold text-white">{{ product.rating }}</span>
+                <span class="text-gray-400">({{ product.reviews }} verified reviews)</span>
+                <span class="text-gray-600">|</span>
+                <span class="font-bold text-emerald-400">Authentic 365 Gear</span>
               </div>
 
-              <!-- Price Box -->
-              <div class="mt-5 flex items-baseline gap-3 rounded-xl bg-neutral-50 p-4 border border-gray-200/70">
-                <span class="text-3xl sm:text-4xl font-black text-gray-950">
+              <!-- Price Box with Glowing Accent -->
+              <div class="mt-6 flex items-baseline gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
+                <span class="text-3xl sm:text-4xl font-black text-lime-400 drop-shadow-[0_0_12px_rgba(183,243,74,0.4)]">
                   ${{ product.price.toFixed(2) }}
                 </span>
                 <span
                   v-if="product.discount"
-                  class="text-base text-gray-400 line-through font-semibold"
+                  class="text-lg text-gray-500 line-through font-bold"
                 >
                   ${{ originalPrice }}
                 </span>
-                <span class="text-xs font-bold text-gray-500 ml-auto">
+                <span class="text-xs font-bold text-gray-400 ml-auto">
                   ≈ {{ (product.price * 4100).toLocaleString() }} KHR
                 </span>
               </div>
 
-              <!-- Short Description -->
-              <p class="mt-4 text-xs sm:text-sm leading-relaxed text-gray-600">
+              <!-- Description -->
+              <p class="mt-4 text-xs sm:text-sm leading-relaxed text-gray-300">
                 {{ product.description }}
               </p>
 
               <!-- Size Selection -->
               <div class="mt-6">
                 <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-black uppercase tracking-wider text-gray-900">
-                    Select Size <span v-if="selectedSize" class="text-lime-600">({{ selectedSize }})</span>
+                  <span class="text-xs font-black uppercase tracking-wider text-white">
+                    Select Size <span v-if="selectedSize" class="text-lime-400">({{ selectedSize }})</span>
                   </span>
                   <button
                     type="button"
                     @click="showSizeGuide = !showSizeGuide"
-                    class="text-xs font-bold text-gray-600 underline hover:text-black"
+                    class="text-xs font-bold text-gray-400 underline hover:text-white"
                   >
                     Size Guide
                   </button>
@@ -193,11 +193,11 @@
                     :key="size"
                     type="button"
                     @click="selectedSize = size"
-                    class="min-w-12 h-10 rounded-lg border text-xs font-black transition flex items-center justify-center"
+                    class="min-w-12 h-11 rounded-xl border text-xs font-black transition flex items-center justify-center"
                     :class="
                       selectedSize === size
-                        ? 'border-black bg-black text-lime-400 shadow-md ring-2 ring-lime-400'
-                        : 'border-gray-200 bg-white text-gray-800 hover:border-black'
+                        ? 'border-lime-400 bg-lime-400 text-black shadow-[0_0_15px_rgba(183,243,74,0.35)]'
+                        : 'border-white/15 bg-white/5 text-gray-300 hover:border-lime-400/60 hover:text-white'
                     "
                   >
                     {{ size }}
@@ -205,61 +205,61 @@
                 </div>
               </div>
 
-              <!-- Size Guide Drawer / Notice -->
+              <!-- Size Guide Drawer -->
               <div
                 v-if="showSizeGuide"
-                class="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs text-gray-700"
+                class="mt-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-gray-300"
               >
-                <p class="font-bold text-gray-900 mb-1">Standard Shoe & Apparel Size Matrix:</p>
+                <p class="font-bold text-white mb-2">Standard Shoe Size Conversion:</p>
                 <div class="grid grid-cols-4 gap-2 text-[11px] text-center font-mono">
-                  <div class="bg-white p-1 rounded border border-gray-200">US 7 = 40 EU</div>
-                  <div class="bg-white p-1 rounded border border-gray-200">US 8 = 41 EU</div>
-                  <div class="bg-white p-1 rounded border border-gray-200">US 9 = 42.5 EU</div>
-                  <div class="bg-white p-1 rounded border border-gray-200">US 10 = 44 EU</div>
+                  <div class="bg-black/50 p-2 rounded-lg border border-white/10">US 7 = 40 EU</div>
+                  <div class="bg-black/50 p-2 rounded-lg border border-white/10">US 8 = 41 EU</div>
+                  <div class="bg-black/50 p-2 rounded-lg border border-white/10">US 9 = 42.5 EU</div>
+                  <div class="bg-black/50 p-2 rounded-lg border border-white/10">US 10 = 44 EU</div>
                 </div>
               </div>
 
               <!-- Quantity Selector -->
               <div class="mt-6 flex items-center gap-4">
-                <span class="text-xs font-black uppercase tracking-wider text-gray-900">Quantity</span>
-                <div class="flex items-center rounded-lg border border-gray-200 bg-white shadow-xs">
+                <span class="text-xs font-black uppercase tracking-wider text-white">Quantity</span>
+                <div class="flex items-center rounded-xl border border-white/15 bg-white/5">
                   <button
                     type="button"
                     @click="decreaseQuantity"
-                    class="px-3.5 py-1.5 text-base font-bold text-gray-600 transition hover:bg-gray-100 disabled:opacity-30"
+                    class="px-4 py-2 text-base font-bold text-gray-300 transition hover:text-white disabled:opacity-30"
                     :disabled="quantity <= 1"
                   >
                     −
                   </button>
-                  <span class="min-w-10 text-center text-xs font-black text-gray-950">
+                  <span class="min-w-10 text-center text-xs font-black text-white">
                     {{ quantity }}
                   </span>
                   <button
                     type="button"
                     @click="increaseQuantity"
-                    class="px-3.5 py-1.5 text-base font-bold text-gray-600 transition hover:bg-gray-100 disabled:opacity-30"
+                    class="px-4 py-2 text-base font-bold text-gray-300 transition hover:text-white disabled:opacity-30"
                     :disabled="quantity >= product.stock"
                   >
                     +
                   </button>
                 </div>
-                <span class="text-xs text-gray-500">
-                  Subtotal: <strong class="text-gray-900">${{ (product.price * quantity).toFixed(2) }}</strong>
+                <span class="text-xs text-gray-400">
+                  Subtotal: <strong class="text-lime-400">${{ (product.price * quantity).toFixed(2) }}</strong>
                 </span>
               </div>
             </div>
 
             <!-- PRIMARY ACTIONS: BUY NOW WITH QR + ADD TO CART -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="mt-8 pt-6 border-t border-white/10">
               <div class="flex flex-col sm:flex-row gap-3">
-                <!-- ⚡ INSTANT BUY WITH QR (PROMINENT HIGHLIGHT) -->
+                <!-- ⚡ INSTANT BUY WITH QR -->
                 <button
                   type="button"
                   :disabled="product.stock === 0"
                   @click="handleInstantQr"
-                  class="flex-1 flex h-13 items-center justify-center gap-2.5 rounded-xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/20 transition hover:bg-lime-300 hover:scale-[1.02] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="flex-1 flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(183,243,74,0.5)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span class="text-base">⚡</span>
+                  <span class="text-lg">⚡</span>
                   <span class="text-sm">Instant Buy with QR</span>
                 </button>
 
@@ -268,7 +268,7 @@
                   type="button"
                   :disabled="product.stock === 0"
                   @click="handleAddToCart"
-                  class="flex-1 flex h-13 items-center justify-center gap-2 rounded-xl border-2 border-black bg-white px-6 text-sm font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="flex-1 flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-6 text-sm font-black uppercase tracking-wider text-white backdrop-blur-md transition hover:bg-white/20 hover:border-lime-400/50 active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -280,9 +280,8 @@
                 <button
                   type="button"
                   @click="handleWishlist"
-                  class="flex h-13 w-13 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white transition hover:border-black active:scale-95"
-                  :class="isFavorite(product.id) ? 'text-red-500 border-red-200' : 'text-gray-700'"
-                  :title="isFavorite(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+                  class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/5 transition hover:border-white/40 active:scale-95"
+                  :class="isFavorite(product.id) ? 'text-red-400 border-red-500/40' : 'text-gray-400'"
                 >
                   <svg
                     class="h-5 w-5 transition-colors"
@@ -295,24 +294,24 @@
                 </button>
               </div>
 
-              <!-- Trust Features with clean SVGs -->
-              <div class="mt-6 grid grid-cols-3 gap-3 border-t border-gray-100 pt-5 text-center">
+              <!-- Trust Features -->
+              <div class="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-5 text-center">
                 <div class="flex flex-col items-center">
-                  <span class="text-lg">⚡</span>
-                  <span class="mt-1 text-[11px] font-black text-gray-900">KHQR Payment</span>
-                  <span class="text-[10px] text-gray-500">Scan & pay in 5s</span>
+                  <span class="text-xl">⚡</span>
+                  <span class="mt-1 text-[11px] font-black text-white">Bakong KHQR</span>
+                  <span class="text-[10px] text-gray-400">Scan & pay in 5s</span>
                 </div>
 
                 <div class="flex flex-col items-center">
-                  <span class="text-lg">🚚</span>
-                  <span class="mt-1 text-[11px] font-black text-gray-900">Fast Delivery</span>
-                  <span class="text-[10px] text-gray-500">1-2 days in PP</span>
+                  <span class="text-xl">🚚</span>
+                  <span class="mt-1 text-[11px] font-black text-white">Fast Delivery</span>
+                  <span class="text-[10px] text-gray-400">1-2 days in PP</span>
                 </div>
 
                 <div class="flex flex-col items-center">
-                  <span class="text-lg">🛡️</span>
-                  <span class="mt-1 text-[11px] font-black text-gray-900">100% Genuine</span>
-                  <span class="text-[10px] text-gray-500">Authentic gear</span>
+                  <span class="text-xl">🛡️</span>
+                  <span class="mt-1 text-[11px] font-black text-white">100% Genuine</span>
+                  <span class="text-[10px] text-gray-400">Authentic gear</span>
                 </div>
               </div>
             </div>
@@ -320,109 +319,94 @@
         </div>
 
         <!-- SPECIFICATIONS & REVIEWS TABS SECTION -->
-        <div class="border-t border-gray-200 bg-white p-6 sm:p-10">
-          <div class="flex border-b border-gray-200 gap-6 text-sm font-black uppercase tracking-wider mb-6">
+        <div class="border-t border-white/10 bg-black/40 p-6 sm:p-10">
+          <div class="flex border-b border-white/10 gap-6 text-xs sm:text-sm font-black uppercase tracking-wider mb-6">
             <button
               type="button"
               @click="activeTab = 'specs'"
               class="pb-3 transition relative"
-              :class="activeTab === 'specs' ? 'text-black' : 'text-gray-400 hover:text-black'"
+              :class="activeTab === 'specs' ? 'text-lime-400' : 'text-gray-400 hover:text-white'"
             >
               <span>Product Specifications</span>
-              <span v-if="activeTab === 'specs'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-lime-500"></span>
+              <span v-if="activeTab === 'specs'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-lime-400 shadow-[0_0_8px_#b7f34a]"></span>
             </button>
 
             <button
               type="button"
               @click="activeTab = 'reviews'"
               class="pb-3 transition relative"
-              :class="activeTab === 'reviews' ? 'text-black' : 'text-gray-400 hover:text-black'"
+              :class="activeTab === 'reviews' ? 'text-lime-400' : 'text-gray-400 hover:text-white'"
             >
               <span>Verified Customer Reviews ({{ product.reviews }})</span>
-              <span v-if="activeTab === 'reviews'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-lime-500"></span>
+              <span v-if="activeTab === 'reviews'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-lime-400 shadow-[0_0_8px_#b7f34a]"></span>
             </button>
           </div>
 
           <!-- Specs Tab -->
           <div v-if="activeTab === 'specs'" class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Category</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">{{ product.category }}</span>
+              <span class="mt-1 block font-bold text-white text-sm">{{ product.category }}</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Brand</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">{{ product.brand }}</span>
+              <span class="mt-1 block font-bold text-white text-sm">{{ product.brand }}</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Gender</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">{{ product.gender }}</span>
+              <span class="mt-1 block font-bold text-white text-sm">{{ product.gender }}</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Colorway</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">{{ product.color }}</span>
+              <span class="mt-1 block font-bold text-white text-sm">{{ product.color }}</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
-              <span class="block text-[10px] uppercase font-bold text-gray-400">Arch Support</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">Neutral / Responsive</span>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <span class="block text-[10px] uppercase font-bold text-gray-400">Cushioning</span>
+              <span class="mt-1 block font-bold text-lime-400 text-sm">Ultra-Responsive</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Weight</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">approx. 280g (Size 9)</span>
+              <span class="mt-1 block font-bold text-white text-sm">approx. 280g</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Warranty</span>
-              <span class="mt-1 block font-bold text-gray-900 text-sm">6 Months Official</span>
+              <span class="mt-1 block font-bold text-white text-sm">6 Months Official</span>
             </div>
-            <div class="rounded-xl border border-gray-200/80 bg-neutral-50 p-3.5">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <span class="block text-[10px] uppercase font-bold text-gray-400">Authenticity</span>
-              <span class="mt-1 block font-bold text-emerald-600 text-sm">100% Guaranteed</span>
+              <span class="mt-1 block font-bold text-emerald-400 text-sm">100% Genuine</span>
             </div>
           </div>
 
           <!-- Reviews Tab -->
           <div v-else class="space-y-4">
-            <div class="rounded-xl border border-gray-200 bg-neutral-50 p-4">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-gray-900 text-sm">Rothana C.</span>
-                  <span class="ml-2 inline-flex items-center text-[11px] font-bold text-emerald-600">✓ Verified Buyer</span>
+                  <span class="font-bold text-white text-sm">Rothana C.</span>
+                  <span class="ml-2 inline-flex items-center text-[11px] font-bold text-emerald-400">✓ Verified Buyer</span>
                 </div>
                 <div class="flex text-amber-400 text-xs">★★★★★</div>
               </div>
-              <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                Super fast delivery! Paid using KHQR Bakong in less than 10 seconds. The shoes fit true to size and the cushioning is top-tier.
+              <p class="mt-2 text-xs text-gray-300 leading-relaxed">
+                Super fast delivery! Scanned the KHQR code and paid in less than 10 seconds. The gear looks stunning in dark mode!
               </p>
             </div>
 
-            <div class="rounded-xl border border-gray-200 bg-neutral-50 p-4">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-gray-900 text-sm">Vannthai K.</span>
-                  <span class="ml-2 inline-flex items-center text-[11px] font-bold text-emerald-600">✓ Verified Buyer</span>
+                  <span class="font-bold text-white text-sm">Vannthai K.</span>
+                  <span class="ml-2 inline-flex items-center text-[11px] font-bold text-emerald-400">✓ Verified Buyer</span>
                 </div>
                 <div class="flex text-amber-400 text-xs">★★★★★</div>
               </div>
-              <p class="mt-2 text-xs text-gray-600 leading-relaxed">
-                Great quality. The design looks even better in real life than on the photos. Definitely shopping here again!
+              <p class="mt-2 text-xs text-gray-300 leading-relaxed">
+                Premium materials and perfect fit. The site animation is so smooth and interactive!
               </p>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- PRODUCT NOT FOUND STATE -->
-      <div v-else class="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-xs">
-        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400">
-          ✕
-        </div>
-        <h2 class="mt-4 text-base font-bold text-gray-900">Product Not Found</h2>
-        <p class="mt-1 text-xs text-gray-500">The product you are looking for does not exist.</p>
-        <NuxtLink
-          to="/Product"
-          class="mt-4 inline-block rounded-xl bg-black px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-400 hover:text-black"
-        >
-          Back to Catalog
-        </NuxtLink>
       </div>
     </div>
   </div>

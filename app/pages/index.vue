@@ -53,47 +53,67 @@ const discountProducts = computed(() => {
     <!-- ================= HERO ================= -->
     <Hero />
 
-    <section class="border-b border-black/10 bg-black text-white">
+    <!-- ================= HIGH-TECH TRUST TICKER ================= -->
+    <section class="border-y border-white/10 bg-black/60 backdrop-blur-xl text-white">
       <div
-        class="mx-auto grid max-w-7xl gap-5 px-6 py-5 text-sm sm:grid-cols-3 lg:px-8"
+        class="mx-auto grid max-w-7xl gap-6 px-6 py-6 text-xs sm:grid-cols-4 lg:px-8"
       >
         <div class="flex items-center gap-3">
-          <span class="text-xl text-lime-400">01</span>
-          <span class="font-semibold">Performance-first gear</span>
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-lime-400/10 border border-lime-400/30 text-lime-400 font-black text-sm">01</span>
+          <div>
+            <h4 class="font-bold text-white tracking-wide">Elite Gear</h4>
+            <p class="text-[11px] text-gray-400">Tested for performance</p>
+          </div>
         </div>
+
         <div class="flex items-center gap-3">
-          <span class="text-xl text-lime-400">02</span>
-          <span class="font-semibold">Fast delivery on every order</span>
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 font-black text-sm">02</span>
+          <div>
+            <h4 class="font-bold text-white tracking-wide">Fast Delivery</h4>
+            <p class="text-[11px] text-gray-400">1-2 days across Cambodia</p>
+          </div>
         </div>
+
         <div class="flex items-center gap-3">
-          <span class="text-xl text-lime-400">03</span>
-          <span class="font-semibold">Easy returns within 30 days</span>
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-400/10 border border-purple-400/30 text-purple-400 font-black text-sm">03</span>
+          <div>
+            <h4 class="font-bold text-white tracking-wide">Easy Returns</h4>
+            <p class="text-[11px] text-gray-400">30-day exchange guarantee</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-black text-sm">04</span>
+          <div>
+            <h4 class="font-bold text-white tracking-wide">KHQR Instant</h4>
+            <p class="text-[11px] text-gray-400">Scan & pay with Bakong</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ================= POPULAR PRODUCTS ================= -->
-    <section class="bg-[#f4f6ef] py-16">
+    <section class="py-20 relative">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Section Header -->
-        <div class="mb-8 flex items-end justify-between">
+        <div class="mb-10 flex items-end justify-between">
           <div>
             <div class="flex items-center gap-3">
-              <span class="h-6 w-1 rounded-full bg-lime-500"></span>
-              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 uppercase">
-                Popular Products
+              <span class="h-6 w-1.5 rounded-full bg-lime-400 shadow-[0_0_12px_#b7f34a]"></span>
+              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">
+                Trending Popular Gear
               </h2>
             </div>
 
-            <p class="mt-2 text-sm text-gray-500">
-              Top trending performance shoes and apparel
+            <p class="mt-2 text-xs sm:text-sm text-gray-400">
+              Top trending high-performance shoes and apparel selected for champions
             </p>
           </div>
 
           <!-- View All -->
           <NuxtLink
             to="/Product?type=popular"
-            class="hidden text-sm font-bold text-black transition hover:text-lime-600 sm:inline-flex items-center gap-1"
+            class="hidden text-xs font-black uppercase tracking-wider text-lime-400 transition hover:text-lime-300 hover:underline sm:inline-flex items-center gap-1.5"
           >
             <span>View All</span>
             <span aria-hidden="true">&rarr;</span>
@@ -113,7 +133,7 @@ const discountProducts = computed(() => {
         <div class="mt-8 text-center sm:hidden">
           <NuxtLink
             to="/Product?type=popular"
-            class="inline-flex items-center justify-center rounded-md bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-400 hover:text-black"
+            class="inline-flex items-center justify-center rounded-xl bg-lime-400 px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300"
           >
             View All Products &rarr;
           </NuxtLink>
@@ -122,29 +142,29 @@ const discountProducts = computed(() => {
     </section>
 
     <!-- ================= DISCOUNT PRODUCTS ================= -->
-    <section class="bg-white py-16">
+    <section class="py-20 border-t border-white/10 relative">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Section Header -->
-        <div class="mb-8 flex items-end justify-between">
+        <div class="mb-10 flex items-end justify-between">
           <div>
             <div class="flex items-center gap-3">
-              <span class="h-6 w-1 rounded-full bg-lime-500"></span>
-              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 uppercase">
-                Discount Deals
+              <span class="h-6 w-1.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444]"></span>
+              <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">
+                Special Discount Deals
               </h2>
             </div>
 
-            <p class="mt-2 text-sm text-gray-500">
-              Get your favorite sports products at special discounted prices
+            <p class="mt-2 text-xs sm:text-sm text-gray-400">
+              Get authentic gear at limited-time discounted prices
             </p>
           </div>
 
           <!-- View All -->
           <NuxtLink
             to="/Product?type=discount"
-            class="hidden text-sm font-bold text-black transition hover:text-lime-600 sm:inline-flex items-center gap-1"
+            class="hidden text-xs font-black uppercase tracking-wider text-lime-400 transition hover:text-lime-300 hover:underline sm:inline-flex items-center gap-1.5"
           >
-            <span>View All</span>
+            <span>View All Deals</span>
             <span aria-hidden="true">&rarr;</span>
           </NuxtLink>
         </div>
@@ -162,9 +182,9 @@ const discountProducts = computed(() => {
         <div class="mt-8 text-center sm:hidden">
           <NuxtLink
             to="/Product?type=discount"
-            class="inline-flex items-center justify-center rounded-md bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-400 hover:text-black"
+            class="inline-flex items-center justify-center rounded-xl bg-lime-400 px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300"
           >
-            View All Products &rarr;
+            View All Deals &rarr;
           </NuxtLink>
         </div>
       </div>

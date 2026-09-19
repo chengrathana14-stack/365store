@@ -2,19 +2,24 @@
 
 :root {
   --sport-lime: #b7f34a;
-  --sport-ink: #101310;
-  --sport-muted: #667067;
-  --sport-surface: #f4f6ef;
+  --sport-cyan: #00f0ff;
+  --sport-purple: #a855f7;
+  --sport-magenta: #f43f5e;
+  --sport-ink: #f9fafb;
+  --sport-surface: #090a10;
+  --sport-card: #111420;
 }
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--sport-surface);
-  color: var(--sport-ink);
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  background: #090a10;
+  color: #f9fafb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
 button,
@@ -43,48 +48,74 @@ a {
   overflow: hidden;
 }
 
-/* Custom slim scrollbar for shadcn-style UI */
+/* Custom dark neon slim scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(15, 18, 25, 0.6);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e4e4e7;
+  background: rgba(183, 243, 74, 0.3);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #d4d4d8;
+  background: rgba(183, 243, 74, 0.7);
 }
 
-/* Admin Role: Consistent Small Border Radius (Shadcn UI style: ~6px / 0.375rem) */
-.admin-theme {
-  --radius-3xl: 0.375rem;
-  --radius-2xl: 0.375rem;
-  --radius-xl: 0.375rem;
-  --radius-lg: 0.375rem;
-  --radius-md: 0.375rem;
+/* Glassmorphism & Cyber Card Highlights */
+.cyber-card {
+  background: rgba(17, 20, 32, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.admin-theme .rounded-3xl,
-.admin-theme .rounded-2xl,
-.admin-theme .rounded-xl,
-.admin-theme .rounded-lg {
-  border-radius: 0.375rem !important;
+.cyber-card:hover {
+  border-color: rgba(183, 243, 74, 0.4);
+  box-shadow: 0 12px 40px -10px rgba(183, 243, 74, 0.2);
 }
 
-/* Dynamic glow and float animation utilities */
+/* Shimmer Light Reflection Animation */
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: transform 0.6s ease;
+}
+
+.shimmer-effect:hover::after {
+  transform: translateX(100%);
+}
+
+/* Glowing Aurora & Neon Pulse Animations */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(183, 243, 74, 0.25);
+    box-shadow: 0 0 15px rgba(183, 243, 74, 0.3);
   }
   50% {
-    box-shadow: 0 0 25px rgba(183, 243, 74, 0.45);
+    box-shadow: 0 0 30px rgba(183, 243, 74, 0.6);
   }
 }
 
@@ -92,3 +123,18 @@ a {
   animation: pulse-glow 3s infinite ease-in-out;
 }
 
+@keyframes aurora-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.animate-aurora {
+  animation: aurora-spin 25s linear infinite;
+}
