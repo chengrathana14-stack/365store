@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 definePageMeta({
   layout: "user",
 });
 
-const { user, loadUser, logout } = useAuth();
+const route = useRoute();
+const { user, loadUser, logout, isSuperAdmin } = useAuth();
 
 onMounted(loadUser);
 </script>
@@ -13,6 +15,17 @@ onMounted(loadUser);
 <template>
   <main class="min-h-[60vh] bg-gray-50 px-4 py-12 sm:px-6">
     <div class="mx-auto max-w-2xl">
+      <!-- Unauthorized banner -->
+      <div
+        v-if="route.query.unauthorized === 'admin'"
+        class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800"
+      >
+        <p class="font-bold">🔒 Admin Access Restricted</p>
+        <p class="mt-0.5 text-gray-600">
+          The Admin Dashboard is strictly reserved for the administrator account (<strong>chengrathana14@gmail.com</strong>).
+        </p>
+      </div>
+
       <div v-if="user" class="rounded-2xl bg-white p-8 shadow-sm">
         <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
           <div
@@ -22,9 +35,33 @@ onMounted(loadUser);
           </div>
 
           <div>
-            <p class="text-sm font-medium text-lime-600">365SPORT member</p>
+            <p class="text-sm font-medium text-lime-600">
+              {{ isSuperAdmin ? '365SPORT Superadmin' : '365SPORT member' }}
+            </p>
             <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
           </div>
+        </div>
+
+        <!-- Dual role switcher card for chengrathana14@gmail.com -->
+        <div
+          v-if="isSuperAdmin"
+          class="mt-6 rounded-xl border border-lime-200 bg-lime-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        >
+          <div>
+            <p class="text-xs font-bold text-lime-800 uppercase tracking-wide">
+              👑 Dual Role Active (User & Admin)
+            </p>
+            <p class="mt-0.5 text-xs text-gray-600">
+              You can switch between storefront shopping and the admin dashboard.
+            </p>
+          </div>
+          <NuxtLink
+            to="/admin"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-black px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-lime-500 hover:text-black transition shrink-0"
+          >
+            <span>⚡ Open Admin</span>
+            <span>→</span>
+          </NuxtLink>
         </div>
 
         <dl class="mt-6 space-y-4">
@@ -35,7 +72,9 @@ onMounted(loadUser);
 
           <div>
             <dt class="text-sm text-gray-500">Account role</dt>
-            <dd class="font-medium text-gray-900">{{ user.role }}</dd>
+            <dd class="font-semibold text-gray-900">
+              {{ isSuperAdmin ? 'Admin + Customer (Dual Role)' : 'Customer (User)' }}
+            </dd>
           </div>
         </dl>
 
@@ -62,3 +101,4 @@ onMounted(loadUser);
     </div>
   </main>
 </template>
+

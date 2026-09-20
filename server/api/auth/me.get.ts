@@ -27,5 +27,15 @@ export default defineEventHandler((event) => {
     throw createError({ statusCode: 401, statusMessage: "Not authenticated." });
   }
 
-  return user;
+  const isSuperAdmin = user.email.toLowerCase() === "chengrathana14@gmail.com" || user.role === "Admin";
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: isSuperAdmin ? "Admin" : user.role,
+    roles: isSuperAdmin ? ["Admin", "Customer"] : ["Customer"],
+    isSuperAdmin,
+    canAccessAdmin: isSuperAdmin,
+  };
 });

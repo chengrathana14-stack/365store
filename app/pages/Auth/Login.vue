@@ -25,7 +25,13 @@ const login = async () => {
     });
 
     user.value = authenticatedUser;
-    await navigateTo("/");
+    if (route.query.redirect) {
+      await navigateTo(String(route.query.redirect));
+    } else if (authenticatedUser.isSuperAdmin || authenticatedUser.email === "chengrathana14@gmail.com") {
+      await navigateTo("/admin");
+    } else {
+      await navigateTo("/");
+    }
   } catch (error) {
     const responseError = error as {
       data?: { statusMessage?: string };
@@ -39,6 +45,11 @@ const login = async () => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const fillAdminDemo = () => {
+  form.email = "chengrathana14@gmail.com";
+  form.password = "11112222";
 };
 </script>
 
@@ -59,7 +70,7 @@ const login = async () => {
       <!-- Login Card -->
       <div class="rounded-xl bg-white p-8 shadow-lg">
         <!-- Logo -->
-        <div class="mb-8 text-center">
+        <div class="mb-6 text-center">
           <h1 class="text-3xl font-black italic">
             <span class="text-lime-500">365</span>SPORT
           </h1>
@@ -72,7 +83,31 @@ const login = async () => {
           >
             Account created. Log in to continue.
           </p>
+
+          <!-- Unauthorized Admin Alert -->
+          <div
+            v-if="route.query.unauthorized === 'admin'"
+            class="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left"
+          >
+            <p class="font-bold">🔒 Admin Access Restricted</p>
+            <p class="mt-0.5 text-gray-600">
+              Please sign in with the authorized administrator account (<strong>chengrathana14@gmail.com</strong>).
+            </p>
+          </div>
         </div>
+
+        <!-- Superadmin Demo Quick Fill -->
+        <button
+          type="button"
+          @click="fillAdminDemo"
+          class="w-full mb-5 flex items-center justify-between rounded-lg border border-lime-300 bg-lime-50/70 px-3 py-2 text-xs font-semibold text-lime-900 transition hover:bg-lime-100"
+          title="Auto-fill Superadmin credentials"
+        >
+          <span>👑 Admin Demo: <strong>chengrathana14@gmail.com</strong></span>
+          <span class="rounded bg-lime-400 px-2 py-0.5 text-[10px] font-bold text-black uppercase">
+            Auto-fill
+          </span>
+        </button>
 
         <!-- Login Form -->
         <form class="space-y-5" @submit.prevent="login">
@@ -157,4 +192,3 @@ const login = async () => {
     </div>
   </div>
 </template>
-```

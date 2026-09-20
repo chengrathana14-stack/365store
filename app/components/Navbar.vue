@@ -12,7 +12,7 @@ const { wishlistCount } = useWishlist();
 // ===============================================
 
 const { cartCount } = useCart();
-const { user, loadUser, logout } = useAuth();
+const { user, loadUser, logout, isSuperAdmin } = useAuth();
 const isAccountMenuOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 
@@ -169,8 +169,24 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
             </span>
           </NuxtLink>
 
+          <!-- Extra Logo to switch to Admin (ONLY for chengrathana14@gmail.com) -->
+          <NuxtLink
+            v-if="user && isSuperAdmin"
+            to="/admin"
+            class="group flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 transition hover:border-lime-500 hover:bg-lime-50 hover:shadow-xs"
+            title="Switch to Admin Management"
+          >
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-black text-lime-400 font-bold transition group-hover:scale-105">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </span>
+            <span class="text-xs font-bold text-gray-900 group-hover:text-black">Admin</span>
+            <span class="text-[10px] text-gray-400 font-bold">↗</span>
+          </NuxtLink>
+
           <!-- ================================= -->
-          <!-- Account -->
+          <!-- Account (Standard Profile Logo) -->
           <!-- ================================= -->
 
           <template v-if="user">
@@ -240,6 +256,39 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
                       }}</span>
                     </span>
                   </NuxtLink>
+
+                  <!-- Dual role indicator for chengrathana14@gmail.com -->
+                  <div
+                    v-if="isSuperAdmin"
+                    class="mt-6 rounded-xl border border-lime-200 bg-lime-50 p-4"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-lime-800 uppercase tracking-wider">
+                        👑 Dual Role Active
+                      </span>
+                      <span class="rounded bg-lime-200 px-2 py-0.5 text-xs font-bold text-lime-900">
+                        Admin + User
+                      </span>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-600">
+                      You have full access to both User Storefront and Admin Management.
+                    </p>
+                    <NuxtLink
+                      to="/admin"
+                      class="mt-3 flex items-center justify-between rounded-lg bg-black px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-500 hover:text-black"
+                    >
+                      <span>⚡ Open Admin Panel</span>
+                      <span>→</span>
+                    </NuxtLink>
+                  </div>
+
+                  <div
+                    v-else
+                    class="mt-4 rounded-xl border border-gray-100 bg-gray-50 px-4 py-2.5"
+                  >
+                    <span class="text-xs text-gray-500">Account Role:</span>
+                    <strong class="ml-1 text-xs text-gray-900 font-semibold">Customer (User)</strong>
+                  </div>
 
                   <button
                     type="button"
@@ -361,12 +410,22 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
           <div class="mt-3 border-t border-gray-100 px-4 pt-4">
             <template v-if="user">
+              <!-- Switch to Admin button in mobile menu for chengrathana14@gmail.com -->
+              <NuxtLink
+                v-if="isSuperAdmin"
+                to="/admin"
+                class="block rounded-lg bg-lime-400 px-4 py-3 text-center font-bold text-black mb-2 shadow-xs"
+                @click="closeMobileMenu"
+              >
+                ⚡ Switch to Admin Dashboard →
+              </NuxtLink>
+
               <NuxtLink
                 to="/Profile"
                 class="block rounded-lg bg-black px-4 py-3 text-center font-semibold text-white"
                 @click="closeMobileMenu"
               >
-                View profile
+                View profile {{ isSuperAdmin ? '(User Mode)' : '' }}
               </NuxtLink>
               <button
                 type="button"
