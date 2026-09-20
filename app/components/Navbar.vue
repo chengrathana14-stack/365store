@@ -173,16 +173,13 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
           <NuxtLink
             v-if="user && isSuperAdmin"
             to="/admin"
-            class="group flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 transition hover:border-lime-500 hover:bg-lime-50 hover:shadow-xs"
-            title="Switch to Admin Management"
+            class="group flex items-center gap-1.5 rounded-full bg-black px-3.5 py-1.5 text-xs font-semibold text-white transition duration-200 hover:bg-lime-400 hover:text-black"
+            title="Admin Console"
           >
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-black text-lime-400 font-bold transition group-hover:scale-105">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-            </span>
-            <span class="text-xs font-bold text-gray-900 group-hover:text-black">Admin</span>
-            <span class="text-[10px] text-gray-400 font-bold">↗</span>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+            </svg>
+            <span>Admin</span>
           </NuxtLink>
 
           <!-- ================================= -->
@@ -235,87 +232,83 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
                   <NuxtLink
                     to="/Profile"
-                    class="mt-6 flex items-center gap-4"
+                    class="mt-6 flex items-center gap-4 group"
                     role="menuitem"
                   >
                     <span
-                      class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-lime-300 via-emerald-500 to-slate-900 text-xl font-bold text-white"
+                      class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-lime-300 via-emerald-500 to-slate-900 text-xl font-bold text-white shadow-xs"
                     >
                       {{ user.name.charAt(0).toUpperCase() }}
                     </span>
                     <span class="min-w-0">
-                      <strong
-                        class="block truncate text-xl font-bold text-gray-950"
-                        >{{ user.name }}</strong
-                      >
-                      <span class="mt-1 block text-lg text-gray-500"
-                        >Personal</span
-                      >
-                      <span class="block truncate text-lg text-gray-500">{{
-                        user.email
-                      }}</span>
+                      <span class="flex items-center gap-2">
+                        <strong
+                          class="block truncate text-lg font-bold text-gray-950 group-hover:text-lime-600 transition"
+                          >{{ user.name }}</strong
+                        >
+                        <span
+                          v-if="isSuperAdmin"
+                          class="rounded bg-black px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-lime-400"
+                        >
+                          Admin
+                        </span>
+                      </span>
+                      <span class="mt-0.5 block text-sm text-gray-500">
+                        {{ user.email }}
+                      </span>
                     </span>
                   </NuxtLink>
 
-                  <!-- Dual role indicator for chengrathana14@gmail.com -->
-                  <div
-                    v-if="isSuperAdmin"
-                    class="mt-6 rounded-xl border border-lime-200 bg-lime-50 p-4"
-                  >
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-bold text-lime-800 uppercase tracking-wider">
-                        👑 Dual Role Active
-                      </span>
-                      <span class="rounded bg-lime-200 px-2 py-0.5 text-xs font-bold text-lime-900">
-                        Admin + User
-                      </span>
-                    </div>
-                    <p class="mt-1 text-xs text-gray-600">
-                      You have full access to both User Storefront and Admin Management.
-                    </p>
+                  <!-- Admin Management Link (Clean, authentic SaaS style for chengrathana14@gmail.com) -->
+                  <div v-if="isSuperAdmin" class="mt-6 border-t border-gray-100 pt-5">
                     <NuxtLink
                       to="/admin"
-                      class="mt-3 flex items-center justify-between rounded-lg bg-black px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-500 hover:text-black"
+                      class="flex items-center justify-between rounded-xl bg-gray-50 p-3.5 border border-gray-200/70 hover:bg-gray-100 hover:border-gray-300 transition group"
+                      role="menuitem"
                     >
-                      <span>⚡ Open Admin Panel</span>
-                      <span>→</span>
+                      <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black text-lime-400 group-hover:scale-105 transition">
+                          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                          </svg>
+                        </div>
+                        <div class="text-left">
+                          <p class="text-sm font-bold text-gray-900 leading-tight">Admin Console</p>
+                          <p class="text-xs text-gray-500 leading-tight mt-0.5">Manage orders, products & store</p>
+                        </div>
+                      </div>
+                      <svg class="h-4 w-4 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
                     </NuxtLink>
                   </div>
 
-                  <div
-                    v-else
-                    class="mt-4 rounded-xl border border-gray-100 bg-gray-50 px-4 py-2.5"
-                  >
-                    <span class="text-xs text-gray-500">Account Role:</span>
-                    <strong class="ml-1 text-xs text-gray-900 font-semibold">Customer (User)</strong>
+                  <div class="mt-6 border-t border-gray-100 pt-4 space-y-3">
+                    <NuxtLink
+                      to="/Profile"
+                      class="block text-base font-medium text-gray-700 hover:text-black transition"
+                      role="menuitem"
+                    >
+                      Account settings
+                    </NuxtLink>
+
+                    <button
+                      type="button"
+                      class="block w-full text-left text-base font-medium text-gray-700 hover:text-black transition"
+                      role="menuitem"
+                    >
+                      Convert to business
+                    </button>
+
+                    <button
+                      type="button"
+                      class="block w-full text-left text-base font-semibold text-red-600 hover:text-red-700 transition pt-2"
+                      role="menuitem"
+                      @click="logout"
+                    >
+                      Log out
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    class="mt-6 text-xl font-semibold text-gray-950 hover:text-lime-600"
-                    role="menuitem"
-                  >
-                    Convert to business
-                  </button>
-
-                  <p class="mt-8 text-base text-gray-600">Your accounts</p>
-
-                  <button
-                    type="button"
-                    class="mt-6 block text-xl font-semibold text-gray-950 hover:text-lime-600"
-                    role="menuitem"
-                  >
-                    Add 365 Sport account
-                  </button>
-
-                  <button
-                    type="button"
-                    class="mt-6 block text-xl font-semibold text-gray-950 hover:text-red-600"
-                    role="menuitem"
-                    @click="logout"
-                  >
-                    Log out
-                  </button>
                 </div>
               </Transition>
             </div>
@@ -410,14 +403,20 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
           <div class="mt-3 border-t border-gray-100 px-4 pt-4">
             <template v-if="user">
-              <!-- Switch to Admin button in mobile menu for chengrathana14@gmail.com -->
+              <!-- Switch to Admin Console in mobile menu for chengrathana14@gmail.com -->
               <NuxtLink
                 v-if="isSuperAdmin"
                 to="/admin"
-                class="block rounded-lg bg-lime-400 px-4 py-3 text-center font-bold text-black mb-2 shadow-xs"
+                class="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-200 transition mb-2"
                 @click="closeMobileMenu"
               >
-                ⚡ Switch to Admin Dashboard →
+                <span class="flex items-center gap-2.5">
+                  <svg class="h-4 w-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                  </svg>
+                  <span>Admin Console</span>
+                </span>
+                <span class="text-xs text-gray-400">Manage →</span>
               </NuxtLink>
 
               <NuxtLink
@@ -425,7 +424,7 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
                 class="block rounded-lg bg-black px-4 py-3 text-center font-semibold text-white"
                 @click="closeMobileMenu"
               >
-                View profile {{ isSuperAdmin ? '(User Mode)' : '' }}
+                View profile
               </NuxtLink>
               <button
                 type="button"
