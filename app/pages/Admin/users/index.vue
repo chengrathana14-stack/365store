@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { userSeedData } from "~/data/admin";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
 import type { User } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
 
-const users = ref<User[]>(userSeedData.map((user) => ({ ...user })));
+const { allUsers, toggleUserStatus, deleteUser } = useAdminStore();
+const { success } = useToast();
+
+const users = allUsers;
 
 const search = ref("");
 const selectedRole = ref("All");
@@ -63,7 +67,8 @@ const closeDeleteModal = () => {
 
 const confirmDeleteUser = () => {
   if (userToDelete.value) {
-    users.value = users.value.filter((u) => u.id !== userToDelete.value!.id);
+    deleteUser(userToDelete.value.id);
+    success("User Removed", `Account for ${userToDelete.value.name} has been deleted.`);
   }
   closeDeleteModal();
 };
@@ -73,7 +78,8 @@ const confirmDeleteUser = () => {
 // =========================================
 
 const toggleStatus = (user: User) => {
-  user.status = user.status === "Active" ? "Blocked" : "Active";
+  toggleUserStatus(user.id);
+  success("User Status Updated", `${user.name} is now ${user.status}.`);
 };
 
 const clearFilters = () => {

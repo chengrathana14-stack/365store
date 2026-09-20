@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { products } from "~/data/product";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
+import type { Discount } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
 
-const discountType = ref("percentage");
-const discountValue = ref<number | null>(10);
+const { addDiscount } = useAdminStore();
+const { success, error } = useToast();
+
+const discountType = ref<"percentage" | "fixed">("percentage");
+const discountValue = ref<number | null>(15);
 const discountCode = ref("");
 const description = ref("");
-const startDate = ref("");
+const startDate = ref(new Date().toISOString().split("T")[0]);
 const endDate = ref("");
-const minPurchase = ref<number | null>(0);
+const minPurchase = ref<number | null>(50);
 const usageLimit = ref<number | null>(100);
 const selectedProducts = ref<number[]>([]);
 const active = ref(true);
@@ -38,18 +44,44 @@ const toggleProduct = (id: number) => {
   }
 };
 
+const generateRandomCode = () => {
+  const prefixes = ["SPORT", "NIKE", "RUNNER", "CAMBODIA", "PRO", "CHAMPION"];
+  const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const val = discountValue.value || 15;
+  discountCode.value = `${randomPrefix}${val}`;
+};
+
 const saveDiscount = () => {
   if (!discountCode.value.trim()) {
-    alert("Please enter a discount code.");
+    error("Discount Code Required", "Please enter a promotional code or click generate.");
     return;
   }
 
   if (!discountValue.value || discountValue.value <= 0) {
-    alert("Please enter a valid discount value.");
+    error("Invalid Discount Value", "Discount amount must be greater than 0.");
     return;
   }
 
-  alert("Discount created successfully!");
+  const cleanCode = discountCode.value.trim().toUpperCase();
+
+  const newDiscount: Discount = {
+    id: Math.floor(Math.random() * 9000) + 1000,
+    code: cleanCode,
+    description:
+      description.value.trim() ||
+      `${discountValue.value}${discountType.value === "percentage" ? "%" : "$"} off on 365 sports gear`,
+    type: discountType.value === "percentage" ? "Percentage" : "Fixed Amount",
+    value: discountValue.value,
+    status: active.value ? "Active" : "Scheduled",
+    startDate: startDate.value || new Date().toISOString().split("T")[0],
+    endDate: endDate.value || "2026-12-31",
+    minPurchase: minPurchase.value || 0,
+    usageLimit: usageLimit.value || 100,
+    used: 0,
+  };
+
+  addDiscount(newDiscount);
+  success("Discount Voucher Created!", `Promo code ${cleanCode} is now active.`);
   navigateTo("/admin/discounts");
 };
 
@@ -75,7 +107,7 @@ const cancel = () => {
 
         <div class="mt-1">
           <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
-            Create Discount
+            Create Discount Campaign
           </h1>
           <p class="text-xs text-gray-400 mt-0.5">
             Configure a promotional voucher code or percentage discount for checkout
@@ -106,11 +138,11 @@ const cancel = () => {
     </div>
 
     <!-- Main Grid -->
-    <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-      <!-- Main Form Columns -->
+    <div class="grid grid-cols-1 gap-5 xl:grid-cols-3">
+      <!-- Main Form Columns (2 cols) -->
       <div class="space-y-4 xl:col-span-2">
         <!-- Basic Information -->
-        <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+        <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-xs">
           <div class="mb-4 border-b border-gray-100 pb-3">
             <h2 class="text-sm font-bold text-gray-900">
               Basic Campaign Information
@@ -122,15 +154,27 @@ const cancel = () => {
 
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
-              <label class="mb-1.5 block text-xs font-semibold text-gray-700">
-                Discount Code <span class="text-red-500">*</span>
-              </label>
-              <input
-                v-model="discountCode"
-                type="text"
-                placeholder="e.g. SPORT20, NIKEFEST"
-                class="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider text-gray-900 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-semibold text-gray-700">
+                  Discount Code <span class="text-red-500">*</span>
+                </label>
+                <button
+                  type="button"
+                  @click="generateRandomCode"
+                  class="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1"
+                >
+                  ⚡ Auto-Generate Code
+                </button>
+              </div>
+
+              <div class="relative">
+                <input
+                  v-model="discountCode"
+                  type="text"
+                  placeholder="e.g. SPORT20, NIKEFEST"
+                  class="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-gray-900 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
               <p class="mt-1 text-[11px] text-gray-400">
                 Code that customers will apply at checkout.
               </p>
@@ -174,7 +218,7 @@ const cancel = () => {
               <textarea
                 v-model="description"
                 rows="3"
-                placeholder="Details of the promotion (e.g. 20% discount on all football boots)..."
+                placeholder="Details of the promotion (e.g. 15% discount on all football boots & sneakers)..."
                 class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               ></textarea>
             </div>
@@ -182,7 +226,7 @@ const cancel = () => {
         </div>
 
         <!-- Schedule & Limits -->
-        <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+        <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-xs">
           <div class="mb-4 border-b border-gray-100 pb-3">
             <h2 class="text-sm font-bold text-gray-900">
               Schedule & Redemption Rules
@@ -244,7 +288,7 @@ const cancel = () => {
         </div>
 
         <!-- Applicable Products -->
-        <div class="rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+        <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-xs">
           <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
             <div>
               <h2 class="text-sm font-bold text-gray-900">
@@ -305,9 +349,9 @@ const cancel = () => {
         </div>
       </div>
 
-      <!-- Preview Column -->
+      <!-- Preview Column (1 col) -->
       <div class="space-y-4">
-        <div class="sticky top-6 rounded-md border border-gray-100 bg-white p-5 shadow-xs">
+        <div class="sticky top-6 rounded-xl border border-gray-100 bg-white p-5 shadow-xs">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-bold text-gray-900">
               Voucher Preview
@@ -327,53 +371,53 @@ const cancel = () => {
             </button>
           </div>
 
-          <div class="mt-4 rounded-lg bg-gray-50/80 p-4 text-center border border-gray-100">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-              Coupon Code
+          <div class="mt-4 rounded-2xl bg-gradient-to-br from-neutral-900 to-black p-5 text-center text-white shadow-lg border border-neutral-800">
+            <p class="text-[10px] font-black uppercase tracking-widest text-lime-400">
+              PROMO CODE
             </p>
 
-            <p class="mt-1 font-mono text-xl font-black tracking-wider text-gray-900">
-              {{ discountCode || "DISCOUNT_CODE" }}
+            <p class="mt-1 font-mono text-2xl font-black tracking-wider text-white">
+              {{ discountCode.toUpperCase() || "SPORT15" }}
             </p>
 
-            <div class="my-3 border-t border-dashed border-gray-300"></div>
+            <div class="my-3 border-t border-dashed border-neutral-700"></div>
 
-            <p class="text-[11px] text-gray-500">
-              Shopper Receives
+            <p class="text-[11px] text-gray-400">
+              Customer Benefit
             </p>
 
-            <p class="mt-0.5 text-2xl font-black text-blue-600">
+            <p class="mt-0.5 text-2xl font-black text-lime-400 drop-shadow-[0_0_8px_rgba(183,243,74,0.3)]">
               {{ discountValue || 0 }}{{ discountType === "percentage" ? "%" : "$" }} OFF
             </p>
           </div>
 
           <div class="mt-4 space-y-2.5 text-xs">
             <div class="flex justify-between border-b border-gray-100/80 py-1">
-              <span class="text-gray-400">Status</span>
+              <span class="text-gray-400">Campaign Status</span>
               <span
                 class="font-bold"
                 :class="active ? 'text-emerald-600' : 'text-gray-400'"
               >
-                {{ active ? "Active" : "Inactive" }}
+                {{ active ? "Active Now" : "Inactive" }}
               </span>
             </div>
 
             <div class="flex justify-between border-b border-gray-100/80 py-1">
-              <span class="text-gray-400">Applied Products</span>
+              <span class="text-gray-400">Eligible Products</span>
               <span class="font-bold text-gray-900">
-                {{ selectedProducts.length }}
+                {{ selectedProducts.length > 0 ? `${selectedProducts.length} Items` : 'All Products' }}
               </span>
             </div>
 
             <div class="flex justify-between border-b border-gray-100/80 py-1">
-              <span class="text-gray-400">Min. Basket</span>
+              <span class="text-gray-400">Min. Basket Requirement</span>
               <span class="font-bold text-gray-900">
                 ${{ minPurchase || 0 }}
               </span>
             </div>
 
             <div class="flex justify-between py-1">
-              <span class="text-gray-400">Usage Limit</span>
+              <span class="text-gray-400">Max Usage Quota</span>
               <span class="font-bold text-gray-900">
                 {{ usageLimit || "Unlimited" }}
               </span>
@@ -382,7 +426,7 @@ const cancel = () => {
 
           <button
             type="button"
-            class="mt-5 w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-95"
+            class="mt-5 w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-3 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-95"
             @click="saveDiscount"
           >
             Create Discount Code

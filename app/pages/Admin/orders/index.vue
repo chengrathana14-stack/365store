@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { products } from "~/data/product";
-import { orderSeedData } from "~/data/admin";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
 import type { Order, OrderStatus, PaymentStatus } from "~/type/product";
+
 definePageMeta({
   layout: "admin",
 });
 
-const orders = ref<Order[]>(orderSeedData.map((order) => ({ ...order })));
+const { allOrders, updateOrderStatus, updatePaymentStatus, deleteOrder: removeOrderStore } = useAdminStore();
+const { success } = useToast();
+
+const orders = allOrders;
 
 const search = ref("");
 const selectedStatus = ref("All");
@@ -146,9 +150,9 @@ const closeDeleteModal = () => {
 const deleteOrder = () => {
   if (!selectedOrder.value) return;
 
-  orders.value = orders.value.filter(
-    (order) => order.id !== selectedOrder.value?.id,
-  );
+  const orderId = selectedOrder.value.id;
+  removeOrderStore(orderId);
+  success("Order Deleted", `Order ${orderId} has been removed.`);
 
   closeDeleteModal();
 };

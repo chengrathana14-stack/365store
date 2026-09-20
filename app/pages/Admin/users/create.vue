@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
+import type { User } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
+
+const { addUser } = useAdminStore();
+const { success, error } = useToast();
 
 const showPassword = ref(false);
 
@@ -67,10 +73,28 @@ const validateForm = () => {
 
 const createUser = () => {
   if (!validateForm()) {
+    error("Validation Error", "Please fill in all required user fields.");
     return;
   }
 
-  alert("User created successfully!");
+  const fullName = `${user.firstName.trim()} ${user.lastName.trim()}`;
+
+  const newUser: User = {
+    id: Math.floor(Math.random() * 9000) + 1000,
+    name: fullName,
+    email: user.email.trim(),
+    phone: user.phone.trim(),
+    role: user.role as any,
+    status: user.status as any,
+    orders: 0,
+    spent: 0,
+    lastOrder: "None",
+    joined: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60",
+  };
+
+  addUser(newUser);
+  success("User Created Successfully!", `Account for ${fullName} (${user.role}) has been activated.`);
   navigateTo("/admin/users");
 };
 

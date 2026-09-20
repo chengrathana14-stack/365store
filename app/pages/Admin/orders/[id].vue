@@ -1,48 +1,88 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
 
 definePageMeta({
   layout: "admin",
 });
 
 const route = useRoute();
+const { allOrders, updateOrderStatus, updatePaymentStatus, deleteOrder: removeOrderStore } = useAdminStore();
+const { success } = useToast();
 
-const orderId = computed(() => {
-  return String(route.params.id);
-});
+const rawId = computed(() => String(route.params.id));
 
 /* =========================
    ORDER DATA
 ========================= */
 
+const foundOrder = computed(() => {
+  return allOrders.value.find(
+    (o) =>
+      o.id === rawId.value ||
+      o.id === `#${rawId.value}` ||
+      o.id === `#ORD-${rawId.value}` ||
+      o.id.replace("#ORD-", "").replace("#", "").toLowerCase() === rawId.value.replace("#ORD-", "").replace("#", "").toLowerCase()
+  );
+});
+
 const order = ref({
-  id: `#ORD-${orderId.value}`,
-  customer: "Dara Sok",
-  email: "dara@example.com",
+  id: `#ORD-${rawId.value}`,
+  customer: "Customer",
+  email: "customer@365sport.com",
   phone: "+855 12 345 678",
 
   product: "Nike Mercurial Vapor 16 Elite",
   productImage: "https://images.unsplash.com/photo-1553778263-73a83bab9b0c",
 
   quantity: 1,
-  size: "42",
-  color: "Black / Red",
+  size: "Standard",
+  color: "Athletic Edition",
 
   price: 145.97,
   subtotal: 145.97,
-  shipping: 6,
+  shipping: 0,
   discount: 0,
-  total: 151.97,
+  total: 145.97,
 
-  status: "Completed",
+  status: "Processing",
   paymentStatus: "Paid",
-  paymentMethod: "ABA Pay",
+  paymentMethod: "KHQR (Bakong)",
 
-  shippingAddress:
-    "123 Street 271, Sangkat Toul Tompoung, Phnom Penh, Cambodia",
+  shippingAddress: "Phnom Penh, Cambodia",
 
-  orderDate: "Sep 03, 2026",
-  updatedDate: "Sep 03, 2026",
+  orderDate: "Today",
+  updatedDate: "Today",
+});
+
+onMounted(() => {
+  if (foundOrder.value) {
+    order.value = {
+      id: foundOrder.value.id,
+      customer: foundOrder.value.customer,
+      email: foundOrder.value.email,
+      phone: foundOrder.value.phone,
+      product: foundOrder.value.product,
+      productImage: "https://images.unsplash.com/photo-1553778263-73a83bab9b0c",
+      quantity: foundOrder.value.quantity,
+      size: "Standard",
+      color: "Athletic Edition",
+      price: foundOrder.value.subtotal,
+      subtotal: foundOrder.value.subtotal,
+      shipping: foundOrder.value.shipping,
+      discount: 0,
+      total: foundOrder.value.total,
+      status: foundOrder.value.status,
+      paymentStatus: foundOrder.value.paymentStatus,
+      paymentMethod: foundOrder.value.paymentMethod,
+      shippingAddress: (foundOrder.value as any).address || "Phnom Penh, Cambodia",
+      orderDate: foundOrder.value.date,
+      updatedDate: "Today",
+    };
+    selectedStatus.value = foundOrder.value.status;
+    selectedPaymentStatus.value = foundOrder.value.paymentStatus;
+  }
 });
 
 /* =========================
@@ -102,12 +142,16 @@ const updateOrder = () => {
   order.value.status = selectedStatus.value;
   order.value.paymentStatus = selectedPaymentStatus.value;
 
+  updateOrderStatus(order.value.id, selectedStatus.value as any);
+  updatePaymentStatus(order.value.id, selectedPaymentStatus.value as any);
+
   order.value.updatedDate = new Date().toLocaleDateString("en-US", {
     month: "short",
     day: "2-digit",
     year: "numeric",
   });
 
+  success("Order Status Updated!", `Order ${order.value.id} is now ${selectedStatus.value}.`);
   showSuccess.value = true;
 
   setTimeout(() => {
@@ -121,9 +165,8 @@ const updateOrder = () => {
 
 const deleteOrder = () => {
   showDeleteModal.value = false;
-
-  alert(`Order ${order.value.id} deleted successfully!`);
-
+  removeOrderStore(order.value.id);
+  success("Order Deleted", `Order ${order.value.id} has been removed.`);
   navigateTo("/admin/orders");
 };
 

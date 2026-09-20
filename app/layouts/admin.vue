@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { adminNavigation } from "~/data/storefront";
+import ToastContainer from "~/components/ToastContainer.vue";
 
 const route = useRoute();
 const sidebarOpen = ref(false);
@@ -288,5 +289,8 @@ const isLinkActive = (path: string) => {
         <NuxtPage />
       </main>
     </div>
+
+    <!-- Global Toast Notifications -->
+    <ToastContainer />
   </div>
 </template>

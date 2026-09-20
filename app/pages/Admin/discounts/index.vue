@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { discountSeedData } from "~/data/admin";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
 import type { Discount } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
 
-const discounts = ref<Discount[]>(
-  discountSeedData.map((discount) => ({ ...discount })),
-);
+const { allDiscounts, toggleDiscountStatus, deleteDiscount } = useAdminStore();
+const { success, info } = useToast();
+
+const discounts = allDiscounts;
 
 const search = ref("");
 const selectedStatus = ref("All");
@@ -58,17 +60,15 @@ const usagePercentage = (discount: Discount) => {
 const copyCode = async (code: string) => {
   try {
     await navigator.clipboard.writeText(code);
-    alert(`Discount code "${code}" copied to clipboard!`);
+    success("Code Copied!", `Discount code "${code}" copied to clipboard.`);
   } catch {
-    alert(`Discount code: ${code}`);
+    info("Discount Code", code);
   }
 };
 
 const toggleStatus = (discount: Discount) => {
-  if (discount.status === "Expired" || discount.status === "Scheduled") {
-    return;
-  }
-  discount.status = discount.status === "Active" ? "Inactive" : "Active";
+  toggleDiscountStatus(discount.code);
+  success("Status Updated", `Campaign "${discount.code}" is now ${discount.status}.`);
 };
 
 // =========================================
@@ -90,9 +90,8 @@ const closeDeleteModal = () => {
 
 const confirmDeleteDiscount = () => {
   if (discountToDelete.value) {
-    discounts.value = discounts.value.filter(
-      (d) => d.id !== discountToDelete.value!.id,
-    );
+    deleteDiscount(discountToDelete.value.code);
+    success("Discount Removed", `Code "${discountToDelete.value.code}" has been deleted.`);
   }
   closeDeleteModal();
 };

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { productFormOptions } from "~/data/admin";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
+import type { Product } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
+
+const { addProduct } = useAdminStore();
+const { success, error } = useToast();
 
 const form = ref({
   name: "",
@@ -15,9 +21,9 @@ const form = ref({
   color: "",
   description: "",
   discount: 0,
-  stock: 0,
-  rating: 0,
-  reviews: 0,
+  stock: 25,
+  rating: 4.8,
+  reviews: 12,
   featured: false,
   isNew: true,
   image: "",
@@ -39,10 +45,36 @@ const toggleSize = (size: string) => {
 };
 
 const createProduct = () => {
-  console.log("Product:", form.value);
+  if (!form.value.name.trim()) {
+    error("Product Name Required", "Please enter a product title.");
+    return;
+  }
+  if (!form.value.price || Number(form.value.price) <= 0) {
+    error("Price Required", "Please enter a valid product price.");
+    return;
+  }
 
-  alert("Product created successfully!");
+  const newProduct: Product = {
+    id: Math.floor(Math.random() * 90000) + 1000,
+    name: form.value.name.trim(),
+    price: Number(form.value.price),
+    category: form.value.category,
+    brand: form.value.brand,
+    gender: form.value.gender,
+    description: form.value.description.trim() || `${form.value.brand} high-performance gear.`,
+    discount: Number(form.value.discount || 0),
+    stock: Number(form.value.stock || 25),
+    rating: 4.8,
+    reviews: 12,
+    popular: form.value.featured,
+    isNew: form.value.isNew,
+    image: form.value.image.trim() || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+    hoverimg: form.value.hoverimg.trim() || "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+    size: form.value.sizes.length > 0 ? form.value.sizes : ["40", "41", "42", "43", "44"],
+  };
 
+  addProduct(newProduct);
+  success("Product Created!", `${newProduct.name} is now available in store.`);
   navigateTo("/admin/products");
 };
 
