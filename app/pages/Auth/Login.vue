@@ -46,11 +46,6 @@ const login = async () => {
     isSubmitting.value = false;
   }
 };
-
-const fillAdminDemo = () => {
-  form.email = "chengrathana14@gmail.com";
-  form.password = "11112222";
-};
 </script>
 
 <template>
@@ -97,22 +92,6 @@ const fillAdminDemo = () => {
             </p>
           </div>
         </div>
-
-        <!-- Superadmin Demo Quick Fill Button -->
-        <button
-          type="button"
-          @click="fillAdminDemo"
-          class="w-full mb-5 flex items-center justify-between rounded-lg border border-lime-400/50 bg-lime-50/80 px-3 py-2 text-xs font-semibold text-lime-900 transition hover:bg-lime-100"
-          title="Auto-fill Superadmin credentials"
-        >
-          <span class="flex items-center gap-1.5">
-            <span>👑</span>
-            <span>Admin: <strong>chengrathana14@gmail.com</strong></span>
-          </span>
-          <span class="rounded bg-lime-400 px-2 py-0.5 text-[10px] font-black uppercase text-black">
-            Auto-fill
-          </span>
-        </button>
 
         <!-- Login Form -->
         <form class="space-y-5" @submit.prevent="login">
