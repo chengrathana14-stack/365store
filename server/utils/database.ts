@@ -29,4 +29,43 @@ database.exec(`
   )
 `);
 
+// Ensure Superadmin account chengrathana14@gmail.com exists with password 11112222 and role Admin
+import { randomBytes, scryptSync } from "node:crypto";
+
+const seedAdminPassword = (password: string) => {
+  const salt = randomBytes(16).toString("hex");
+  const hash = scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+};
+
+const adminUser = database
+  .prepare("SELECT id FROM users WHERE email = ?")
+  .get("chengrathana14@gmail.com") as { id: number } | undefined;
+
+if (!adminUser) {
+  database
+    .prepare(
+      `INSERT INTO users (name, email, password_hash, phone, role, status, joined)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .run(
+      "Cheng Rothana",
+      "chengrathana14@gmail.com",
+      seedAdminPassword("11112222"),
+      "+855 12 345 678",
+      "Admin",
+      "Active",
+      new Date().toISOString(),
+    );
+} else {
+  database
+    .prepare(
+      `UPDATE users 
+       SET role = 'Admin', status = 'Active', password_hash = ?
+       WHERE email = ?`,
+    )
+    .run(seedAdminPassword("11112222"), "chengrathana14@gmail.com");
+}
+
 export default database;
+

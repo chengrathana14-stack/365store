@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { adminNavigation } from "~/data/storefront";
 import ToastContainer from "~/components/ToastContainer.vue";
+import { useAuth } from "~/composables/useAuth";
 
 const route = useRoute();
 const sidebarOpen = ref(false);
 const navigation = adminNavigation;
+const { user, loadUser, logout, switchToUser } = useAuth();
+
+onMounted(loadUser);
 
 const isLinkActive = (path: string) => {
   if (path === "/admin") {
@@ -60,15 +64,17 @@ const isLinkActive = (path: string) => {
       <!-- 2. Administrator Profile Card -->
       <div class="shrink-0 p-3 border-b border-zinc-100">
         <div class="flex items-center gap-2.5 rounded-md border border-zinc-200/70 bg-zinc-50/60 p-2.5 transition hover:bg-zinc-100/60">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-black text-xs font-bold text-white shadow-2xs">
-            A
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-black text-xs font-bold text-lime-400 shadow-2xs">
+            {{ user?.name?.charAt(0).toUpperCase() || 'R' }}
           </div>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-1.5">
-              <p class="truncate text-xs font-bold text-zinc-900">Administrator</p>
+              <p class="truncate text-xs font-bold text-zinc-900">{{ user?.name || 'Cheng Rothana' }}</p>
               <span class="h-1.5 w-1.5 rounded-full bg-lime-500 shrink-0" title="Online"></span>
             </div>
-            <p class="truncate text-[10px] font-medium text-zinc-500">Store Manager</p>
+            <p class="truncate text-[10px] font-semibold text-zinc-500">
+              {{ user?.email === 'chengrathana14@gmail.com' ? 'Superadmin · Dual Role' : 'Administrator' }}
+            </p>
           </div>
         </div>
       </div>
@@ -187,16 +193,28 @@ const isLinkActive = (path: string) => {
       </nav>
 
       <!-- 4. Footer Actions -->
-      <div class="shrink-0 border-t border-zinc-100 p-3 space-y-1">
+      <div class="shrink-0 border-t border-zinc-100 p-3 space-y-1.5">
+        <!-- Switch to Storefront / User Mode -->
+        <button
+          type="button"
+          class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-bold text-black bg-lime-400 hover:bg-lime-300 shadow-xs transition"
+          @click="switchToUser"
+        >
+          <svg class="h-4 w-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span class="flex-1 text-left">Switch to User Mode</span>
+          <span>↗</span>
+        </button>
+
         <NuxtLink
           to="/"
-          target="_blank"
           class="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100/80 hover:text-zinc-900"
         >
           <svg class="h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
-          <span class="flex-1">View Website</span>
+          <span class="flex-1">Live Storefront</span>
           <svg class="h-3 w-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
@@ -205,6 +223,7 @@ const isLinkActive = (path: string) => {
         <button
           type="button"
           class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition hover:bg-red-50 hover:text-red-600"
+          @click="logout"
         >
           <svg class="h-4 w-4 text-zinc-400 group-hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -272,13 +291,27 @@ const isLinkActive = (path: string) => {
             <span class="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
           </NuxtLink>
 
+          <!-- Quick Switch to Storefront / User Mode -->
+          <NuxtLink
+            to="/"
+            class="flex items-center gap-1.5 rounded-md border border-lime-400/50 bg-lime-400/10 px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-2xs hover:bg-lime-400 hover:text-black transition"
+            title="Switch back to Storefront shopping mode"
+          >
+            <span class="flex h-2 w-2 rounded-full bg-lime-500"></span>
+            <span>Switch to User Mode</span>
+            <span class="text-zinc-500">↗</span>
+          </NuxtLink>
+
           <!-- Profile trigger -->
           <div class="flex items-center gap-2 rounded-md border border-zinc-200 bg-white p-1 pl-1.5 pr-2.5 shadow-2xs">
-            <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-black text-[10px] font-bold text-white">
-              A
+            <div class="flex h-6 w-6 items-center justify-center rounded-sm bg-black text-[10px] font-bold text-lime-400">
+              {{ user?.name?.charAt(0).toUpperCase() || 'R' }}
             </div>
             <div class="hidden text-left sm:block">
-              <p class="text-xs font-bold leading-none text-zinc-900">Admin</p>
+              <p class="text-xs font-bold leading-none text-zinc-900 max-w-[120px] truncate">
+                {{ user?.name || 'Rothana' }}
+              </p>
+              <p class="text-[9px] font-semibold text-lime-600 mt-0.5">Dual Role</p>
             </div>
           </div>
         </div>

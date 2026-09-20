@@ -1,4 +1,3 @@
-```vue
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 
@@ -187,4 +186,3 @@ const register = async () => {
     </div>
   </div>
 </template>
-```

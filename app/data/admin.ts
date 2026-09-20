@@ -323,6 +323,18 @@ export const orderSeedData: Order[] = [
 
 export const userSeedData: User[] = [
   {
+    id: 99,
+    name: "Cheng Rothana",
+    email: "chengrathana14@gmail.com",
+    phone: "+855 12 345 678",
+    role: "Admin",
+    status: "Active",
+    orders: 24,
+    spent: 3450,
+    joined: "2025-10-10",
+    avatar: "https://i.pravatar.cc/150?img=60",
+  },
+  {
     id: 1,
     name: "Dara Sok",
     email: "dara@gmail.com",

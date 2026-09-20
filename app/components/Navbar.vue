@@ -7,7 +7,7 @@ import { useRoute } from "vue-router";
 
 const { wishlistCount } = useWishlist();
 const { cartCount } = useCart();
-const { user, loadUser, logout } = useAuth();
+const { user, loadUser, logout, isSuperAdmin } = useAuth();
 const isAccountMenuOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 
@@ -142,7 +142,34 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
             </span>
           </NuxtLink>
 
-          <!-- Account -->
+          <!-- Extra Logo to Switch to Admin (ONLY for chengrathana14@gmail.com) -->
+          <NuxtLink
+            v-if="user && isSuperAdmin"
+            to="/admin"
+            class="group relative flex items-center gap-2 rounded-full border border-lime-400/50 bg-gradient-to-r from-lime-400/20 via-emerald-500/10 to-transparent pl-2.5 pr-3.5 py-1.5 transition-all duration-300 hover:border-lime-400 hover:bg-lime-400/30 hover:shadow-[0_0_22px_rgba(183,243,74,0.4)] hover:scale-105 active:scale-95"
+            title="Switch to Admin Management System"
+          >
+            <!-- Glowing Admin Shield Logo Icon -->
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black shadow-[0_0_12px_rgba(183,243,74,0.6)]">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </span>
+            <div class="flex flex-col text-left">
+              <span class="text-[11px] font-black uppercase tracking-wider text-lime-400 leading-tight">
+                Admin
+              </span>
+              <span class="text-[9px] font-bold text-gray-300 group-hover:text-white leading-tight">
+                Switch ↗
+              </span>
+            </div>
+            <span class="relative flex h-2 w-2 ml-0.5">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-lime-400"></span>
+            </span>
+          </NuxtLink>
+
+          <!-- User Account Profile Logo (Standard for all logged-in users) -->
           <template v-if="user">
             <div class="relative" @click.stop>
               <button
@@ -189,7 +216,43 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
                     </span>
                   </NuxtLink>
 
-                  <div class="mt-6 pt-4 border-t border-white/10 space-y-2">
+                  <!-- Dual Role Badge for chengrathana14@gmail.com -->
+                  <div
+                    v-if="isSuperAdmin"
+                    class="mt-4 rounded-xl border border-lime-400/30 bg-lime-400/10 p-3"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-black uppercase tracking-wider text-lime-400">
+                        👑 Dual Role Active
+                      </span>
+                      <span class="rounded bg-lime-400/20 px-1.5 py-0.5 text-[10px] font-bold text-lime-300">
+                        Admin + User
+                      </span>
+                    </div>
+                    <p class="mt-1 text-[11px] text-gray-300">
+                      Full access to Storefront shopping and Admin management dashboard.
+                    </p>
+                    <NuxtLink
+                      to="/admin"
+                      class="mt-2.5 flex items-center justify-between rounded-lg bg-lime-400 px-3 py-2 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 shadow-md shadow-lime-400/20"
+                    >
+                      <span>⚡ Open Admin Panel</span>
+                      <span>→</span>
+                    </NuxtLink>
+                  </div>
+
+                  <!-- Standard Role Info for regular user -->
+                  <div
+                    v-else
+                    class="mt-4 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                  >
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-gray-400">Account Role:</span>
+                      <span class="font-bold text-emerald-400">Customer (User)</span>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 pt-4 border-t border-white/10 space-y-2">
                     <NuxtLink to="/Profile" class="block text-sm font-semibold text-gray-300 hover:text-lime-400 transition">
                       Your Profile & Orders
                     </NuxtLink>
@@ -281,12 +344,24 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
           <div class="mt-4 border-t border-white/10 px-4 pt-4">
             <template v-if="user">
+              <!-- If Superadmin, show Switch to Admin button in mobile menu -->
               <NuxtLink
-                to="/Profile"
-                class="block rounded-xl bg-lime-400 px-4 py-3 text-center text-xs font-black uppercase tracking-wider text-black"
+                v-if="isSuperAdmin"
+                to="/admin"
+                class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 px-4 py-3 text-center text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/20 mb-2.5 transition hover:scale-[1.02]"
                 @click="closeMobileMenu"
               >
-                Profile: {{ user.name }}
+                <span>⚡ Switch to Admin Dashboard</span>
+                <span>→</span>
+              </NuxtLink>
+
+              <NuxtLink
+                to="/Profile"
+                class="block rounded-xl px-4 py-2.5 text-center text-xs font-bold transition"
+                :class="isSuperAdmin ? 'border border-white/15 bg-white/5 text-white hover:bg-white/10' : 'bg-lime-400 font-black uppercase tracking-wider text-black'"
+                @click="closeMobileMenu"
+              >
+                Profile: {{ user.name }} {{ isSuperAdmin ? '(User Mode)' : '' }}
               </NuxtLink>
               <button
                 type="button"
