@@ -27,7 +27,7 @@ const login = async () => {
     user.value = authenticatedUser;
     if (route.query.redirect) {
       await navigateTo(String(route.query.redirect));
-    } else if (authenticatedUser.isSuperAdmin || authenticatedUser.email === "chengrathana14@gmail.com") {
+    } else if (authenticatedUser.isSuperAdmin || authenticatedUser.role === "Admin") {
       await navigateTo("/admin");
     } else {
       await navigateTo("/");
@@ -78,19 +78,6 @@ const login = async () => {
           >
             Account created. Log in to continue.
           </p>
-
-          <!-- Unauthorized admin banner -->
-          <div
-            v-if="route.query.unauthorized === 'admin'"
-            class="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left"
-          >
-            <div class="font-bold flex items-center gap-1.5 text-amber-900">
-              <span>🔒</span> Admin Access Restricted
-            </div>
-            <p class="mt-0.5 text-gray-600">
-              Admin panel requires signing in with <strong>chengrathana14@gmail.com</strong> (Dual Role Admin).
-            </p>
-          </div>
         </div>
 
         <!-- Login Form -->

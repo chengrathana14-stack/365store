@@ -15,17 +15,6 @@ onMounted(loadUser);
 <template>
   <main class="min-h-[60vh] bg-gray-50 px-4 py-12 sm:px-6">
     <div class="mx-auto max-w-2xl">
-      <!-- Unauthorized banner -->
-      <div
-        v-if="route.query.unauthorized === 'admin'"
-        class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800"
-      >
-        <p class="font-bold">🔒 Admin Access Restricted</p>
-        <p class="mt-0.5 text-gray-600">
-          The Admin Dashboard is strictly reserved for the administrator account (<strong>chengrathana14@gmail.com</strong>).
-        </p>
-      </div>
-
       <div v-if="user" class="rounded-2xl bg-white p-8 shadow-sm">
         <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
           <div
@@ -42,7 +31,7 @@ onMounted(loadUser);
           </div>
         </div>
 
-        <!-- Admin Console Card for chengrathana14@gmail.com -->
+        <!-- Admin Console Card -->
         <div
           v-if="isSuperAdmin"
           class="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
