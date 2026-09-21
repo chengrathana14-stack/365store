@@ -13,13 +13,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // If not authenticated, redirect to Login
     if (!user.value) {
       return navigateTo(
-        `/Auth/Login?redirect=${encodeURIComponent(to.fullPath)}&unauthorized=admin`,
+        `/Auth/Login?redirect=${encodeURIComponent(to.fullPath)}`,
       );
     }
 
     // If authenticated user is NOT the authorized superadmin/admin, deny access
     if (!isSuperAdmin.value && user.value.role !== "Admin") {
-      return navigateTo("/Profile?unauthorized=admin");
+      return navigateTo("/Profile");
     }
   }
 });

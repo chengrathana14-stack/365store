@@ -169,7 +169,7 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
             </span>
           </NuxtLink>
 
-          <!-- Extra Logo to switch to Admin (ONLY for chengrathana14@gmail.com) -->
+          <!-- Extra Logo to switch to Admin (authorized superadmin) -->
           <NuxtLink
             v-if="user && isSuperAdmin"
             to="/admin"
@@ -259,7 +259,7 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
                     </span>
                   </NuxtLink>
 
-                  <!-- Admin Management Link (Clean, authentic SaaS style for chengrathana14@gmail.com) -->
+                  <!-- Admin Management Link (Clean, authentic SaaS style) -->
                   <div v-if="isSuperAdmin" class="mt-6 border-t border-gray-100 pt-5">
                     <NuxtLink
                       to="/admin"
@@ -403,7 +403,7 @@ onBeforeUnmount(() => document.removeEventListener("click", closeAccountMenu));
 
           <div class="mt-3 border-t border-gray-100 px-4 pt-4">
             <template v-if="user">
-              <!-- Switch to Admin Console in mobile menu for chengrathana14@gmail.com -->
+              <!-- Switch to Admin Console in mobile menu -->
               <NuxtLink
                 v-if="isSuperAdmin"
                 to="/admin"

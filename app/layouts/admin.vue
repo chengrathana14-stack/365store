@@ -7,7 +7,7 @@ import { useAuth } from "~/composables/useAuth";
 const route = useRoute();
 const sidebarOpen = ref(false);
 const navigation = adminNavigation;
-const { user, loadUser, logout, switchToUser } = useAuth();
+const { user, loadUser, logout, switchToUser, isSuperAdmin } = useAuth();
 
 onMounted(loadUser);
 
@@ -72,7 +72,7 @@ const isLinkActive = (path: string) => {
               <span class="h-1.5 w-1.5 rounded-full bg-lime-500 shrink-0" title="Online"></span>
             </div>
             <p class="truncate text-[10px] font-medium text-zinc-500">
-              {{ user?.email === 'chengrathana14@gmail.com' ? 'Superadmin (Dual Role)' : 'Administrator' }}
+              {{ isSuperAdmin ? 'Superadmin (Dual Role)' : 'Administrator' }}
             </p>
           </div>
         </div>
