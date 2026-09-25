@@ -40,8 +40,8 @@ export default defineEventHandler(async (event) => {
     const tag01 = formatTag("01", "12");
 
     // 3. Merchant Account Information (Individual Bakong Account): Tag 29
-    // Sub-tag 00: Account ID (ranntharath@aclb)
-    const subTag29_00 = formatTag("00", "ranntharath@aclb");
+    // Sub-tag 00: Account ID (021387313@aclb)
+    const subTag29_00 = formatTag("00", "021387313@aclb");
     const tag29 = formatTag("29", subTag29_00);
 
     // 4. Merchant Category Code: 5999
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
     // 07 = Terminal Label (WebQR)
     const subTag62 =
       formatTag("03", "365 Sport") +
-      formatTag("02", "060535771") +
+      formatTag("02", "021387313") +
       formatTag("01", billNumber) +
       formatTag("07", "WebQR");
     const tag62 = formatTag("62", subTag62);
@@ -131,8 +131,8 @@ export default defineEventHandler(async (event) => {
       amount: amountFloat,
       currency,
       isDynamic: true,
-      merchant: "Rann Tharath",
-      account: "ranntharath@aclb",
+      merchant: "365 Sport",
+      account: "021387313@aclb",
     };
   } catch (err: any) {
     throw createError({

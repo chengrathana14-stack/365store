@@ -29,13 +29,13 @@ def generate_qr():
         
         # Create QR code
         qr_string = khqr.create_qr(
-            account_id="ranntharath@aclb",
+            account_id="021387313@aclb",
             merchant_name="365 Sport",
             merchant_city="Phnom Penh",
             amount=amount,
             currency=currency,
             store_label="365 Sport",
-            phone_number="060535771",
+            phone_number="021387313",
             bill_number=bill_number,
             terminal_label="WebQR",
             static=False,
