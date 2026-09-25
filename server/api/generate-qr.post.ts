@@ -66,8 +66,8 @@ export default defineEventHandler(async (event) => {
     // Tag 54: Transaction Amount (Determined from product/order price)
     const tag54 = formatTag("54", amountStr);
 
-    // Tag 59: Merchant Name (CHENG ROTANA - registered with ACLEDA Bank)
-    const tag59 = formatTag("59", "CHENG ROTANA");
+    // Tag 59: Merchant Name (365 Sport)
+    const tag59 = formatTag("59", "365 Sport");
 
     // Tag 60: Merchant City (Phnom Penh)
     const tag60 = formatTag("60", "Phnom Penh");
@@ -136,7 +136,7 @@ export default defineEventHandler(async (event) => {
       bill_number: billNumber,
       amount: amountFloat,
       currency,
-      merchant: "CHENG ROTANA",
+      merchant: "365 Sport",
       store: "365 Sport",
     };
   } catch (err: any) {

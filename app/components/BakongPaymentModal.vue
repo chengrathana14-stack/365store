@@ -48,7 +48,7 @@
             <h3 class="text-xl font-black text-gray-900">Payment Successful!</h3>
             <p class="text-xs text-gray-500 mt-1">Transaction confirmed by ACLEDA Bank & Bakong KHQR.</p>
             <div class="mt-4 rounded-xl bg-gray-50 p-3 text-xs text-gray-600">
-              <p class="font-bold text-gray-800">CHENG ROTANA (365 Sport)</p>
+              <p class="font-bold text-gray-800 text-sm">365 Sport</p>
               <p class="text-emerald-600 font-extrabold text-sm mt-1">
                 {{ activeCurrency === 'KHR' ? `${formattedAmount} ៛` : `$${formattedAmount} USD` }}
               </p>
@@ -71,14 +71,13 @@
               </div>
 
               <!-- Merchant Name & Dynamic Amount -->
-              <div class="w-full px-4 pt-3.5 pb-2 text-center bg-white">
-                <div class="flex items-center justify-center gap-1.5">
-                  <span class="font-black text-gray-900 text-sm tracking-wide uppercase">CHENG ROTANA</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">365 Sport</span>
+              <div class="w-full px-4 pt-4 pb-2 text-center bg-white">
+                <div class="flex items-center justify-center">
+                  <span class="font-black text-gray-900 text-base tracking-wide uppercase">365 Sport</span>
                 </div>
 
                 <!-- Determined Amount from Product Price -->
-                <div class="mt-1 flex items-baseline justify-center gap-1">
+                <div class="mt-1.5 flex items-baseline justify-center gap-1">
                   <span class="text-2xl font-black text-gray-900 tracking-tight">
                     {{ activeCurrency === 'KHR' ? formattedAmount : `$${formattedAmount}` }}
                   </span>
@@ -306,7 +305,7 @@ const generateClientFallbackKhqr = (amt: number, curr: "USD" | "KHR") => {
     tag("58", "KH") +
     tag("53", curr === "KHR" ? "116" : "840") +
     tag("54", amountStr) +
-    tag("59", "CHENG ROTANA") +
+    tag("59", "365 Sport") +
     tag("60", "Phnom Penh") +
     tag("62", tag("02", "0969611977")) +
     "6304";
@@ -334,7 +333,7 @@ const generateClientFallbackKhqr = (amt: number, curr: "USD" | "KHR") => {
     bill_number: billNumber,
     amount: amt,
     currency: curr,
-    merchant: "CHENG ROTANA",
+    merchant: "365 Sport",
     store: "365 Sport",
   };
 };
