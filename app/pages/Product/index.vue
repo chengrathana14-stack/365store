@@ -19,7 +19,10 @@ const loadProducts = async () => {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        allProducts.value = data;
+        allProducts.value = data.map((p: any) => ({
+          ...p,
+          id: Number(p.id),
+        }));
       }
     }
   } catch (error) {
