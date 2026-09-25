@@ -58,7 +58,7 @@ def generate_qr():
         tag58 = format_tag("58", "KH")
         tag53 = format_tag("53", currency_code)
         tag54 = format_tag("54", amount_str)
-        tag59 = format_tag("59", "CHENG ROTANA")
+        tag59 = format_tag("59", "365 Sport")
         tag60 = format_tag("60", "Phnom Penh")
         tag62 = format_tag("62", format_tag("02", "0969611977"))
 
@@ -87,7 +87,7 @@ def generate_qr():
             'bill_number': bill_number,
             'amount': amount,
             'currency': currency,
-            'merchant': 'CHENG ROTANA'
+            'merchant': '365 Sport'
         })
         
     except Exception as e:
