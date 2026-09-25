@@ -39,14 +39,13 @@ const register = async () => {
 
     await navigateTo("/Auth/Login?registered=1");
   } catch (error) {
-    const responseError = error as {
-      data?: { statusMessage?: string };
-      statusMessage?: string;
-    };
+    const responseError = error as any;
 
     errorMessage.value =
-      responseError.data?.statusMessage ??
-      responseError.statusMessage ??
+      responseError?.data?.statusMessage ||
+      responseError?.data?.message ||
+      responseError?.statusMessage ||
+      responseError?.message ||
       "Unable to create your account. Please try again.";
   } finally {
     isSubmitting.value = false;
