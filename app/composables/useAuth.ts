@@ -3,11 +3,34 @@ export interface AuthUser {
   name: string;
   email: string;
   role: string;
+  roles?: string[];
+  isSuperAdmin?: boolean;
+  canAccessAdmin?: boolean;
 }
 
 export const useAuth = () => {
   const user = useState<AuthUser | null>("auth-user", () => null);
   const isLoading = useState("auth-loading", () => false);
+
+  const isSuperAdmin = computed(() => {
+    if (!user.value) return false;
+    return (
+      user.value.email.toLowerCase() === "chengrathana14@gmail.com" ||
+      user.value.role === "Admin" ||
+      user.value.isSuperAdmin === true
+    );
+  });
+
+  const canSwitchToAdmin = computed(() => isSuperAdmin.value);
+
+  const switchToAdmin = async () => {
+    if (!canSwitchToAdmin.value) return;
+    await navigateTo("/admin");
+  };
+
+  const switchToUser = async () => {
+    await navigateTo("/");
+  };
 
   const loadUser = async () => {
     if (isLoading.value) return;
@@ -24,10 +47,24 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    await $fetch("/api/auth/logout", { method: "POST" });
+    try {
+      await $fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Ignore network errors on logout
+    }
     user.value = null;
     await navigateTo("/");
   };
 
-  return { user, isLoading, loadUser, logout };
+  return {
+    user,
+    isLoading,
+    isSuperAdmin,
+    canSwitchToAdmin,
+    switchToAdmin,
+    switchToUser,
+    loadUser,
+    logout,
+  };
 };
+

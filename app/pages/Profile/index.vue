@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 definePageMeta({
   layout: "user",
 });
 
-const { user, loadUser, logout } = useAuth();
+const route = useRoute();
+const { user, loadUser, logout, isSuperAdmin } = useAuth();
 
 onMounted(loadUser);
 </script>
@@ -22,9 +24,33 @@ onMounted(loadUser);
           </div>
 
           <div>
-            <p class="text-sm font-medium text-lime-600">365SPORT member</p>
+            <p class="text-sm font-medium text-lime-600">
+              {{ isSuperAdmin ? '365SPORT Superadmin' : '365SPORT member' }}
+            </p>
             <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
           </div>
+        </div>
+
+        <!-- Admin Console Card -->
+        <div
+          v-if="isSuperAdmin"
+          class="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        >
+          <div>
+            <p class="text-xs font-bold text-gray-900 uppercase tracking-wide">
+              Administrator Management
+            </p>
+            <p class="mt-0.5 text-xs text-gray-500">
+              Access the store control center, catalog, orders, and user permissions.
+            </p>
+          </div>
+          <NuxtLink
+            to="/admin"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-lime-400 hover:text-black transition shrink-0"
+          >
+            <span>Open Admin Console</span>
+            <span>→</span>
+          </NuxtLink>
         </div>
 
         <dl class="mt-6 space-y-4">
@@ -35,7 +61,9 @@ onMounted(loadUser);
 
           <div>
             <dt class="text-sm text-gray-500">Account role</dt>
-            <dd class="font-medium text-gray-900">{{ user.role }}</dd>
+            <dd class="font-semibold text-gray-900">
+              {{ isSuperAdmin ? 'Administrator (Storefront & Management)' : 'Customer' }}
+            </dd>
           </div>
         </dl>
 
@@ -62,3 +90,4 @@ onMounted(loadUser);
     </div>
   </main>
 </template>
+

@@ -345,7 +345,10 @@ const loadProducts = async () => {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        allProducts.value = data;
+        allProducts.value = data.map((p: any) => ({
+          ...p,
+          id: Number(p.id),
+        }));
       }
     }
   } catch (error) {
@@ -358,7 +361,7 @@ onMounted(() => {
 });
 
 const product = computed(() => {
-  return allProducts.value.find((item) => item.id === Number(route.params.id));
+  return allProducts.value.find((item) => String(item.id) === String(route.params.id));
 });
 
 const selectedImage = ref("");

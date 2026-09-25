@@ -52,12 +52,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const role = email === "chengrathana14@gmail.com" ? "Admin" : "Customer";
+
   const result = database
     .prepare(
-      `INSERT INTO users (name, email, password_hash, joined)
-       VALUES (?, ?, ?, ?)`,
+      `INSERT INTO users (name, email, password_hash, joined, role)
+       VALUES (?, ?, ?, ?, ?)`,
     )
-    .run(name, email, hashPassword(password), new Date().toISOString());
+    .run(name, email, hashPassword(password), new Date().toISOString(), role);
 
   return {
     id: result.lastInsertRowid,

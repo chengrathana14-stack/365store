@@ -25,7 +25,13 @@ const login = async () => {
     });
 
     user.value = authenticatedUser;
-    await navigateTo("/");
+    if (route.query.redirect) {
+      await navigateTo(String(route.query.redirect));
+    } else if (authenticatedUser.isSuperAdmin || authenticatedUser.role === "Admin") {
+      await navigateTo("/admin");
+    } else {
+      await navigateTo("/");
+    }
   } catch (error) {
     const responseError = error as {
       data?: { statusMessage?: string };
@@ -59,7 +65,7 @@ const login = async () => {
       <!-- Login Card -->
       <div class="rounded-xl bg-white p-8 shadow-lg">
         <!-- Logo -->
-        <div class="mb-8 text-center">
+        <div class="mb-6 text-center">
           <h1 class="text-3xl font-black italic">
             <span class="text-lime-500">365</span>SPORT
           </h1>
@@ -157,4 +163,3 @@ const login = async () => {
     </div>
   </div>
 </template>
-```
