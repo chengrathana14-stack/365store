@@ -27,23 +27,48 @@ def generate_qr():
         # Generate unique bill number
         bill_number = uuid.uuid4().hex[:12]
         
-        # Create QR code
-        qr_string = khqr.create_qr(
-            account_id="021387313@aclb",
-            merchant_name="365 Sport",
-            merchant_city="Phnom Penh",
-            amount=amount,
-            currency=currency,
-            store_label="365 Sport",
-            phone_number="021387313",
-            bill_number=bill_number,
-            terminal_label="WebQR",
-            static=False,
-        )
-        
-        # Generate MD5 for transaction tracking
-        md5 = khqr.generate_md5(qr=qr_string)
-        qr_image = khqr.qr_image(qr=qr_string, format="base64_uri")
+        # Format amount
+        if str(currency).upper() == 'KHR':
+            amount_str = str(int(round(float(amount))))
+            currency_code = '116'
+        else:
+            amount_str = f"{float(amount):.2f}"
+            currency_code = '840'
+
+        def format_tag(tag_id, val):
+            return f"{tag_id}{len(str(val)):02d}{val}"
+
+        def crc16(data: str) -> str:
+            crc = 0xFFFF
+            for ch in data:
+                crc ^= ord(ch) << 8
+                for _ in range(8):
+                    if crc & 0x8000:
+                        crc = ((crc << 1) ^ 0x1021) & 0xFFFF
+                    else:
+                        crc = (crc << 1) & 0xFFFF
+            return f"{crc:04X}"
+
+        # Real ACLEDA KHQR base
+        tag00 = format_tag("00", "01")
+        tag01 = format_tag("01", "11")
+        tag29 = format_tag("29", "0009khqr@aclb0111855235228650206ACLEDA")
+        tag39 = format_tag("39", "00042CCY01014")
+        tag52 = format_tag("52", "5999")
+        tag58 = format_tag("58", "KH")
+        tag53 = format_tag("53", currency_code)
+        tag54 = format_tag("54", amount_str)
+        tag59 = format_tag("59", "CHENG ROTANA")
+        tag60 = format_tag("60", "Phnom Penh")
+        tag62 = format_tag("62", format_tag("02", "0969611977"))
+
+        raw_qr = tag00 + tag01 + tag29 + tag39 + tag52 + tag58 + tag53 + tag54 + tag59 + tag60 + tag62 + "6304"
+        checksum = crc16(raw_qr)
+        qr_string = raw_qr + checksum
+
+        import hashlib, urllib.parse
+        md5 = hashlib.md5(qr_string.encode('utf-8')).hexdigest()
+        qr_image = f"https://api.qrserver.com/v1/create-qr-code/?size=350x350&margin=8&data={urllib.parse.quote(qr_string)}"
         
         # Store transaction
         TRANSACTIONS[md5] = {
@@ -57,10 +82,12 @@ def generate_qr():
         return jsonify({
             'success': True,
             'qr_image': qr_image,
+            'qr_string': qr_string,
             'md5': md5,
             'bill_number': bill_number,
             'amount': amount,
-            'currency': currency
+            'currency': currency,
+            'merchant': 'CHENG ROTANA'
         })
         
     except Exception as e:
