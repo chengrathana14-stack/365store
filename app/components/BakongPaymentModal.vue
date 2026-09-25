@@ -173,22 +173,34 @@ const simulatePayment = () => {
 
 const checkPaymentStatus = async (md5: string) => {
   try {
-    const res = await fetch(`${props.apiBase}/api/check-payment?md5=${md5}`);
-    if (!res.ok) return;
-    const result = await res.json();
+    const urls = [
+      `/api/check-payment?md5=${md5}`,
+      ...(props.apiBase ? [`${props.apiBase.replace(/\/+$/, "")}/api/check-payment?md5=${md5}`] : []),
+    ];
 
-    if (result.status === "PAID") {
-      paymentStatus.value = "PAID";
-      stopPolling();
-      setTimeout(() => {
-        emit("success", {
-          bill_number: qrData.value?.bill_number,
-          md5: md5,
-          amount: props.amount,
-          currency: props.currency,
-          paymentMethod: "Bakong KHQR",
-        });
-      }, 1500);
+    for (const url of urls) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) continue;
+        const result = await res.json();
+
+        if (result.status === "PAID") {
+          paymentStatus.value = "PAID";
+          stopPolling();
+          setTimeout(() => {
+            emit("success", {
+              bill_number: qrData.value?.bill_number,
+              md5: md5,
+              amount: props.amount,
+              currency: props.currency,
+              paymentMethod: "Bakong KHQR",
+            });
+          }, 1500);
+          return;
+        }
+      } catch {
+        // try next endpoint
+      }
     }
   } catch (err) {
     console.error("Error polling payment status:", err);
@@ -203,40 +215,53 @@ const generateQr = async () => {
   qrData.value = null;
 
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const endpointsToTry = [
+      "/api/generate-qr",
+      ...(props.apiBase ? [`${props.apiBase.replace(/\/+$/, "")}/api/generate-qr`] : []),
+    ];
 
-    const res = await fetch(`${props.apiBase}/api/generate-qr`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount: Number(props.amount),
-        currency: props.currency || "USD",
-        description: props.description || "Order Payment",
-      }),
-      signal: controller.signal,
-    });
+    let data: any = null;
+    for (const url of endpointsToTry) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: Number(props.amount),
+            currency: props.currency || "USD",
+            description: props.description || "Order Payment",
+          }),
+        });
 
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.qr_image) {
-        qrData.value = data;
-        paymentStatus.value = "WAITING";
-
-        // Poll every 2.5s for live payment
-        pollTimer = setInterval(() => {
-          if (qrData.value?.md5) {
-            checkPaymentStatus(qrData.value.md5);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.qr_image) {
+            data = json;
+            break;
           }
-        }, 2500);
-        return;
+        }
+      } catch {
+        // continue to next endpoint
       }
     }
-    throw new Error("Local backend offline");
+
+    if (data) {
+      qrData.value = data;
+      paymentStatus.value = "WAITING";
+      errorMessage.value = "";
+
+      // Poll every 2.5s for live payment
+      pollTimer = setInterval(() => {
+        if (qrData.value?.md5) {
+          checkPaymentStatus(qrData.value.md5);
+        }
+      }, 2500);
+      return;
+    }
+
+    throw new Error("Using fallback card");
   } catch (_err) {
     // If backend is offline or unreachable on Vercel, generate authentic KHQR card
     const billNumber = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -252,6 +277,7 @@ const generateQr = async () => {
       isFallback: true,
     };
     paymentStatus.value = "WAITING";
+    errorMessage.value = "";
   } finally {
     isLoading.value = false;
   }
