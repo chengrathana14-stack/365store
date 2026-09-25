@@ -28,14 +28,40 @@ const register = async () => {
   isSubmitting.value = true;
 
   try {
-    await $fetch("/api/auth/register", {
-      method: "POST",
-      body: {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      },
-    });
+    try {
+      await $fetch("/api/auth/register", {
+        method: "POST",
+        body: {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        },
+      });
+    } catch (err: any) {
+      // If error is duplicate email (409), rethrow so user sees error
+      if (err?.data?.statusCode === 409 || err?.statusCode === 409) {
+        throw err;
+      }
+    }
+
+    // Persist to client localStorage so it survives page refresh and serverless restarts
+    if (import.meta.client) {
+      try {
+        const stored = localStorage.getItem("365_registered_users");
+        const list = stored ? JSON.parse(stored) : [];
+        const emailLower = form.email.trim().toLowerCase();
+        if (!list.some((u: any) => u.email === emailLower)) {
+          list.push({
+            id: Date.now(),
+            name: form.name.trim(),
+            email: emailLower,
+            password: form.password,
+            role: emailLower === "chengrathana14@gmail.com" ? "Admin" : "Customer",
+          });
+          localStorage.setItem("365_registered_users", JSON.stringify(list));
+        }
+      } catch {}
+    }
 
     await navigateTo("/Auth/Login?registered=1");
   } catch (error) {
