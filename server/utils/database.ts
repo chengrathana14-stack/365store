@@ -103,18 +103,27 @@ const loadState = (): DBState => {
   return createInitialState();
 };
 
-const state: DBState = loadState();
+let inMemoryState: DBState = loadState();
 
-const saveState = () => {
+const getState = (): DBState => {
+  const loaded = loadState();
+  if (loaded.users.length > 0) {
+    inMemoryState = loaded;
+  }
+  return inMemoryState;
+};
+
+const saveState = (s: DBState) => {
+  inMemoryState = s;
   try {
-    writeFileSync(storageFilePath, JSON.stringify(state, null, 2), "utf-8");
+    writeFileSync(storageFilePath, JSON.stringify(s, null, 2), "utf-8");
   } catch {
     // In-memory fallback if disk is unwritable
   }
 };
 
 // Initial persist
-saveState();
+saveState(inMemoryState);
 
 // Compatibility Layer providing .prepare().get() / .run() / .all()
 class Statement {
@@ -125,6 +134,7 @@ class Statement {
   }
 
   get(...params: any[]): any {
+    const state = getState();
     const q = this.query.toLowerCase();
 
     // 1. SELECT id FROM users WHERE email = ?
@@ -165,6 +175,7 @@ class Statement {
   }
 
   run(...params: any[]): { lastInsertRowid: number; changes: number } {
+    const state = getState();
     const q = this.query.toLowerCase();
 
     // 1. INSERT INTO users (name, email, password_hash, joined, role)
@@ -204,7 +215,7 @@ class Statement {
       }
 
       state.users.push(newUser);
-      saveState();
+      saveState(state);
       return { lastInsertRowid: nextId, changes: 1 };
     }
 
@@ -218,7 +229,7 @@ class Statement {
         }
         user.role = "Admin";
         user.status = "Active";
-        saveState();
+        saveState(state);
         return { lastInsertRowid: user.id, changes: 1 };
       }
       return { lastInsertRowid: 0, changes: 0 };
@@ -232,7 +243,7 @@ class Statement {
         created_at: String(params[2] || new Date().toISOString()),
       };
       state.sessions.push(newSession);
-      saveState();
+      saveState(state);
       return { lastInsertRowid: state.sessions.length, changes: 1 };
     }
 
@@ -241,7 +252,7 @@ class Statement {
       const tokenHash = String(params[0] || "");
       const prevLength = state.sessions.length;
       state.sessions = state.sessions.filter((s) => s.token_hash !== tokenHash);
-      saveState();
+      saveState(state);
       return { lastInsertRowid: 0, changes: prevLength - state.sessions.length };
     }
 

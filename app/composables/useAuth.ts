@@ -9,8 +9,30 @@ export interface AuthUser {
 }
 
 export const useAuth = () => {
-  const user = useState<AuthUser | null>("auth-user", () => null);
+  const user = useState<AuthUser | null>("auth-user", () => {
+    if (import.meta.client) {
+      try {
+        const stored = localStorage.getItem("365_auth_user");
+        if (stored) return JSON.parse(stored);
+      } catch {}
+    }
+    return null;
+  });
+
   const isLoading = useState("auth-loading", () => false);
+
+  const setUser = (userData: AuthUser | null) => {
+    user.value = userData;
+    if (import.meta.client) {
+      try {
+        if (userData) {
+          localStorage.setItem("365_auth_user", JSON.stringify(userData));
+        } else {
+          localStorage.removeItem("365_auth_user");
+        }
+      } catch {}
+    }
+  };
 
   const isSuperAdmin = computed(() => {
     if (!user.value) return false;
@@ -35,12 +57,25 @@ export const useAuth = () => {
   const loadUser = async () => {
     if (isLoading.value) return;
 
+    // Check localStorage first
+    if (import.meta.client && !user.value) {
+      try {
+        const stored = localStorage.getItem("365_auth_user");
+        if (stored) {
+          user.value = JSON.parse(stored);
+        }
+      } catch {}
+    }
+
     isLoading.value = true;
 
     try {
-      user.value = await $fetch<AuthUser>("/api/auth/me");
+      const serverUser = await $fetch<AuthUser>("/api/auth/me");
+      if (serverUser) {
+        setUser(serverUser);
+      }
     } catch {
-      user.value = null;
+      // Don't wipe the user if serverless session cold-starts
     } finally {
       isLoading.value = false;
     }
@@ -52,7 +87,7 @@ export const useAuth = () => {
     } catch {
       // Ignore network errors on logout
     }
-    user.value = null;
+    setUser(null);
     await navigateTo("/");
   };
 
@@ -65,6 +100,6 @@ export const useAuth = () => {
     switchToUser,
     loadUser,
     logout,
+    setUser,
   };
 };
-
