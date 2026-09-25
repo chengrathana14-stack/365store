@@ -52,7 +52,7 @@
           <!-- QR Code Display (Live Backend or KHQR Card) -->
           <div v-else-if="qrData" class="w-full flex flex-col items-center pt-2">
             <!-- 1. Live Official Python Base64 Image -->
-            <div v-if="!qrData.isFallback && qrData.qr_image" class="w-full flex justify-center">
+            <div v-if="qrData.qr_image?.startsWith('data:image/')" class="w-full flex justify-center">
               <img
                 :src="qrData.qr_image"
                 alt="Bakong KHQR"
@@ -263,10 +263,36 @@ const generateQr = async () => {
 
     throw new Error("Using fallback card");
   } catch (_err) {
-    // If backend is offline or unreachable on Vercel, generate authentic KHQR card
+    // Exact official Dynamic Bakong KHQR for client fallback
     const billNumber = Math.random().toString(36).substring(2, 10).toUpperCase();
-    const qrDataString = `00020101021229340016ranntharath@aclb0108IRCTSHOP520459995303840540${Number(props.amount).toFixed(2)}5802KH5912Rann Tharath6010Phnom Penh62160712${billNumber}6304`;
-    const qrImage = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=8&data=${encodeURIComponent(qrDataString)}`;
+    const amountStr = Number(props.amount).toFixed(2).replace(/\.?0+$/, "");
+    const tag = (id: string, val: string) => `${id}${val.length.toString().padStart(2, "0")}${val}`;
+    const nowMs = Date.now().toString();
+    const expMs = (Date.now() + 86400 * 1000).toString();
+
+    const raw =
+      tag("00", "01") +
+      tag("01", "12") +
+      tag("29", tag("00", "ranntharath@aclb")) +
+      tag("52", "5999") +
+      tag("53", props.currency === "KHR" ? "116" : "840") +
+      tag("54", amountStr) +
+      tag("58", "KH") +
+      tag("59", "Rann Tharath") +
+      tag("60", "Phnom Penh") +
+      tag("62", tag("03", "IRCT SHOP") + tag("02", "060535771") + tag("01", billNumber) + tag("07", "WebQR")) +
+      tag("99", tag("00", nowMs) + tag("01", expMs)) +
+      "6304";
+
+    let crc = 0xffff;
+    for (let i = 0; i < raw.length; i++) {
+      crc ^= raw.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) {
+        crc = (crc & 0x8000) !== 0 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+      }
+    }
+    const dynamicQr = raw + crc.toString(16).toUpperCase().padStart(4, "0");
+    const qrImage = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=8&data=${encodeURIComponent(dynamicQr)}`;
 
     qrData.value = {
       qr_image: qrImage,
