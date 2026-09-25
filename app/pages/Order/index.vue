@@ -545,7 +545,7 @@ const { user, loadUser } = useAuth();
 const apiBase = useApiBase();
 
 // Bakong Flask API URL
-const bakongApiBase = "http://127.0.0.1:5000";
+const bakongApiBase = apiBase || "http://127.0.0.1:5000";
 
 // =====================================================
 // Cart
