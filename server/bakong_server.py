@@ -30,11 +30,11 @@ def generate_qr():
         # Create QR code
         qr_string = khqr.create_qr(
             account_id="ranntharath@aclb",
-            merchant_name="Rann Tharath",
+            merchant_name="365 Sport",
             merchant_city="Phnom Penh",
             amount=amount,
             currency=currency,
-            store_label="IRCT SHOP",
+            store_label="365 Sport",
             phone_number="060535771",
             bill_number=bill_number,
             terminal_label="WebQR",

@@ -56,19 +56,19 @@ export default defineEventHandler(async (event) => {
     // 7. Country Code: KH
     const tag58 = formatTag("58", "KH");
 
-    // 8. Merchant Name: Rann Tharath
-    const tag59 = formatTag("59", "Rann Tharath");
+    // 8. Merchant Name: 365 Sport
+    const tag59 = formatTag("59", "365 Sport");
 
     // 9. Merchant City: Phnom Penh
     const tag60 = formatTag("60", "Phnom Penh");
 
     // 10. Additional Data Field: Tag 62
-    // 03 = Store Label (IRCT SHOP)
+    // 03 = Store Label (365 Sport)
     // 02 = Mobile Number (060535771)
     // 01 = Bill Number
     // 07 = Terminal Label (WebQR)
     const subTag62 =
-      formatTag("03", "IRCT SHOP") +
+      formatTag("03", "365 Sport") +
       formatTag("02", "060535771") +
       formatTag("01", billNumber) +
       formatTag("07", "WebQR");
