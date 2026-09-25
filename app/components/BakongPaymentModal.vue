@@ -74,8 +74,7 @@
               <!-- Merchant Info -->
               <div class="w-full px-4 pt-3 pb-2 text-center border-b border-gray-100 bg-red-50/30">
                 <p class="font-bold text-gray-900 text-sm">365 Sport</p>
-                <p class="text-xs text-gray-500 font-mono">021387313@aclb</p>
-                <div class="mt-1.5 text-xl font-black text-[#E1251B]">
+                <div class="mt-1 text-xl font-black text-[#E1251B]">
                   {{ currency === 'KHR' ? '៛' : '$' }}{{ Number(amount).toFixed(2) }}
                 </div>
               </div>
