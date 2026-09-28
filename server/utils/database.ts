@@ -271,13 +271,6 @@ const database = {
 };
 
 // Ensure Superadmin account chengrathana14@gmail.com exists with password 11112222 and role Admin
-import { randomBytes, scryptSync } from "node:crypto";
-
-const seedAdminPassword = (password: string) => {
-  const salt = randomBytes(16).toString("hex");
-  const hash = scryptSync(password, salt, 64).toString("hex");
-  return `${salt}:${hash}`;
-};
 
 const adminUser = database
   .prepare("SELECT id FROM users WHERE email = ?")
