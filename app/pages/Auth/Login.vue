@@ -64,7 +64,6 @@ const login = async () => {
     }
 
     setUser(authenticatedUser);
-
     if (route.query.redirect) {
       await navigateTo(String(route.query.redirect));
     } else if (authenticatedUser.isSuperAdmin || authenticatedUser.role === "Admin") {

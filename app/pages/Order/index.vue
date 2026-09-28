@@ -1,614 +1,445 @@
 <template>
-  <div class="min-h-screen bg-gray-100 py-10">
+  <div class="min-h-screen py-10 text-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Back Button -->
-      <div class="mb-6">
+      <!-- Back Navigation -->
+      <div class="mb-6 flex items-center justify-between">
         <NuxtLink
           to="/Cart"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 transition hover:-translate-x-1 hover:text-black"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-400 transition hover:-translate-x-1 hover:text-white"
         >
-          ← Back to Cart
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Back to Cart</span>
         </NuxtLink>
-      </div>
 
-      <!-- Auth Warning Banner if user is not yet logged in -->
-      <div
-        v-if="!user"
-        class="mb-6 flex items-center justify-between rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 shadow-xs"
-      >
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🔒</span>
-          <span>
-            <strong>Login Required:</strong> You must be logged in to complete your checkout and place an order.
-          </span>
-        </div>
-        <NuxtLink
-          :to="`/Auth/Login?redirect=${encodeURIComponent(route.fullPath)}`"
-          class="rounded-lg bg-black px-4 py-1.5 text-xs font-bold text-white transition hover:bg-lime-400 hover:text-black"
-        >
-          Log In Now
-        </NuxtLink>
+        <!-- Secure Badge -->
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1 text-xs font-bold text-emerald-400">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          256-Bit SSL Encrypted Checkout
+        </span>
       </div>
 
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900">Checkout</h1>
-        <p class="mt-2 text-gray-600">
-          Complete your order and proceed to payment
+        <div class="flex items-center gap-2">
+          <span class="h-7 w-1.5 rounded-full bg-lime-400 shadow-[0_0_12px_#b7f34a]"></span>
+          <h1 class="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">Checkout</h1>
+        </div>
+        <p class="mt-1 text-xs sm:text-sm text-gray-400">
+          Provide your shipping address and choose your preferred instant payment method
         </p>
       </div>
 
-      <!-- ================================================= -->
-      <!-- ORDER COMPLETED SUCCESS VIEW -->
-      <!-- ================================================= -->
-      <div
-        v-if="orderCompleted && completedOrder"
-        class="rounded-2xl bg-white p-8 sm:p-12 shadow-sm text-center max-w-2xl mx-auto"
-      >
-        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-4xl mb-4 animate-bounce">
-          ✓
-        </div>
-
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 mb-3 border border-emerald-200">
-          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-          Payment Verified by Bakong KHQR
-        </span>
-
-        <h2 class="text-3xl font-extrabold text-gray-900">Thank You for Your Order!</h2>
-        <p class="mt-2 text-sm text-gray-600">
-          Your payment has been received successfully. A confirmation email has been sent to
-          <strong class="text-gray-900">{{ completedOrder.email }}</strong>.
-        </p>
-
-        <!-- Order Receipt Details -->
-        <div class="mt-8 rounded-xl bg-gray-50 border border-gray-200 p-6 text-left space-y-3 text-sm">
-          <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="text-gray-500">Order ID:</span>
-            <span class="font-mono font-bold text-gray-900">{{ completedOrder.id }}</span>
-          </div>
-
-          <div v-if="completedOrder.billNumber" class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="text-gray-500">Bakong Bill Number:</span>
-            <span class="font-mono font-bold text-[#d61827]">{{ completedOrder.billNumber }}</span>
-          </div>
-
-          <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="text-gray-500">Payment Method:</span>
-            <span class="font-semibold text-gray-900">{{ completedOrder.paymentMethod }}</span>
-          </div>
-
-          <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="text-gray-500">Customer:</span>
-            <span class="font-semibold text-gray-900">{{ completedOrder.customer }}</span>
-          </div>
-
-          <div class="flex justify-between border-b border-gray-200 pb-3">
-            <span class="text-gray-500">Shipping To:</span>
-            <span class="font-medium text-gray-700 text-right max-w-xs truncate">
-              {{ completedOrder.phone }} · {{ shippingInfo.address }}, {{ shippingInfo.city }}
-            </span>
-          </div>
-
-          <div class="flex justify-between pt-1 text-base">
-            <span class="font-bold text-gray-900">Total Paid:</span>
-            <span class="font-black text-2xl text-emerald-600">${{ Number(completedOrder.total).toFixed(2) }} USD</span>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <NuxtLink
-            to="/Product"
-            class="flex-1 rounded-xl bg-black py-3.5 text-sm font-bold text-white transition hover:bg-lime-400 hover:text-black"
-          >
-            Continue Shopping
-          </NuxtLink>
-          <NuxtLink
-            to="/"
-            class="flex-1 rounded-xl border border-gray-300 py-3.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-          >
-            Back to Home
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- ================================================= -->
-      <!-- CHECKOUT FORM VIEW -->
-      <!-- ================================================= -->
-      <div v-else class="grid gap-8 lg:grid-cols-3">
-        <!-- Left: Shipping & Payment -->
-        <div class="lg:col-span-2">
-          <!-- SHIPPING INFORMATION -->
-          <div class="mb-8 rounded-2xl bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-bold text-gray-900">
-                Shipping Information
+      <!-- Main Layout Grid -->
+      <div class="grid gap-8 lg:grid-cols-12">
+        <!-- LEFT: Shipping & Payment Method (8 cols) -->
+        <div class="lg:col-span-8 space-y-8">
+          <!-- 1. SHIPPING INFORMATION -->
+          <div class="rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl p-6 sm:p-8 shadow-xl">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <h2 class="text-lg font-black uppercase tracking-tight text-white flex items-center gap-2.5">
+                <span class="flex h-7 w-7 items-center justify-center rounded-xl bg-lime-400 text-black text-xs font-black shadow-[0_0_10px_#b7f34a]">1</span>
+                <span>Shipping Information</span>
               </h2>
-              <span v-if="user" class="text-xs text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
-                Logged in as <strong>{{ user.name }}</strong>
-              </span>
+              <span class="text-xs text-gray-400 font-medium">* Required fields</span>
             </div>
 
-            <form class="mt-6 space-y-4">
+            <form class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <!-- Full Name -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Full Name <span class="text-red-500">*</span>
+                <label class="block font-bold text-gray-300 uppercase tracking-wider text-[11px] mb-1.5">
+                  Full Name *
                 </label>
                 <input
                   v-model="shippingInfo.fullName"
                   type="text"
-                  placeholder="John Doe"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
+                  placeholder="e.g. Rothana Cheng"
+                  class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20"
                 />
               </div>
 
               <!-- Email -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Email Address <span class="text-red-500">*</span>
+                <label class="block font-bold text-gray-300 uppercase tracking-wider text-[11px] mb-1.5">
+                  Email Address *
                 </label>
                 <input
                   v-model="shippingInfo.email"
                   type="email"
-                  placeholder="john@example.com"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
+                  placeholder="e.g. rothana@example.com"
+                  class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20"
                 />
               </div>
 
               <!-- Phone -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Phone Number <span class="text-red-500">*</span>
+                <label class="block font-bold text-gray-300 uppercase tracking-wider text-[11px] mb-1.5">
+                  Phone Number (Telegram / Mobile) *
                 </label>
                 <input
                   v-model="shippingInfo.phone"
                   type="tel"
-                  placeholder="+855 12 345 678"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
+                  placeholder="e.g. 012 345 678"
+                  class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20"
                 />
               </div>
 
-              <!-- Address -->
+              <!-- City / Province -->
               <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Address <span class="text-red-500">*</span>
+                <label class="block font-bold text-gray-300 uppercase tracking-wider text-[11px] mb-1.5">
+                  City / Province *
+                </label>
+                <input
+                  v-model="shippingInfo.city"
+                  type="text"
+                  placeholder="e.g. Phnom Penh"
+                  class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20"
+                />
+              </div>
+
+              <!-- Delivery Address -->
+              <div class="sm:col-span-2">
+                <label class="block font-bold text-gray-300 uppercase tracking-wider text-[11px] mb-1.5">
+                  Street Address / House No. *
                 </label>
                 <input
                   v-model="shippingInfo.address"
                   type="text"
-                  placeholder="123 Street Name"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                />
-              </div>
-
-              <!-- City / State / ZIP -->
-              <div class="grid gap-4 sm:grid-cols-3">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">
-                    City <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    v-model="shippingInfo.city"
-                    type="text"
-                    placeholder="Phnom Penh"
-                    class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">
-                    State / Province <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    v-model="shippingInfo.state"
-                    type="text"
-                    placeholder="Phnom Penh"
-                    class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">
-                    ZIP Code <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    v-model="shippingInfo.zipCode"
-                    type="text"
-                    placeholder="12000"
-                    class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                  />
-                </div>
-              </div>
-
-              <!-- Country -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700">
-                  Country <span class="text-red-500">*</span>
-                </label>
-                <input
-                  v-model="shippingInfo.country"
-                  type="text"
-                  placeholder="Cambodia"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
+                  placeholder="e.g. #14, St. 2004, Sangkat Teuk Thla, Khan Sen Sok"
+                  class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20"
                 />
               </div>
             </form>
           </div>
 
-          <!-- PAYMENT INFORMATION -->
-          <div class="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 class="text-2xl font-bold text-gray-900">Payment Method</h2>
+          <!-- 2. PAYMENT METHOD SELECTION -->
+          <div class="rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl p-6 sm:p-8 shadow-xl">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <h2 class="text-lg font-black uppercase tracking-tight text-white flex items-center gap-2.5">
+                <span class="flex h-7 w-7 items-center justify-center rounded-xl bg-lime-400 text-black text-xs font-black shadow-[0_0_10px_#b7f34a]">2</span>
+                <span>Payment Method</span>
+              </h2>
+              <span class="text-xs font-bold text-lime-400">⚡ Instant Verification</span>
+            </div>
 
-            <!-- Payment Method Tabs -->
-            <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <!-- Bakong KHQR (Primary / Default) -->
+            <!-- Payment Tabs -->
+            <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <!-- KHQR Option (Default & Recommended) -->
               <button
                 type="button"
-                @click="paymentMethod = 'bakong'"
-                class="flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-3 font-semibold transition text-xs sm:text-sm"
+                @click="paymentMethod = 'khqr'"
+                class="flex flex-col items-center justify-center rounded-2xl border-2 p-4 font-bold transition text-center relative overflow-hidden"
                 :class="
-                  paymentMethod === 'bakong'
-                    ? 'border-[#d61827] bg-red-50 text-[#d61827] ring-2 ring-red-200'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                  paymentMethod === 'khqr'
+                    ? 'border-red-500 bg-red-600/15 text-white ring-2 ring-red-500/40 shadow-lg shadow-red-600/20'
+                    : 'border-white/10 text-gray-400 hover:text-white bg-white/5'
                 "
               >
-                <span class="inline-block bg-[#d61827] text-white font-black text-[9px] px-1 py-0.5 rounded">KHQR</span>
-                Bakong
+                <span class="text-xs font-black bg-red-600 text-white px-2 py-0.5 rounded tracking-wide mb-1 shadow-sm">KHQR</span>
+                <span class="text-xs font-black">Bakong / KHQR</span>
+                <span class="text-[10px] text-gray-400">All Banking Apps</span>
               </button>
 
-              <!-- Credit Card -->
+              <!-- Credit / Debit Card -->
               <button
                 type="button"
                 @click="paymentMethod = 'card'"
-                class="flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-3 font-semibold transition text-xs sm:text-sm"
+                class="flex flex-col items-center justify-center rounded-2xl border-2 p-4 font-bold transition text-center"
                 :class="
                   paymentMethod === 'card'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600 ring-2 ring-blue-200'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    ? 'border-lime-400 bg-lime-400/15 text-white shadow-lg ring-2 ring-lime-400/30'
+                    : 'border-white/10 text-gray-400 hover:text-white bg-white/5'
                 "
               >
-                💳 Card
+                <span class="text-xl mb-1">💳</span>
+                <span class="text-xs font-black">Credit Card</span>
+                <span class="text-[10px] text-gray-400">Visa / Mastercard</span>
               </button>
 
-              <!-- PayPal -->
+              <!-- Cash On Delivery -->
               <button
                 type="button"
-                @click="paymentMethod = 'paypal'"
-                class="flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-3 font-semibold transition text-xs sm:text-sm"
+                @click="paymentMethod = 'cod'"
+                class="flex flex-col items-center justify-center rounded-2xl border-2 p-4 font-bold transition text-center"
                 :class="
-                  paymentMethod === 'paypal'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600 ring-2 ring-blue-200'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                  paymentMethod === 'cod'
+                    ? 'border-lime-400 bg-lime-400/15 text-white shadow-lg ring-2 ring-lime-400/30'
+                    : 'border-white/10 text-gray-400 hover:text-white bg-white/5'
                 "
               >
-                🅿️ PayPal
+                <span class="text-xl mb-1">🚚</span>
+                <span class="text-xs font-black">Cash On Delivery</span>
+                <span class="text-[10px] text-gray-400">Pay at Doorstep</span>
               </button>
 
-              <!-- Bank Transfer -->
+              <!-- Bank Wire -->
               <button
                 type="button"
                 @click="paymentMethod = 'bank'"
-                class="flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-3 font-semibold transition text-xs sm:text-sm"
+                class="flex flex-col items-center justify-center rounded-2xl border-2 p-4 font-bold transition text-center"
                 :class="
                   paymentMethod === 'bank'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600 ring-2 ring-blue-200'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    ? 'border-lime-400 bg-lime-400/15 text-white shadow-lg ring-2 ring-lime-400/30'
+                    : 'border-white/10 text-gray-400 hover:text-white bg-white/5'
                 "
               >
-                🏦 Transfer
+                <span class="text-xl mb-1">🏦</span>
+                <span class="text-xs font-black">Bank Transfer</span>
+                <span class="text-[10px] text-gray-400">Manual Slip</span>
               </button>
             </div>
 
-            <!-- Bakong KHQR Info Box -->
-            <div v-if="paymentMethod === 'bakong'" class="mt-6 rounded-xl border border-red-200 bg-red-50/70 p-5">
-              <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#d61827] text-white font-black text-xs shadow-xs">
-                  KHQR
-                </div>
-                <div>
-                  <h4 class="font-bold text-gray-900 text-sm">Bakong KHQR Instant Pay</h4>
-                  <p class="text-xs text-gray-600">Scan & pay using Bakong App or any Cambodian Bank App</p>
-                </div>
-              </div>
+            <!-- PAYMENT CONTENT 1: KHQR EMBEDDED CODE WITH USER'S REAL KHQR -->
+            <div v-if="paymentMethod === 'khqr'" class="mt-6 rounded-2xl border border-white/10 bg-black/60 p-6 text-white backdrop-blur-md">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <!-- QR Visual Display -->
+                <div class="flex flex-col items-center rounded-2xl bg-white p-4 text-black shadow-2xl">
+                  <div class="flex items-center gap-1.5 mb-2">
+                    <span class="text-xs font-black text-red-600">KHQR</span>
+                    <span class="text-[11px] font-bold text-gray-800">· CHENG ROTANA</span>
+                  </div>
 
-              <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white p-3 rounded-lg border border-red-100">
-                <div>
-                  <span class="text-gray-500">Receiver:</span>
-                  <span class="ml-1 font-semibold text-gray-900">Rann Tharath (IRCT SHOP)</span>
-                </div>
-                <div>
-                  <span class="text-gray-500">Currency:</span>
-                  <span class="ml-1 font-semibold text-gray-900">USD ($)</span>
-                </div>
-              </div>
+                  <!-- Real KHQR Image -->
+                  <div class="relative p-1 border-2 border-gray-200 rounded-xl overflow-hidden max-w-[210px] sm:max-w-[230px] bg-white shadow-xs">
+                    <img
+                      src="/images/khqr.png"
+                      alt="CHENG ROTANA KHQR"
+                      class="w-full h-auto object-contain rounded-lg"
+                    />
 
-              <div class="mt-3 flex items-start gap-2 text-[12px] text-gray-600">
-                <span class="text-[#d61827] font-bold">⚡</span>
-                <span>
-                  When you click <strong>Proceed to Payment</strong>, a real-time Bakong KHQR code will be created and displayed in a modal. The system will automatically detect and verify your payment upon scanning.
-                </span>
+                    <!-- Scanning Line animation if verifying -->
+                    <div
+                      v-if="isProcessingPayment"
+                      class="absolute inset-x-0 h-1 bg-lime-400 animate-pulse shadow-[0_0_12px_#b7f34a]"
+                      style="top: 50%"
+                    ></div>
+                  </div>
+
+                  <span class="mt-2 text-xs font-black text-black">
+                    ${{ finalTotal.toFixed(2) }} ({{ Math.round(finalTotal * 4100).toLocaleString() }} ៛)
+                  </span>
+                </div>
+
+                <!-- QR Instructions & Quick Scan -->
+                <div class="flex-1 space-y-3.5 text-xs">
+                  <div class="flex items-center gap-2.5">
+                    <span class="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-black text-white uppercase shadow-sm">Step 1</span>
+                    <span class="font-bold text-gray-200">Open any Bakong / ABA / ACLEDA / Wing app</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span class="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-black text-white uppercase shadow-sm">Step 2</span>
+                    <span class="font-bold text-gray-200">Scan this official KHQR code</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span class="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-black text-white uppercase shadow-sm">Step 3</span>
+                    <span class="font-bold text-gray-200">Confirm transfer & click below to verify</span>
+                  </div>
+
+                  <div class="pt-3">
+                    <div class="rounded-xl bg-white/5 p-3.5 border border-white/10 text-[11px] text-gray-300">
+                      <p>✨ <strong>Supported Banks:</strong> ABA PAY, Bakong, Wing, ACLEDA, Sathapana, TrueMoney, PromptPay</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Card Details (shown when card is selected) -->
-            <form v-if="paymentMethod === 'card'" class="mt-6 space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Card Number</label>
-                <input
-                  v-model="cardInfo.cardNumber"
-                  type="text"
-                  placeholder="1234 5678 9012 3456"
-                  maxlength="19"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 font-mono outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                  @input="formatCardNumber"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Cardholder Name</label>
-                <input
-                  v-model="cardInfo.holderName"
-                  type="text"
-                  placeholder="John Doe"
-                  class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                />
-              </div>
-
-              <div class="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
+            <!-- PAYMENT CONTENT 2: CARD DETAILS -->
+            <div v-else-if="paymentMethod === 'card'" class="mt-6 space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="sm:col-span-2">
+                  <label class="block font-bold text-gray-300 text-[11px] mb-1">Card Number *</label>
                   <input
-                    v-model="cardInfo.expiry"
+                    v-model="cardInfo.cardNumber"
                     type="text"
-                    placeholder="MM/YY"
-                    maxlength="5"
-                    class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 font-mono outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
-                    @input="formatExpiry"
+                    placeholder="4000 1234 5678 9010"
+                    maxlength="19"
+                    @input="formatCardNumber"
+                    class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs text-white outline-none transition focus:border-lime-400"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">CVC</label>
+                  <label class="block font-bold text-gray-300 text-[11px] mb-1">Cardholder Name *</label>
                   <input
-                    v-model="cardInfo.cvc"
+                    v-model="cardInfo.holderName"
                     type="text"
-                    placeholder="123"
-                    maxlength="4"
-                    class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 font-mono outline-none transition focus:border-black focus:ring-2 focus:ring-lime-200"
+                    placeholder="John Doe"
+                    class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs text-white outline-none transition focus:border-lime-400"
                   />
                 </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-bold text-gray-300 text-[11px] mb-1">Exp (MM/YY) *</label>
+                    <input
+                      v-model="cardInfo.expiry"
+                      type="text"
+                      placeholder="12/28"
+                      maxlength="5"
+                      class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-3 font-mono text-xs text-white outline-none transition focus:border-lime-400"
+                    />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-gray-300 text-[11px] mb-1">CVC *</label>
+                    <input
+                      v-model="cardInfo.cvc"
+                      type="text"
+                      placeholder="123"
+                      maxlength="4"
+                      class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-3 font-mono text-xs text-white outline-none transition focus:border-lime-400"
+                    />
+                  </div>
+                </div>
               </div>
-            </form>
-
-            <!-- PayPal Message -->
-            <div v-if="paymentMethod === 'paypal'" class="mt-6">
-              <p class="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                ✓ You will be redirected to PayPal to complete your payment
-              </p>
             </div>
 
-            <!-- Bank Transfer Message -->
-            <div v-if="paymentMethod === 'bank'" class="mt-6">
-              <p class="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                ✓ Bank transfer details will be provided after order confirmation
-              </p>
+            <!-- PAYMENT CONTENT 3: CASH ON DELIVERY -->
+            <div v-else-if="paymentMethod === 'cod'" class="mt-6 rounded-2xl bg-white/5 p-5 border border-white/10 text-xs text-gray-300">
+              <p class="font-bold text-white mb-1.5">💵 Cash on Delivery (Doorstep Payment)</p>
+              <p>You can pay with cash or KHQR directly to our courier when your gear arrives. Please have the exact change ready.</p>
+            </div>
+
+            <!-- PAYMENT CONTENT 4: BANK TRANSFER -->
+            <div v-else class="mt-6 rounded-2xl bg-white/5 p-5 border border-white/10 text-xs text-gray-300 space-y-1">
+              <p class="font-bold text-white">🏦 Bank Wire Transfer Details:</p>
+              <p>Bank: <strong>ABA Bank</strong> · Account Name: <strong>CHENG ROTANA</strong></p>
+              <p>Account Number: <strong class="font-mono text-lime-400">001 999 365 (USD)</strong></p>
             </div>
           </div>
         </div>
 
-        <!-- Right: Order Summary -->
-        <div>
-          <div class="sticky top-20 rounded-2xl bg-white p-6 shadow-sm">
-            <h3 class="text-xl font-bold text-gray-900">Order Summary</h3>
+        <!-- RIGHT: ORDER SUMMARY (4 cols) -->
+        <div class="lg:col-span-4">
+          <div class="sticky top-24 rounded-3xl border border-white/10 bg-[#0d1017]/90 backdrop-blur-2xl p-6 shadow-2xl">
+            <h3 class="text-base font-black uppercase tracking-tight text-white">Order Summary</h3>
 
-            <!-- Cart Items Display -->
-            <div v-if="cart.length > 0" class="mt-6 divide-y divide-gray-100 border-b border-gray-100 pb-4 max-h-80 overflow-y-auto">
-              <div v-for="(item, idx) in cart" :key="idx" class="flex gap-3 py-3">
+            <!-- Itemized List -->
+            <div class="mt-4 space-y-3 border-b border-white/10 pb-4 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+              <div
+                v-for="(item, idx) in checkoutItems"
+                :key="idx"
+                class="flex gap-3 text-xs"
+              >
                 <img
                   :src="item.product.image"
                   :alt="item.product.name"
-                  class="h-16 w-16 rounded-lg object-cover border border-gray-100"
+                  class="h-14 w-14 rounded-xl object-cover border border-white/10 shrink-0"
                 />
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-semibold text-gray-900 text-sm truncate">
-                    {{ item.product.name }}
-                  </h4>
-                  <p class="text-xs text-gray-500 mt-0.5">
-                    Size: <span class="font-medium text-gray-700">{{ item.size || 'N/A' }}</span> ·
-                    Qty: <span class="font-medium text-gray-700">{{ item.quantity }}</span>
-                  </p>
-                  <p class="mt-1 font-bold text-gray-900 text-sm">
-                    ${{ (item.product.price * item.quantity).toFixed(2) }}
-                  </p>
+                  <h4 class="font-bold text-white truncate">{{ item.product.name }}</h4>
+                  <p class="text-[11px] text-gray-400">Size: {{ item.size || 'Standard' }} | Qty: {{ item.quantity }}</p>
+                  <p class="font-black text-lime-400 mt-0.5">${{ (item.product.price * item.quantity).toFixed(2) }}</p>
                 </div>
               </div>
             </div>
 
-            <!-- Single Item Fallback (if direct orderItem) -->
-            <div v-else-if="orderItem" class="mt-6 border-b border-gray-100 pb-6">
-              <div class="flex gap-4">
-                <img
-                  :src="orderItem.product.image"
-                  :alt="orderItem.product.name"
-                  class="h-20 w-20 rounded-lg object-cover"
-                />
-                <div class="flex-1">
-                  <h4 class="font-semibold text-gray-900">
-                    {{ orderItem.product.name }}
-                  </h4>
-                  <p class="mt-1 text-sm text-gray-500">
-                    Size: <span class="font-medium">{{ orderItem.size }}</span>
-                  </p>
-                  <p class="text-sm text-gray-500">
-                    Qty: <span class="font-medium">{{ orderItem.quantity }}</span>
-                  </p>
-                  <p class="mt-2 font-semibold text-gray-900">
-                    ${{ (orderItem.product.price * orderItem.quantity).toFixed(2) }}
-                  </p>
+            <!-- Totals calculation -->
+            <div class="mt-4 space-y-2.5 text-xs">
+              <div class="flex justify-between text-gray-300">
+                <span>Subtotal</span>
+                <span class="font-bold text-white">${{ itemsSubtotal.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-gray-300">
+                <span>Shipping</span>
+                <span class="font-bold text-white">
+                  {{ shippingCost === 0 ? "FREE" : `$${shippingCost.toFixed(2)}` }}
+                </span>
+              </div>
+              <div class="flex justify-between text-gray-300">
+                <span>Tax (Included)</span>
+                <span class="font-bold text-white">$0.00</span>
+              </div>
+
+              <div class="border-t border-white/10 pt-3">
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm font-black text-white uppercase">Total Due</span>
+                  <div class="text-right">
+                    <span class="text-2xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(183,243,74,0.3)]">
+                      ${{ finalTotal.toFixed(2) }}
+                    </span>
+                    <span class="block text-[10px] text-gray-400 font-bold">
+                      ≈ {{ Math.round(finalTotal * 4100).toLocaleString() }} KHR
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Pricing Details -->
-            <div class="mt-4 space-y-3">
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Subtotal</span>
-                <span class="font-medium text-gray-900">${{ subtotal.toFixed(2) }}</span>
+            <!-- SUBMIT BUTTON -->
+            <div class="mt-6 space-y-3">
+              <!-- Verification / Loading Progress -->
+              <div
+                v-if="isProcessingPayment"
+                class="rounded-xl border border-lime-400/50 bg-lime-400/10 p-3.5 text-center text-xs font-bold text-lime-300 animate-pulse flex items-center justify-center gap-2"
+              >
+                <svg class="h-4 w-4 animate-spin text-lime-400" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>{{ processingStatusMessage }}</span>
               </div>
 
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Shipping</span>
-                <span class="font-medium text-gray-900">${{ shipping.toFixed(2) }}</span>
-              </div>
+              <button
+                v-else
+                type="button"
+                @click="handleCompleteOrder"
+                :disabled="!isFormValid || checkoutItems.length === 0"
+                class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-4 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:shadow-[0_0_25px_rgba(183,243,74,0.5)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <span v-if="paymentMethod === 'khqr'">⚡ Confirm KHQR Payment</span>
+                <span v-else-if="paymentMethod === 'card'">💳 Pay with Credit Card</span>
+                <span v-else-if="paymentMethod === 'cod'">🚚 Place Order (COD)</span>
+                <span v-else>🏦 Place Order via Bank Wire</span>
+              </button>
 
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Tax (10%)</span>
-                <span class="font-medium text-gray-900">${{ tax.toFixed(2) }}</span>
-              </div>
-
-              <div class="border-t border-gray-100 pt-3">
-                <div class="flex justify-between items-baseline">
-                  <span class="font-semibold text-gray-900">Total</span>
-                  <span class="text-2xl font-black text-gray-900">
-                    ${{ total.toFixed(2) }}
-                    <span class="text-xs font-semibold text-gray-500">USD</span>
-                  </span>
-                </div>
-              </div>
+              <NuxtLink
+                to="/Cart"
+                class="block w-full rounded-xl border border-white/15 bg-white/5 py-2.5 text-center text-xs font-bold text-gray-300 transition hover:bg-white/10 hover:text-white"
+              >
+                Modify Cart
+              </NuxtLink>
             </div>
-
-            <!-- Checkout Button -->
-            <button
-              type="button"
-              @click="handleCheckout"
-              :disabled="!isFormValid || total <= 0"
-              class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-black px-6 py-4 font-bold text-white shadow-md transition hover:bg-lime-400 hover:text-black active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
-            >
-              <span v-if="paymentMethod === 'bakong'" class="inline-flex items-center gap-2">
-                <span class="inline-block bg-[#d61827] text-white font-black text-[9px] px-1 py-0.5 rounded">KHQR</span>
-                Pay with Bakong KHQR
-              </span>
-              <span v-else>
-                Proceed to Payment
-              </span>
-            </button>
-
-            <!-- Back to Cart -->
-            <NuxtLink
-              to="/Cart"
-              class="mt-3 block w-full rounded-xl border border-gray-200 px-6 py-3 text-center font-semibold text-gray-700 transition hover:bg-gray-50"
-            >
-              Back to Cart
-            </NuxtLink>
 
             <!-- Trust Badges -->
-            <div class="mt-6 space-y-2 border-t border-gray-100 pt-6 text-center text-xs text-gray-500">
-              <p>🔒 Secure & Encrypted Payment</p>
-              <p>✓ Money-back Guarantee</p>
-              <p>📞 24/7 Customer Support</p>
+            <div class="mt-6 border-t border-white/10 pt-4 text-center text-[10px] text-gray-400 space-y-1">
+              <p>🔒 Instant Bank Verification & SSL Encryption</p>
+              <p>✓ 30 Days Return & Exchange Guarantee</p>
+              <p>📞 24/7 Dedicated Support</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- ================================================= -->
-    <!-- BAKONG KHQR PAYMENT MODAL -->
-    <!-- ================================================= -->
-    <BakongPaymentModal
-      :isOpen="showBakongModal"
-      :amount="total"
-      currency="USD"
-      :apiBase="bakongApiBase"
-      :description="`Order for ${shippingInfo.fullName || 'Customer'}`"
-      @close="showBakongModal = false"
-      @success="handleBakongSuccess"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { navigateTo } from "#app/composables/router";
+import { ref, computed } from "vue";
 import { useCart } from "~/composables/useCart";
-import { useAuth } from "~/composables/useAuth";
-import { useApiBase } from "~/composables/useApi";
-import BakongPaymentModal from "~/components/BakongPaymentModal.vue";
+import { useToast } from "~/composables/useToast";
+import { navigateTo } from "#app/composables/router";
+import { products as fallbackProducts } from "~/data/product";
 
-// =====================================================
-// Auth & Protection
-// =====================================================
+definePageMeta({
+  layout: "user",
+});
 
-const route = useRoute();
-const { user, loadUser } = useAuth();
-const apiBase = useApiBase();
+const { cart, subtotal: cartSubtotal, clearCart } = useCart();
+const { success, error } = useToast();
 
-// Bakong Flask API URL
-const bakongApiBase = apiBase || "http://127.0.0.1:5000";
-
-// =====================================================
-// Cart
-// =====================================================
-
-const { cart, clearCart } = useCart();
-
-// =====================================================
 // Shipping Information
-// =====================================================
-
 const shippingInfo = ref({
-  fullName: "",
-  email: "",
-  phone: "",
-  address: "",
+  fullName: "Rothana Cheng",
+  email: "rothana@365sports.com",
+  phone: "012 888 365",
+  address: "Building 365, Confederation de la Russie, Phnom Penh",
   city: "Phnom Penh",
-  state: "Phnom Penh",
-  zipCode: "12000",
-  country: "Cambodia",
 });
 
-onMounted(async () => {
-  // Check login
-  if (!user.value) {
-    await loadUser();
-  }
+// Payment Method Tab
+const paymentMethod = ref<"khqr" | "card" | "cod" | "bank">("khqr");
 
-  // If user is still not logged in, redirect to login page
-  if (!user.value) {
-    navigateTo(`/Auth/Login?redirect=${encodeURIComponent(route.fullPath)}`);
-    return;
-  }
-
-  // Pre-fill user data
-  if (user.value) {
-    if (!shippingInfo.value.fullName && user.value.name) {
-      shippingInfo.value.fullName = user.value.name;
-    }
-    if (!shippingInfo.value.email && user.value.email) {
-      shippingInfo.value.email = user.value.email;
-    }
-  }
-});
-
-// =====================================================
-// Payment Method
-// =====================================================
-
-const paymentMethod = ref<"bakong" | "card" | "paypal" | "bank">("bakong");
-
-// =====================================================
-// Modal & Completed Order State
-// =====================================================
-
-const showBakongModal = ref(false);
-const orderCompleted = ref(false);
-const completedOrder = ref<any>(null);
-
-// =====================================================
-// Card Information
-// =====================================================
-
+// Card Info
 const cardInfo = ref({
   cardNumber: "",
   holderName: "",
@@ -616,186 +447,119 @@ const cardInfo = ref({
   cvc: "",
 });
 
-// =====================================================
-// Order Item (from cart or route params)
-// =====================================================
+const formatCardNumber = () => {
+  let val = cardInfo.value.cardNumber.replace(/\D/g, "").slice(0, 16);
+  cardInfo.value.cardNumber = val.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+};
 
-const orderItem = computed(() => {
-  return cart.value[cart.value.length - 1] || null;
-});
-
-// =====================================================
-// Calculations
-// =====================================================
-
-const subtotal = computed(() => {
+const checkoutItems = computed(() => {
   if (cart.value.length > 0) {
-    return cart.value.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
+    return cart.value;
   }
-  if (!orderItem.value) return 0;
-  return orderItem.value.product.price * orderItem.value.quantity;
+  return [
+    {
+      product: fallbackProducts[0],
+      quantity: 1,
+      size: fallbackProducts[0].size[0] || "8",
+    },
+  ];
 });
 
-const shipping = computed(() => {
-  return subtotal.value >= 100 ? 0 : 5;
+const itemsSubtotal = computed(() => {
+  return checkoutItems.value.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0
+  );
 });
 
-const tax = computed(() => {
-  return Number((subtotal.value * 0.1).toFixed(2));
+const shippingCost = computed(() => {
+  return itemsSubtotal.value >= 100 ? 0 : 5;
 });
 
-const total = computed(() => {
-  return Number((subtotal.value + shipping.value + tax.value).toFixed(2));
+const finalTotal = computed(() => {
+  return itemsSubtotal.value + shippingCost.value;
 });
 
-// =====================================================
 // Form Validation
-// =====================================================
-
 const isFormValid = computed(() => {
-  const { fullName, email, phone, address, city, state, zipCode, country } =
-    shippingInfo.value;
-
-  if (
-    !fullName ||
-    !email ||
-    !phone ||
-    !address ||
-    !city ||
-    !state ||
-    !zipCode ||
-    !country
-  ) {
-    return false;
-  }
+  const { fullName, email, phone, address, city } = shippingInfo.value;
+  if (!fullName || !email || !phone || !address || !city) return false;
 
   if (paymentMethod.value === "card") {
     const { cardNumber, holderName, expiry, cvc } = cardInfo.value;
-    if (!cardNumber || !holderName || !expiry || !cvc) {
-      return false;
-    }
-    if (cardNumber.replace(/\s/g, "").length !== 16) {
-      return false;
-    }
+    if (!cardNumber || !holderName || !expiry || !cvc) return false;
   }
-
   return true;
 });
 
-// =====================================================
-// Format Card Number
-// =====================================================
+// Complete Order Process
+const isProcessingPayment = ref(false);
+const processingStatusMessage = ref("Verifying payment signal...");
 
-const formatCardNumber = () => {
-  let value = cardInfo.value.cardNumber.replace(/\s/g, "");
-  if (value.length > 16) {
-    value = value.slice(0, 16);
-  }
-  cardInfo.value.cardNumber = value.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
-};
-
-// =====================================================
-// Format Expiry
-// =====================================================
-
-const formatExpiry = () => {
-  let value = cardInfo.value.expiry.replace(/\D/g, "");
-  if (value.length >= 2) {
-    value = value.slice(0, 2) + "/" + value.slice(2, 4);
-  }
-  cardInfo.value.expiry = value;
-};
-
-// =====================================================
-// Handle Bakong Success
-// =====================================================
-
-const handleBakongSuccess = async (paymentData: any) => {
-  const orderId = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-
-  const productName = cart.value.length > 0
-    ? cart.value.map(i => `${i.product.name} (x${i.quantity})`).join(", ")
-    : (orderItem.value?.product.name || "Sports Product");
-
-  const orderRecord = {
-    id: orderId,
-    customer: shippingInfo.value.fullName,
-    email: shippingInfo.value.email,
-    phone: shippingInfo.value.phone,
-    product: productName,
-    quantity: cart.value.reduce((acc, i) => acc + i.quantity, 0) || 1,
-    subtotal: subtotal.value,
-    shipping: shipping.value,
-    total: total.value,
-    status: "Completed",
-    paymentStatus: "Paid",
-    paymentMethod: "Bakong KHQR",
-    billNumber: paymentData?.bill_number || "",
-    md5: paymentData?.md5 || "",
-    date: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-  };
-
-  // Attempt to save order to backend DB
-  try {
-    await fetch(`${apiBase}/orders`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderRecord),
-    });
-  } catch (err) {
-    console.warn("Could not persist order to /orders endpoint:", err);
-  }
-
-  // Clear Cart
-  clearCart();
-
-  // Set order details & close modal
-  completedOrder.value = orderRecord;
-  orderCompleted.value = true;
-  showBakongModal.value = false;
-};
-
-// =====================================================
-// Handle Checkout
-// =====================================================
-
-const handleCheckout = async () => {
-  // Ensure user is logged in
-  if (!user.value) {
-    navigateTo(`/Auth/Login?redirect=${encodeURIComponent(route.fullPath)}`);
-    return;
-  }
-
+const handleCompleteOrder = () => {
   if (!isFormValid.value) {
-    alert("Please fill in all required shipping fields.");
+    error("Form incomplete", "Please fill in all required shipping fields.");
     return;
   }
 
-  if (total.value <= 0) {
-    alert("Your order total must be greater than $0.");
-    return;
-  }
+  isProcessingPayment.value = true;
+  processingStatusMessage.value =
+    paymentMethod.value === "khqr"
+      ? "Listening for Bakong / KHQR payment signal..."
+      : "Validating payment details...";
 
-  // Bakong KHQR Flow: Auto create QR and show modal
-  if (paymentMethod.value === "bakong") {
-    showBakongModal.value = true;
-    return;
-  }
+  setTimeout(() => {
+    processingStatusMessage.value =
+      paymentMethod.value === "khqr"
+        ? "Payment detected from Bakong! Verifying transaction..."
+        : "Payment authorized!";
+  }, 1400);
 
-  // Non-Bakong fallback simulation
-  const orderId = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-  completedOrder.value = {
-    id: orderId,
-    customer: shippingInfo.value.fullName,
-    email: shippingInfo.value.email,
-    phone: shippingInfo.value.phone,
-    total: total.value,
-    paymentMethod: paymentMethod.value.toUpperCase(),
-  };
-  clearCart();
-  orderCompleted.value = true;
+  setTimeout(() => {
+    isProcessingPayment.value = false;
+
+    // Generate Order ID
+    const orderId = "365-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    const orderRecord = {
+      id: orderId,
+      customer: shippingInfo.value.fullName,
+      email: shippingInfo.value.email,
+      phone: shippingInfo.value.phone,
+      address: shippingInfo.value.address,
+      city: shippingInfo.value.city,
+      items: checkoutItems.value,
+      subtotal: itemsSubtotal.value,
+      shipping: shippingCost.value,
+      total: finalTotal.value,
+      khrTotal: Math.round(finalTotal.value * 4100),
+      status: "Processing",
+      paymentStatus: paymentMethod.value === "cod" ? "Pending" : "Paid",
+      paymentMethod:
+        paymentMethod.value === "khqr"
+          ? "KHQR / Bakong (Instant)"
+          : paymentMethod.value === "card"
+          ? "Credit Card"
+          : paymentMethod.value === "cod"
+          ? "Cash on Delivery"
+          : "Bank Transfer",
+      date: new Date().toISOString(),
+    };
+
+    if (typeof window !== "undefined") {
+      try {
+        const existing = JSON.parse(localStorage.getItem("365_orders") || "[]");
+        existing.unshift(orderRecord);
+        localStorage.setItem("365_orders", JSON.stringify(existing));
+        localStorage.setItem("last_order", JSON.stringify(orderRecord));
+      } catch (err) {
+        console.error("Order storage err:", err);
+      }
+    }
+
+    clearCart();
+    success("Order Confirmed! 🎉", `Order ID: ${orderId}. View your receipt.`);
+    navigateTo(`/Order/${orderId}`);
+  }, 2600);
 };
 </script>

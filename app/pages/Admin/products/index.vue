@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { products } from "~/data/product";
+import { useAdminStore } from "~/composables/useAdminStore";
+import { useToast } from "~/composables/useToast";
 import type { ProductStatus, ViewMode } from "~/type/product";
 
 definePageMeta({
   layout: "admin",
 });
+
+const { allProducts, deleteProduct: removeProductStore } = useAdminStore();
+const { success } = useToast();
+
+const products = allProducts;
 
 /* =========================================
    STATE
@@ -213,9 +219,10 @@ const closeDeleteModal = () => {
 const deleteProduct = () => {
   if (productToDelete.value === null) return;
 
-  const product = products.find((item) => item.id === productToDelete.value);
+  const product = products.value.find((item) => item.id === productToDelete.value);
   if (product) {
-    alert(`Product "${product.name}" deleted.`);
+    removeProductStore(product.id);
+    success("Product Deleted", `Product "${product.name}" has been removed from catalog.`);
   }
 
   closeDeleteModal();

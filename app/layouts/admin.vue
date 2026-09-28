@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { adminNavigation } from "~/data/storefront";
+import ToastContainer from "~/components/ToastContainer.vue";
 import { useAuth } from "~/composables/useAuth";
 
 const route = useRoute();
@@ -192,16 +193,17 @@ const isLinkActive = (path: string) => {
       </nav>
 
       <!-- 4. Footer Actions -->
-      <div class="shrink-0 border-t border-zinc-100 p-3 space-y-1">
+      <div class="shrink-0 border-t border-zinc-100 p-3 space-y-1.5">
+        <!-- Switch to Storefront / User Mode -->
         <button
           type="button"
-          class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-semibold text-zinc-800 bg-lime-100/70 hover:bg-lime-200/80 transition"
+          class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-bold text-black bg-lime-400 hover:bg-lime-300 shadow-xs transition"
           @click="switchToUser"
         >
-          <svg class="h-4 w-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="h-4 w-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <span class="flex-1 text-left font-bold">Switch to User Mode</span>
+          <span class="flex-1 text-left">Switch to User Mode</span>
           <span>↗</span>
         </button>
 
@@ -212,7 +214,7 @@ const isLinkActive = (path: string) => {
           <svg class="h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
-          <span class="flex-1">View Website</span>
+          <span class="flex-1">Live Storefront</span>
           <svg class="h-3 w-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
@@ -289,14 +291,15 @@ const isLinkActive = (path: string) => {
             <span class="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
           </NuxtLink>
 
-          <!-- Switch to User Mode button -->
+          <!-- Quick Switch to Storefront / User Mode -->
           <NuxtLink
             to="/"
-            class="flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-zinc-700 shadow-2xs hover:border-lime-500 hover:text-black transition"
-            title="Switch back to Storefront"
+            class="flex items-center gap-1.5 rounded-md border border-lime-400/50 bg-lime-400/10 px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-2xs hover:bg-lime-400 hover:text-black transition"
+            title="Switch back to Storefront shopping mode"
           >
+            <span class="flex h-2 w-2 rounded-full bg-lime-500"></span>
             <span>Switch to User Mode</span>
-            <span class="text-zinc-400">↗</span>
+            <span class="text-zinc-500">↗</span>
           </NuxtLink>
 
           <!-- Profile trigger -->
@@ -305,9 +308,10 @@ const isLinkActive = (path: string) => {
               {{ user?.name?.charAt(0).toUpperCase() || 'R' }}
             </div>
             <div class="hidden text-left sm:block">
-              <p class="text-xs font-bold leading-none text-zinc-900 truncate max-w-[120px]">
+              <p class="text-xs font-bold leading-none text-zinc-900 max-w-[120px] truncate">
                 {{ user?.name || 'Rothana' }}
               </p>
+              <p class="text-[9px] font-semibold text-lime-600 mt-0.5">Dual Role</p>
             </div>
           </div>
         </div>
@@ -318,5 +322,8 @@ const isLinkActive = (path: string) => {
         <NuxtPage />
       </main>
     </div>
+
+    <!-- Global Toast Notifications -->
+    <ToastContainer />
   </div>
 </template>

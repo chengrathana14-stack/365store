@@ -20,19 +20,7 @@ export const useAuth = () => {
   });
 
   const isLoading = useState("auth-loading", () => false);
-
-  const setUser = (userData: AuthUser | null) => {
-    user.value = userData;
-    if (import.meta.client) {
-      try {
-        if (userData) {
-          localStorage.setItem("365_auth_user", JSON.stringify(userData));
-        } else {
-          localStorage.removeItem("365_auth_user");
-        }
-      } catch {}
-    }
-  };
+  const activeRoleMode = useState<"user" | "admin">("auth-active-role-mode", () => "user");
 
   const isSuperAdmin = computed(() => {
     if (!user.value) return false;
@@ -47,11 +35,26 @@ export const useAuth = () => {
 
   const switchToAdmin = async () => {
     if (!canSwitchToAdmin.value) return;
+    activeRoleMode.value = "admin";
     await navigateTo("/admin");
   };
 
   const switchToUser = async () => {
+    activeRoleMode.value = "user";
     await navigateTo("/");
+  };
+
+  const setUser = (userData: AuthUser | null) => {
+    user.value = userData;
+    if (import.meta.client) {
+      try {
+        if (userData) {
+          localStorage.setItem("365_auth_user", JSON.stringify(userData));
+        } else {
+          localStorage.removeItem("365_auth_user");
+        }
+      } catch {}
+    }
   };
 
   const loadUser = async () => {
@@ -88,6 +91,7 @@ export const useAuth = () => {
       // Ignore network errors on logout
     }
     setUser(null);
+    activeRoleMode.value = "user";
     await navigateTo("/");
   };
 
@@ -96,6 +100,7 @@ export const useAuth = () => {
     isLoading,
     isSuperAdmin,
     canSwitchToAdmin,
+    activeRoleMode,
     switchToAdmin,
     switchToUser,
     loadUser,
