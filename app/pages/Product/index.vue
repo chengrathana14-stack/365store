@@ -5,13 +5,15 @@ import { products as fallbackProducts } from "~/data/product";
 import { productFilterOptions } from "~/data/storefront";
 import type { Product } from "~/type/product";
 import { useApiBase } from "~/composables/useApi";
+import { useAdminStore } from "~/composables/useAdminStore";
 
 definePageMeta({
   layout: "user",
 });
 
 const apiBase = useApiBase();
-const allProducts = ref<Product[]>(fallbackProducts);
+const { applyOverrides } = useAdminStore();
+const allProducts = ref<Product[]>(applyOverrides(fallbackProducts));
 
 const loadProducts = async () => {
   try {
@@ -19,14 +21,21 @@ const loadProducts = async () => {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        allProducts.value = data.map((p: any) => ({
-          ...p,
-          id: Number(p.id),
-        }));
+        allProducts.value = applyOverrides(
+          data.map((p: any) => ({
+            ...p,
+            id: Number(p.id),
+          }))
+        );
+      } else {
+        allProducts.value = applyOverrides(fallbackProducts);
       }
+    } else {
+      allProducts.value = applyOverrides(fallbackProducts);
     }
   } catch (error) {
     console.error("Failed to fetch products:", error);
+    allProducts.value = applyOverrides(fallbackProducts);
   }
 };
 

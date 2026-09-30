@@ -46,6 +46,23 @@
         </svg>
       </button>
 
+      <!-- Compare Button -->
+      <button
+        type="button"
+        @click.stop.prevent="toggleCompare(product)"
+        class="absolute right-2.5 top-11.5 z-20 flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-md shadow-xs transition-all duration-150 hover:scale-110 active:scale-95"
+        :class="
+          isInCompare(product.id)
+            ? 'bg-lime-400 text-black border-lime-400 shadow-[0_0_12px_rgba(183,243,74,0.5)]'
+            : 'bg-black/60 border-white/15 text-gray-300 hover:text-white hover:bg-black'
+        "
+        :title="isInCompare(product.id) ? 'Remove from comparison' : 'Compare technical specs'"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+        </svg>
+      </button>
+
       <!-- Clickable Product Image Link -->
       <NuxtLink
         :to="`/Product/${product.id}`"
@@ -124,22 +141,31 @@
         </span>
       </div>
 
-      <!-- Buttons: Add to Cart & Instant QR Buy -->
-      <div class="mt-3.5 grid grid-cols-2 gap-2">
+      <!-- Buttons: Out of Stock Pre-Order or In-Stock Buy -->
+      <div v-if="product.stock === 0" class="mt-3.5">
         <button
           type="button"
-          :disabled="product.stock === 0"
+          @click.stop.prevent="openPreOrder(product)"
+          class="w-full flex h-8.5 items-center justify-center gap-1.5 rounded-xl border border-lime-400/50 bg-lime-400/10 text-[11px] font-black uppercase text-lime-400 hover:bg-lime-400 hover:text-black transition active:scale-95 shadow-[0_0_12px_rgba(183,243,74,0.2)]"
+          title="Reserve / Pre-Order"
+        >
+          <span>⚡ Pre-Order</span>
+        </button>
+      </div>
+
+      <div v-else class="mt-3.5 grid grid-cols-2 gap-2">
+        <button
+          type="button"
           @click="handleAddToCart"
-          class="flex h-8.5 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-[11px] font-bold text-white transition hover:bg-white/15 hover:border-white/30 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+          class="flex h-8.5 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-[11px] font-bold text-white transition hover:bg-white/15 hover:border-white/30 active:scale-95"
         >
           {{ justAdded ? "✓ Added" : "Add to Cart" }}
         </button>
 
         <button
           type="button"
-          :disabled="product.stock === 0"
           @click="handleBuyNow"
-          class="flex h-8.5 items-center justify-center gap-1 rounded-xl bg-lime-400 text-[11px] font-black uppercase text-black transition hover:bg-lime-300 hover:shadow-[0_0_15px_rgba(183,243,74,0.4)] active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-500"
+          class="flex h-8.5 items-center justify-center gap-1 rounded-xl bg-lime-400 text-[11px] font-black uppercase text-black transition hover:bg-lime-300 hover:shadow-[0_0_15px_rgba(183,243,74,0.4)] active:scale-95"
         >
           <span>Buy Now</span>
         </button>
@@ -155,6 +181,8 @@ import { useWishlist } from "~/composables/useWishlist";
 import { useCart } from "~/composables/useCart";
 import { useQuickDetail } from "~/composables/useQuickDetail";
 import { useQrPayment } from "~/composables/useQrPayment";
+import { useProductCompare } from "~/composables/useProductCompare";
+import { usePreOrder } from "~/composables/usePreOrder";
 import { useToast } from "~/composables/useToast";
 
 const props = defineProps<{
@@ -168,6 +196,8 @@ const { isFavorite, toggleWishlist } = useWishlist();
 const { addToCart } = useCart();
 const { openQuickDetail } = useQuickDetail();
 const { openQrPayment } = useQrPayment();
+const { isInCompare, toggleCompare } = useProductCompare();
+const { openPreOrder } = usePreOrder();
 const { success } = useToast();
 
 const originalPrice = computed(() => {

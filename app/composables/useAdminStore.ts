@@ -241,9 +241,36 @@ export const useAdminStore = () => {
   };
 
   /* =========================================================
-     4. PRODUCTS STATE & PERSISTENCE (365_custom_products)
+     4. PRODUCTS STATE & PERSISTENCE (365_custom_products & 365_product_overrides)
      ========================================================= */
   const customProducts = ref<Product[]>([]);
+  const productOverrides = ref<Record<number, Partial<Product>>>({});
+
+  const loadProductOverrides = () => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem("365_product_overrides");
+      if (stored) {
+        productOverrides.value = JSON.parse(stored);
+      }
+    } catch (e) {
+      console.error("Failed to load product overrides from localStorage:", e);
+    }
+  };
+
+  const applyOverrides = (prods: Product[]): Product[] => {
+    loadProductOverrides();
+    if (!productOverrides.value || Object.keys(productOverrides.value).length === 0) {
+      return prods;
+    }
+    return prods.map((p) => {
+      const ov = productOverrides.value[p.id];
+      if (ov) {
+        return { ...p, ...ov };
+      }
+      return p;
+    });
+  };
 
   const loadProducts = () => {
     if (typeof window === "undefined") return;
@@ -258,10 +285,11 @@ export const useAdminStore = () => {
     } catch (e) {
       console.error("Failed to load products from localStorage:", e);
     }
+    loadProductOverrides();
   };
 
   const allProducts = computed<Product[]>(() => {
-    return [...customProducts.value, ...fallbackProducts];
+    return applyOverrides([...customProducts.value, ...fallbackProducts]);
   });
 
   const addProduct = (product: Product) => {
@@ -279,6 +307,17 @@ export const useAdminStore = () => {
     customProducts.value = customProducts.value.filter((p) => p.id !== id);
     if (typeof window !== "undefined") {
       localStorage.setItem("365_custom_products", JSON.stringify(customProducts.value));
+    }
+  };
+
+  const saveProductOverride = (id: number, fields: Partial<Product>) => {
+    loadProductOverrides();
+    productOverrides.value[id] = {
+      ...(productOverrides.value[id] || {}),
+      ...fields,
+    };
+    if (typeof window !== "undefined") {
+      localStorage.setItem("365_product_overrides", JSON.stringify(productOverrides.value));
     }
   };
 
@@ -321,5 +360,7 @@ export const useAdminStore = () => {
     loadProducts,
     addProduct,
     deleteProduct,
+    applyOverrides,
+    saveProductOverride,
   };
 };

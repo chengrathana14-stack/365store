@@ -1,4 +1,4 @@
-﻿import type { Product } from "~/type/product";
+import type { Product } from "~/type/product";
 
 export const products: Product[] = [
   // =====================================================
@@ -28,7 +28,7 @@ export const products: Product[] = [
     discount: 15,
     rating: 4.8,
     reviews: 1247,
-    stock: 24,
+    stock: 0,
     featured: true,
     isNew: true,
     popular: true,

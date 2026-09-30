@@ -74,13 +74,33 @@ const toggleSize = (size: string) => {
 };
 
 const updateProduct = () => {
-  console.log("Updated product:", {
-    id: productId.value,
-    ...form.value,
-  });
+  if (typeof window !== "undefined") {
+    try {
+      const overrides = JSON.parse(localStorage.getItem("365_product_overrides") || "{}");
+      overrides[productId.value] = {
+        ...(overrides[productId.value] || {}),
+        name: form.value.name,
+        price: Number(form.value.price),
+        discount: Number(form.value.discount),
+        stock: Number(form.value.stock),
+        category: form.value.category,
+        brand: form.value.brand,
+        gender: form.value.gender,
+        color: form.value.color,
+        description: form.value.description,
+        featured: form.value.featured,
+        isNew: form.value.isNew,
+        size: [...form.value.sizes],
+        image: form.value.image,
+        hoverimg: form.value.hoverimg,
+      };
+      localStorage.setItem("365_product_overrides", JSON.stringify(overrides));
+    } catch (e) {
+      console.error("Storage error:", e);
+    }
+  }
 
   alert("Product updated successfully!");
-
   navigateTo("/admin/products");
 };
 

@@ -249,15 +249,40 @@
               </div>
             </div>
 
-            <!-- PRIMARY ACTIONS: BUY NOW WITH QR + ADD TO CART -->
+            <!-- PRIMARY ACTIONS: BUY NOW OR PRE-ORDER -->
             <div class="mt-8 pt-6 border-t border-white/10">
-              <div class="flex flex-col sm:flex-row gap-3">
+              <!-- When OUT OF STOCK (stock === 0) -->
+              <div v-if="product.stock === 0" class="space-y-4">
+                <div class="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4">
+                  <div class="flex items-center gap-2 text-amber-400 font-bold text-xs">
+                    <span class="h-2 w-2 rounded-full bg-amber-400"></span>
+                    <span>Currently Sold Out Online</span>
+                  </div>
+                  <p class="text-[11px] text-gray-300 mt-1">
+                    This gear is currently sold out online. You can place a pre-order reservation to secure your pair once restocked!
+                  </p>
+                </div>
+
+                <!-- Pre-Order Modal Trigger -->
+                <button
+                  type="button"
+                  @click="openPreOrderModal"
+                  class="w-full flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:scale-[1.01] active:scale-98"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span class="text-xs sm:text-sm font-black uppercase tracking-wider">Reserve / Pre-Order</span>
+                </button>
+              </div>
+
+              <!-- When IN STOCK (stock > 0) -->
+              <div v-else class="flex flex-col sm:flex-row gap-3">
                 <!-- BUY NOW -->
                 <button
                   type="button"
-                  :disabled="product.stock === 0"
                   @click="handleBuyNow"
-                  class="flex-1 flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(183,243,74,0.5)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="flex-1 flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-lime-400 px-6 font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/30 transition hover:bg-lime-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(183,243,74,0.5)] active:scale-98"
                 >
                   <span class="text-sm font-black uppercase tracking-wider">Buy Now</span>
                 </button>
@@ -265,15 +290,18 @@
                 <!-- ADD TO CART -->
                 <button
                   type="button"
-                  :disabled="product.stock === 0"
                   @click="handleAddToCart"
-                  class="flex-1 flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-6 text-sm font-black uppercase tracking-wider text-white backdrop-blur-md transition hover:bg-white/20 hover:border-lime-400/50 active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="flex-1 flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-6 text-sm font-black uppercase tracking-wider text-white backdrop-blur-md transition hover:bg-white/20 hover:border-lime-400/50 active:scale-98"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   <span>{{ justAdded ? "✓ Added!" : "Add to Cart" }}</span>
                 </button>
+              </div>
+
+              <!-- Shared Secondary Actions: Wishlist & Compare -->
+              <div class="mt-3 flex gap-3">
 
                 <!-- WISHLIST -->
                 <button
@@ -281,6 +309,7 @@
                   @click="handleWishlist"
                   class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/5 transition hover:border-white/40 active:scale-95"
                   :class="isFavorite(product.id) ? 'text-red-400 border-red-500/40' : 'text-gray-400'"
+                  :title="isFavorite(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
                 >
                   <svg
                     class="h-5 w-5 transition-colors"
@@ -290,6 +319,20 @@
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                   </svg>
+                </button>
+
+                <!-- COMPARE -->
+                <button
+                  type="button"
+                  @click="toggleCompare(product)"
+                  class="flex h-14 items-center justify-center gap-2 rounded-2xl border px-4 text-xs font-black uppercase tracking-wider transition active:scale-95 shrink-0"
+                  :class="isInCompare(product.id) ? 'bg-lime-400 text-black border-lime-400 shadow-[0_0_15px_rgba(183,243,74,0.4)]' : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/40 hover:text-white'"
+                  :title="isInCompare(product.id) ? 'Remove from comparison' : 'Compare technical specs'"
+                >
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                  </svg>
+                  <span class="hidden sm:inline">{{ isInCompare(product.id) ? "In Compare" : "Compare" }}</span>
                 </button>
               </div>
 
@@ -407,20 +450,27 @@
           </div>
         </div>
       </div>
+      <!-- Recently Viewed Gear Section -->
+      <RecentlyViewed />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useWishlist } from "~/composables/useWishlist";
 import { useCart } from "~/composables/useCart";
 import { useQrPayment } from "~/composables/useQrPayment";
+import { useProductCompare } from "~/composables/useProductCompare";
+import { useRecentlyViewed } from "~/composables/useRecentlyViewed";
+import { usePreOrder } from "~/composables/usePreOrder";
 import { useToast } from "~/composables/useToast";
 import { products as fallbackProducts } from "~/data/product";
 import type { Product } from "~/type/product";
 import { useApiBase } from "~/composables/useApi";
+import { useAdminStore } from "~/composables/useAdminStore";
+import RecentlyViewed from "~/components/RecentlyViewed.vue";
 
 definePageMeta({
   layout: "user",
@@ -428,7 +478,8 @@ definePageMeta({
 
 const route = useRoute();
 const apiBase = useApiBase();
-const allProducts = ref<Product[]>(fallbackProducts);
+const { applyOverrides } = useAdminStore();
+const allProducts = ref<Product[]>(applyOverrides(fallbackProducts));
 
 const loadProducts = async () => {
   try {
@@ -436,14 +487,21 @@ const loadProducts = async () => {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        allProducts.value = data.map((p: any) => ({
-          ...p,
-          id: Number(p.id),
-        }));
+        allProducts.value = applyOverrides(
+          data.map((p: any) => ({
+            ...p,
+            id: Number(p.id),
+          }))
+        );
+      } else {
+        allProducts.value = applyOverrides(fallbackProducts);
       }
+    } else {
+      allProducts.value = applyOverrides(fallbackProducts);
     }
   } catch (error) {
     console.error("Failed to fetch product details:", error);
+    allProducts.value = applyOverrides(fallbackProducts);
   }
 };
 
@@ -465,7 +523,26 @@ const activeTab = ref<"specs" | "reviews">("specs");
 const { isFavorite, toggleWishlist } = useWishlist();
 const { addToCart } = useCart();
 const { openQrPayment } = useQrPayment();
+const { isInCompare, toggleCompare } = useProductCompare();
+const { addRecentlyViewed } = useRecentlyViewed();
+const { openPreOrder } = usePreOrder();
 const { success } = useToast();
+
+const openPreOrderModal = () => {
+  if (!product.value) return;
+  const size = selectedSize.value || product.value.size?.[0] || "";
+  openPreOrder(product.value, size);
+};
+
+watch(
+  product,
+  (newVal) => {
+    if (newVal) {
+      addRecentlyViewed(newVal);
+    }
+  },
+  { immediate: true },
+);
 
 const originalPrice = computed(() => {
   if (!product.value?.discount) {

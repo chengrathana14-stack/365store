@@ -165,7 +165,7 @@
                 </span>
               </div>
               <div v-if="discount > 0" class="flex justify-between text-emerald-400 font-bold">
-                <span>Promo Discount (10%)</span>
+                <span>Promo Discount ({{ promoDiscountLabel }})</span>
                 <span>-${{ discount.toFixed(2) }}</span>
               </div>
 
@@ -238,6 +238,11 @@
           </div>
         </div>
       </div>
+
+      <!-- Recently Viewed Gear Section -->
+      <div class="mt-12">
+        <RecentlyViewed />
+      </div>
     </div>
   </div>
 </template>
@@ -246,7 +251,10 @@
 import { ref, computed } from "vue";
 import { useCart } from "~/composables/useCart";
 import { useQrPayment } from "~/composables/useQrPayment";
+import { useAdminStore } from "~/composables/useAdminStore";
 import { useToast } from "~/composables/useToast";
+import type { Discount } from "~/type/product";
+import RecentlyViewed from "~/components/RecentlyViewed.vue";
 
 definePageMeta({
   layout: "user",
@@ -263,20 +271,35 @@ const {
 } = useCart();
 
 const { openQrPayment } = useQrPayment();
+const { allDiscounts } = useAdminStore();
 const { success, error } = useToast();
 
 const shipping = computed(() => {
   if (subtotal.value === 0) return 0;
-  return subtotal.value >= 100 ? 0 : 5;
+  return subtotal.value >= 120 ? 0 : 5;
 });
 
 const promoCode = ref("");
 const promoApplied = ref(false);
 const promoMessage = ref("");
+const appliedDiscount = ref<Discount | null>(null);
+
+const promoDiscountLabel = computed(() => {
+  if (!appliedDiscount.value) return "10%";
+  if (appliedDiscount.value.type === "Percentage") {
+    return `${appliedDiscount.value.value}%`;
+  }
+  return `$${appliedDiscount.value.value}`;
+});
 
 const discount = computed(() => {
   if (!promoApplied.value) return 0;
-  return subtotal.value * 0.1;
+  if (!appliedDiscount.value) return subtotal.value * 0.1;
+
+  if (appliedDiscount.value.type === "Percentage") {
+    return (subtotal.value * appliedDiscount.value.value) / 100;
+  }
+  return Math.min(subtotal.value, appliedDiscount.value.value);
 });
 
 const total = computed(() => {
@@ -284,14 +307,67 @@ const total = computed(() => {
 });
 
 const applyPromo = () => {
-  if (promoCode.value.trim().toUpperCase() === "SPORT10") {
+  const code = promoCode.value.trim().toUpperCase();
+  if (!code) {
+    promoApplied.value = false;
+    appliedDiscount.value = null;
+    promoMessage.value = "";
+    return;
+  }
+
+  // 1. Search in Admin Store Discounts (includes custom saved codes like 168)
+  const match = allDiscounts.value.find(
+    (d) => String(d.code).trim().toUpperCase() === code
+  );
+
+  if (match) {
+    if (match.status === "Expired" || match.status === "Inactive") {
+      promoApplied.value = false;
+      appliedDiscount.value = null;
+      promoMessage.value = `Promo code "${code}" is currently inactive or expired.`;
+      error("Code Inactive", `Coupon ${code} is ${match.status.toLowerCase()}.`);
+      return;
+    }
+
+    if (match.minPurchase && subtotal.value < match.minPurchase) {
+      promoApplied.value = false;
+      appliedDiscount.value = null;
+      promoMessage.value = `Minimum order of $${match.minPurchase} required for code "${code}".`;
+      error("Minimum Not Met", `Spend at least $${match.minPurchase} to use this coupon.`);
+      return;
+    }
+
+    appliedDiscount.value = match;
     promoApplied.value = true;
-    promoMessage.value = "✓ SPORT10 applied: 10% discount!";
+    const label = match.type === "Percentage" ? `${match.value}%` : `$${match.value}`;
+    promoMessage.value = `✓ Code ${code} applied: ${label} discount!`;
+    success("Promo Applied!", `You got ${label} off your entire order.`);
+    return;
+  }
+
+  // 2. Fallback built-in demo codes
+  if (code === "SPORT10" || code === "WELCOME365" || code === "WELCOME10") {
+    appliedDiscount.value = {
+      id: 9999,
+      code,
+      description: "Welcome Discount",
+      type: "Percentage",
+      value: 10,
+      used: 0,
+      usageLimit: 1000,
+      startDate: "",
+      endDate: "",
+      status: "Active",
+      products: 0,
+    };
+    promoApplied.value = true;
+    promoMessage.value = `✓ ${code} applied: 10% discount!`;
     success("Promo applied", "10% off your entire order!");
   } else {
     promoApplied.value = false;
-    promoMessage.value = "Invalid code. Try SPORT10";
-    error("Invalid code", "Use code SPORT10 for 10% off.");
+    appliedDiscount.value = null;
+    promoMessage.value = `Invalid code "${code}". Please check your code.`;
+    error("Invalid Code", "Please check your promo code and try again.");
   }
 };
 

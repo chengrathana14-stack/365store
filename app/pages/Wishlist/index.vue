@@ -1,332 +1,122 @@
 <template>
-  <div class="min-h-screen bg-gray-100 py-10">
+  <div class="min-h-screen py-10 text-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- ========================================= -->
-      <!-- Back Button -->
-      <!-- ========================================= -->
-
-      <div class="mb-6">
+      <!-- Back Navigation & Quick Info -->
+      <div class="mb-6 flex items-center justify-between">
         <NuxtLink
           to="/Product"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:-translate-x-1 hover:border-blue-500 hover:text-blue-600"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-400 transition hover:-translate-x-1 hover:text-white"
         >
-          <span class="text-lg"> ← </span>
-
-          Back to Products
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Continue Shopping</span>
         </NuxtLink>
+
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3.5 py-1 text-xs font-bold text-red-400">
+          <span class="h-2 w-2 rounded-full bg-red-400 animate-pulse"></span>
+          {{ wishlist.length }} Saved Favorites
+        </span>
       </div>
 
-      <!-- ========================================= -->
-      <!-- Page Header -->
-      <!-- ========================================= -->
-
-      <div
-        class="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between"
-      >
-        <!-- Title -->
-
+      <!-- Header Banner -->
+      <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-white/10 bg-[#0d1017]/85 p-6 backdrop-blur-2xl">
         <div>
-          <div class="flex items-center gap-3">
-            <h1 class="text-3xl font-bold text-gray-900">My Wishlist</h1>
-
-            <span class="text-2xl text-red-500"> ♥ </span>
+          <div class="flex items-center gap-2.5">
+            <span class="h-6 w-1.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444]"></span>
+            <h1 class="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+              My Saved Wishlist
+            </h1>
           </div>
-
-          <p class="mt-2 text-gray-500">
-            Save your favorite sports products for later
+          <p class="mt-1 text-xs sm:text-sm text-gray-400">
+            Keep track of your dream athletic gear and move them directly to bag anytime
           </p>
         </div>
 
-        <!-- ======================================= -->
-        <!-- Wishlist Count -->
-        <!-- ======================================= -->
-
-        <div class="flex items-center gap-3">
-          <span
-            class="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-600"
+        <div v-if="wishlist.length > 0" class="flex items-center gap-3">
+          <button
+            type="button"
+            @click="handleMoveAllToCart"
+            class="flex items-center gap-2 rounded-xl bg-lime-400 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 hover:shadow-[0_0_15px_rgba(183,243,74,0.4)] active:scale-95"
           >
-            {{ wishlist.length }}
-
-            {{ wishlist.length === 1 ? "Item" : "Items" }}
-          </span>
-
-          <!-- Clear All -->
+            <span>Move All to Bag</span>
+            <span>&rarr;</span>
+          </button>
 
           <button
-            v-if="wishlist.length > 0"
+            type="button"
             @click="clearWishlist"
-            class="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50"
+            class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-xs font-bold text-red-400 transition hover:bg-red-500 hover:text-white"
           >
             Clear All
           </button>
         </div>
       </div>
 
-      <!-- ========================================= -->
-      <!-- Empty Wishlist -->
-      <!-- ========================================= -->
-
+      <!-- EMPTY STATE -->
       <div
         v-if="wishlist.length === 0"
-        class="rounded-2xl bg-white px-6 py-20 text-center shadow-sm"
+        class="rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl px-6 py-20 text-center shadow-xl text-white"
       >
-        <!-- Heart -->
+        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-white/5 border border-white/10 text-3xl">
+          ❤️
+        </div>
 
-        <div class="text-6xl text-gray-300">♡</div>
-
-        <!-- Title -->
-
-        <h2 class="mt-5 text-2xl font-bold text-gray-900">
-          Your wishlist is empty
+        <h2 class="mt-5 text-2xl font-black text-white">
+          Your wishlist is currently empty
         </h2>
 
-        <!-- Description -->
-
-        <p class="mx-auto mt-2 max-w-md text-gray-500">
-          You haven't added any products to your wishlist yet. Explore our
-          products and save your favorites here.
+        <p class="mx-auto mt-2 max-w-md text-xs sm:text-sm text-gray-400">
+          You haven't saved any performance shoes or sportswear yet. Tap the heart icon on any gear card to save it here.
         </p>
 
-        <!-- Start Shopping -->
-
         <NuxtLink
           to="/Product"
-          class="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+          class="mt-6 inline-flex rounded-xl bg-lime-400 px-8 py-3.5 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(183,243,74,0.4)] active:scale-95"
         >
-          Start Shopping
+          Explore Catalog &rarr;
         </NuxtLink>
       </div>
 
-      <!-- ========================================= -->
-      <!-- Wishlist Products -->
-      <!-- ========================================= -->
-
-      <div
-        v-else
-        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
-        <!-- ======================================= -->
-        <!-- Product Card -->
-        <!-- ======================================= -->
-
-        <div
+      <!-- WISHLIST PRODUCTS GRID -->
+      <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ProductCard
           v-for="product in wishlist"
           :key="product.id"
-          class="group overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-        >
-          <!-- ===================================== -->
-          <!-- Product Image -->
-          <!-- ===================================== -->
-
-          <div class="relative h-64 overflow-hidden bg-gray-100">
-            <NuxtLink
-              :to="`/Product/${product.id}`"
-              class="block h-full w-full"
-            >
-              <img
-                :src="product.image"
-                :alt="product.name"
-                class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-              />
-            </NuxtLink>
-
-            <!-- Discount -->
-
-            <span
-              v-if="product.discount"
-              class="absolute left-3 top-3 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white"
-            >
-              -{{ product.discount }}%
-            </span>
-
-            <!-- New -->
-
-            <span
-              v-if="product.isNew"
-              class="absolute right-3 top-3 rounded-full bg-black px-3 py-1 text-xs font-bold text-white"
-            >
-              NEW
-            </span>
-
-            <!-- ================================= -->
-            <!-- Remove Wishlist -->
-            <!-- ================================= -->
-
-            <button
-              @click="removeFromWishlist(product.id)"
-              class="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg text-red-500 shadow-md transition hover:scale-110 hover:bg-red-50"
-              title="Remove from wishlist"
-            >
-              ♥
-            </button>
-          </div>
-
-          <!-- ===================================== -->
-          <!-- Product Information -->
-          <!-- ===================================== -->
-
-          <div class="p-5">
-            <!-- Brand / Category -->
-
-            <div class="flex items-center justify-between">
-              <p
-                class="text-xs font-bold uppercase tracking-wider text-gray-400"
-              >
-                {{ product.brand }}
-              </p>
-
-              <p class="text-xs text-gray-400">
-                {{ product.category }}
-              </p>
-            </div>
-
-            <!-- ================================= -->
-            <!-- Product Name -->
-            <!-- ================================= -->
-
-            <NuxtLink :to="`/Product/${product.id}`" class="mt-2 block">
-              <h2
-                class="line-clamp-2 min-h-12 text-lg font-bold text-gray-900 transition hover:text-blue-600"
-              >
-                {{ product.name }}
-              </h2>
-            </NuxtLink>
-
-            <!-- ================================= -->
-            <!-- Rating -->
-            <!-- ================================= -->
-
-            <div class="mt-2 flex items-center gap-2">
-              <span class="text-sm text-yellow-400"> ★★★★★ </span>
-
-              <span class="text-sm text-gray-500">
-                {{ product.rating }}
-              </span>
-
-              <span class="text-xs text-gray-400">
-                ({{ product.reviews }})
-              </span>
-            </div>
-
-            <!-- ================================= -->
-            <!-- Price -->
-            <!-- ================================= -->
-
-            <div class="mt-4 flex items-center gap-3">
-              <!-- Current Price -->
-
-              <span class="text-2xl font-bold text-gray-900">
-                ${{ product.price.toFixed(2) }}
-              </span>
-
-              <!-- Original Price -->
-
-              <span
-                v-if="product.discount"
-                class="text-sm text-gray-400 line-through"
-              >
-                ${{ originalPrice(product).toFixed(2) }}
-              </span>
-            </div>
-
-            <!-- ================================= -->
-            <!-- Stock -->
-            <!-- ================================= -->
-
-            <div class="mt-2">
-              <!-- In Stock -->
-
-              <span
-                v-if="product.stock > 0"
-                class="text-xs font-medium text-green-600"
-              >
-                ✓ {{ product.stock }} in stock
-              </span>
-
-              <!-- Out of Stock -->
-
-              <span v-else class="text-xs font-medium text-red-500">
-                Out of stock
-              </span>
-            </div>
-
-            <!-- ================================= -->
-            <!-- Buttons -->
-            <!-- ================================= -->
-
-            <div class="mt-5 flex gap-2">
-              <!-- ================================= -->
-              <!-- Add Cart -->
-              <!-- ================================= -->
-
-              <button
-                :disabled="product.stock === 0"
-                @click="addToCart(product)"
-                class="flex-1 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
-              >
-                🛒 Add to Cart
-              </button>
-
-              <!-- ================================= -->
-              <!-- Remove -->
-              <!-- ================================= -->
-
-              <button
-                @click="removeFromWishlist(product.id)"
-                class="rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
-                title="Remove from wishlist"
-              >
-                🗑
-              </button>
-            </div>
-          </div>
-        </div>
+          :product="product"
+        />
       </div>
 
-      <!-- ========================================= -->
-      <!-- Continue Shopping -->
-      <!-- ========================================= -->
-
-      <div class="mt-10 flex justify-center">
-        <NuxtLink
-          to="/Product"
-          class="inline-flex items-center gap-2 rounded-xl bg-black px-6 py-3 font-semibold text-white transition hover:-translate-y-1 hover:bg-blue-600"
-        >
-          ← Continue Shopping
-        </NuxtLink>
+      <!-- Recently Viewed Section -->
+      <div class="mt-12">
+        <RecentlyViewed />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Product } from "~/type/product";
 import { useWishlist } from "~/composables/useWishlist";
-import { navigateTo } from "#app/composables/router";
+import { useCart } from "~/composables/useCart";
+import { useToast } from "~/composables/useToast";
+import ProductCard from "~/components/ProductCard.vue";
+import RecentlyViewed from "~/components/RecentlyViewed.vue";
 
-// ===============================================
-// Wishlist
-// ===============================================
+definePageMeta({
+  layout: "user",
+});
 
-const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
+const { wishlist, clearWishlist } = useWishlist();
+const { addToCart, openCartDrawer } = useCart();
+const { success } = useToast();
 
-// ===============================================
-// Add To Cart
-// ===============================================
-
-const addToCart = (product: Product) => {
-  navigateTo(`/Product/${product.id}`);
-};
-
-// ===============================================
-// Original Price
-// ===============================================
-
-const originalPrice = (product: Product) => {
-  if (!product.discount) {
-    return product.price;
-  }
-
-  return product.price / (1 - product.discount / 100);
+const handleMoveAllToCart = () => {
+  if (wishlist.value.length === 0) return;
+  wishlist.value.forEach((prod) => {
+    const size = prod.size?.[0] || "";
+    addToCart(prod, 1, size, false);
+  });
+  success("Moved All Items!", `${wishlist.value.length} items added to your bag`);
+  openCartDrawer();
 };
 </script>

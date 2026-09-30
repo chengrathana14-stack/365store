@@ -1,8 +1,10 @@
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { useState } from "#app";
 import type { CartItem, Product } from "~/type/product";
 
 export const useCart = () => {
+  const isCartDrawerOpen = useState<boolean>("isCartDrawerOpen", () => false);
+
   const cart = useState<CartItem[]>("cart", () => {
     if (typeof window !== "undefined") {
       try {
@@ -25,6 +27,18 @@ export const useCart = () => {
     }
   };
 
+  const openCartDrawer = () => {
+    isCartDrawerOpen.value = true;
+  };
+
+  const closeCartDrawer = () => {
+    isCartDrawerOpen.value = false;
+  };
+
+  const toggleCartDrawer = () => {
+    isCartDrawerOpen.value = !isCartDrawerOpen.value;
+  };
+
   // Cart Count
   const cartCount = computed(() => {
     return cart.value.reduce((total, item) => total + item.quantity, 0);
@@ -38,11 +52,21 @@ export const useCart = () => {
     );
   });
 
+  // Free shipping threshold ($120)
+  const freeShippingThreshold = 120;
+  const freeShippingProgress = computed(() => {
+    return Math.min(100, Math.round((subtotal.value / freeShippingThreshold) * 100));
+  });
+  const freeShippingRemaining = computed(() => {
+    return Math.max(0, freeShippingThreshold - subtotal.value);
+  });
+
   // Add To Cart
   const addToCart = (
     product: Product,
     quantity: number = 1,
     size: string = "",
+    openDrawer: boolean = true,
   ) => {
     if (product.stock <= 0) {
       return;
@@ -63,6 +87,10 @@ export const useCart = () => {
       });
     }
     saveToStorage();
+
+    if (openDrawer) {
+      openCartDrawer();
+    }
   };
 
   // Increase
@@ -119,6 +147,13 @@ export const useCart = () => {
     cart,
     cartCount,
     subtotal,
+    isCartDrawerOpen,
+    freeShippingThreshold,
+    freeShippingProgress,
+    freeShippingRemaining,
+    openCartDrawer,
+    closeCartDrawer,
+    toggleCartDrawer,
     addToCart,
     increaseQuantity,
     decreaseQuantity,

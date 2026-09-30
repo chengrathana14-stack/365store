@@ -157,33 +157,47 @@
 
             <!-- Action Buttons -->
             <div class="mt-6 pt-4 border-t border-white/10 space-y-2">
-              <!-- Primary: Instant Buy Now -->
-              <button
-                type="button"
-                @click="handleBuyNow"
-                class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(183,243,74,0.4)] active:scale-98"
-              >
-                <span>Buy Now</span>
-              </button>
-
-              <!-- Secondary: Add to Cart & Full Details -->
-              <div class="grid grid-cols-2 gap-2">
+              <!-- When OUT OF STOCK -->
+              <div v-if="selectedProduct.stock === 0" class="space-y-2">
                 <button
                   type="button"
-                  @click="handleAddToCart"
-                  class="flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-bold text-white transition hover:bg-white/15 active:scale-98"
+                  @click="handlePreOrderClick"
+                  class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 active:scale-98"
                 >
-                  <span>{{ justAdded ? "✓ Added!" : "Add to Cart" }}</span>
+                  <span>⚡ Reserve Size / Pre-Order</span>
+                </button>
+              </div>
+
+              <!-- When IN STOCK -->
+              <template v-else>
+                <!-- Primary: Instant Buy Now -->
+                <button
+                  type="button"
+                  @click="handleBuyNow"
+                  class="w-full flex items-center justify-center gap-2 rounded-xl bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-lime-400/25 transition hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(183,243,74,0.4)] active:scale-98"
+                >
+                  <span>Buy Now</span>
                 </button>
 
-                <NuxtLink
-                  :to="`/Product/${selectedProduct.id}`"
-                  @click="closeQuickDetail"
-                  class="flex items-center justify-center rounded-xl border border-white/15 bg-white/10 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-98 text-center"
-                >
-                  Full Details &rarr;
-                </NuxtLink>
-              </div>
+                <!-- Secondary: Add to Cart & Full Details -->
+                <div class="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    @click="handleAddToCart"
+                    class="flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-bold text-white transition hover:bg-white/15 active:scale-98"
+                  >
+                    <span>{{ justAdded ? "✓ Added!" : "Add to Cart" }}</span>
+                  </button>
+
+                  <NuxtLink
+                    :to="`/Product/${selectedProduct.id}`"
+                    @click="closeQuickDetail"
+                    class="flex items-center justify-center rounded-xl border border-white/15 bg-white/10 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-98 text-center"
+                  >
+                    Full Details &rarr;
+                  </NuxtLink>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -193,21 +207,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useQuickDetail } from "~/composables/useQuickDetail";
 import { useCart } from "~/composables/useCart";
 import { useQrPayment } from "~/composables/useQrPayment";
+import { usePreOrder } from "~/composables/usePreOrder";
 import { useToast } from "~/composables/useToast";
 
 const { isDetailOpen, selectedProduct, closeQuickDetail } = useQuickDetail();
 const { addToCart } = useCart();
 const { openQrPayment } = useQrPayment();
+const { openPreOrder } = usePreOrder();
 const { success } = useToast();
 
 const activeImg = ref("");
 const chosenSize = ref("");
 const qty = ref(1);
 const justAdded = ref(false);
+
+const handlePreOrderClick = () => {
+  if (!selectedProduct.value) return;
+  const prod = selectedProduct.value;
+  const size = chosenSize.value;
+  closeQuickDetail();
+  openPreOrder(prod, size);
+};
 
 watch(selectedProduct, (p) => {
   if (p) {

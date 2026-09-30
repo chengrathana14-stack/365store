@@ -30,7 +30,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Card 1: Telegram (Most Popular in Cambodia) -->
         <a
-          href="https://t.me"
+          href="https://t.me/ROTANA_CHENG"
           target="_blank"
           class="group relative overflow-hidden rounded-3xl border border-cyan-400/30 bg-[#0d1017]/85 p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]"
         >
@@ -46,12 +46,12 @@
             Telegram Direct
           </h3>
           <p class="mt-1 text-xs text-gray-400">Response under 5 minutes</p>
-          <p class="mt-3 text-sm font-bold text-cyan-300 font-mono">@sport365kh &rarr;</p>
+          <p class="mt-3 text-sm font-bold text-cyan-300 font-mono">@ROTANA_CHENG &rarr;</p>
         </a>
 
         <!-- Card 2: Phone Hotline -->
         <a
-          href="tel:+85512345678"
+          href="tel:+855969611977"
           class="group relative overflow-hidden rounded-3xl border border-lime-400/30 bg-[#0d1017]/85 p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-lime-400 hover:shadow-[0_0_30px_rgba(183,243,74,0.2)]"
         >
           <div class="flex items-center justify-between">
@@ -66,7 +66,7 @@
             Customer Call
           </h3>
           <p class="mt-1 text-xs text-gray-400">Mon - Sun: 8am - 9pm</p>
-          <p class="mt-3 text-sm font-bold text-lime-300 font-mono">+855 12 345 678 &rarr;</p>
+          <p class="mt-3 text-sm font-bold text-lime-300 font-mono">096 961 1977 &rarr;</p>
         </a>
 
         <!-- Card 3: Email Support -->

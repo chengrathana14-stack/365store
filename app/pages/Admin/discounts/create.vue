@@ -22,6 +22,7 @@ const minPurchase = ref<number | null>(50);
 const usageLimit = ref<number | null>(100);
 const selectedProducts = ref<number[]>([]);
 const active = ref(true);
+const syncToProductBadges = ref(true);
 
 const selectAll = computed({
   get() {
@@ -70,7 +71,7 @@ const saveDiscount = () => {
     description:
       description.value.trim() ||
       `${discountValue.value}${discountType.value === "percentage" ? "%" : "$"} off on 365 sports gear`,
-    type: discountType.value === "percentage" ? "Percentage" : "Fixed Amount",
+    type: discountType.value === "percentage" ? "Percentage" : "Fixed",
     value: discountValue.value,
     status: active.value ? "Active" : "Scheduled",
     startDate: startDate.value || new Date().toISOString().split("T")[0],
@@ -78,9 +79,27 @@ const saveDiscount = () => {
     minPurchase: minPurchase.value || 0,
     usageLimit: usageLimit.value || 100,
     used: 0,
+    products: selectedProducts.value.length || products.length,
   };
 
   addDiscount(newDiscount);
+
+  // Sync discount badge directly to selected products if enabled
+  if (syncToProductBadges.value && discountType.value === "percentage" && selectedProducts.value.length > 0) {
+    try {
+      const overrides = JSON.parse(localStorage.getItem("365_product_overrides") || "{}");
+      for (const pid of selectedProducts.value) {
+        overrides[pid] = {
+          ...(overrides[pid] || {}),
+          discount: discountValue.value,
+        };
+      }
+      localStorage.setItem("365_product_overrides", JSON.stringify(overrides));
+    } catch (e) {
+      console.error("Storage error:", e);
+    }
+  }
+
   success("Discount Voucher Created!", `Promo code ${cleanCode} is now active.`);
   navigateTo("/admin/discounts");
 };
@@ -345,6 +364,19 @@ const cancel = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="mt-3.5 pt-3 border-t border-gray-100">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                v-model="syncToProductBadges"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span class="text-xs font-semibold text-gray-700">
+                Also update catalog sale badge on selected products (show <strong class="text-red-500">-{{ discountValue || 0 }}%</strong> on product cards)
+              </span>
+            </label>
           </div>
         </div>
       </div>
