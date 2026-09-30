@@ -195,18 +195,79 @@
         </div>
 
         <!-- Drawer Footer: Summary & Actions -->
-        <div v-if="cart.length > 0" class="border-t border-white/10 bg-black/60 p-6 space-y-4">
+        <div v-if="cart.length > 0" class="border-t border-white/10 bg-black/75 p-5 space-y-3.5">
+          <!-- Mobile Promo Code Section -->
+          <div class="rounded-xl border border-white/15 bg-white/[0.04] p-3">
+            <div v-if="appliedDiscount" class="flex items-center justify-between">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black text-[10px] font-black">
+                  ✓
+                </span>
+                <div class="min-w-0">
+                  <p class="text-xs font-black uppercase text-white truncate">
+                    {{ appliedPromoCode }}
+                    <span class="text-lime-400">(-{{ discountLabel }})</span>
+                  </p>
+                  <p class="text-[10px] text-gray-400">Promo code active</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                @click="removePromo"
+                class="shrink-0 rounded-lg bg-red-500/15 px-2.5 py-1 text-[11px] font-bold text-red-400 hover:bg-red-500/25 transition active:scale-95"
+              >
+                Remove
+              </button>
+            </div>
+
+            <div v-else class="space-y-1.5">
+              <label class="block text-[10px] font-black uppercase tracking-wider text-gray-300">
+                Have a Promo Code?
+              </label>
+              <div class="flex gap-2">
+                <input
+                  v-model="drawerPromoCode"
+                  type="text"
+                  placeholder="e.g. 168 or SPORT10"
+                  @keydown.enter.prevent="handleApplyPromo"
+                  class="w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs uppercase font-mono tracking-wider text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-1 focus:ring-lime-400"
+                />
+                <button
+                  type="button"
+                  @click="handleApplyPromo"
+                  class="shrink-0 rounded-lg bg-lime-400 px-3.5 py-2 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 active:scale-95 shadow-[0_0_10px_rgba(183,243,74,0.3)]"
+                >
+                  Apply
+                </button>
+              </div>
+              <p
+                v-if="drawerPromoMsg"
+                class="text-[11px] font-bold"
+                :class="drawerPromoSuccess ? 'text-lime-400' : 'text-red-400'"
+              >
+                {{ drawerPromoMsg }}
+              </p>
+            </div>
+          </div>
+
           <!-- Price Calculation -->
           <div class="space-y-1.5 text-xs text-gray-300">
             <div class="flex justify-between">
               <span>Subtotal</span>
               <span class="font-bold text-white">${{ subtotal.toFixed(2) }}</span>
             </div>
+
+            <div v-if="discountAmount > 0" class="flex justify-between text-lime-400 font-bold">
+              <span>Promo Discount ({{ discountLabel }})</span>
+              <span>-${{ discountAmount.toFixed(2) }}</span>
+            </div>
+
             <div class="flex justify-between">
               <span>Estimated Shipping</span>
               <span v-if="shippingFee === 0" class="font-bold text-lime-400">FREE</span>
               <span v-else class="font-bold text-white">${{ shippingFee.toFixed(2) }}</span>
             </div>
+
             <div class="flex justify-between border-t border-white/10 pt-2 text-sm font-black text-white">
               <span>Total</span>
               <span class="text-base text-lime-400">${{ total.toFixed(2) }}</span>
@@ -254,15 +315,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useCart } from "~/composables/useCart";
 import { useQrPayment } from "~/composables/useQrPayment";
 import { useToast } from "~/composables/useToast";
+import { useAdminStore } from "~/composables/useAdminStore";
 
 const {
   cart,
   cartCount,
   subtotal,
+  appliedDiscount,
+  appliedPromoCode,
+  discountAmount,
+  discountLabel,
+  applyPromo,
+  removePromo,
   isCartDrawerOpen,
   freeShippingProgress,
   freeShippingRemaining,
@@ -274,14 +342,33 @@ const {
 } = useCart();
 
 const { openQrPayment } = useQrPayment();
-const { success } = useToast();
+const { success, error } = useToast();
+const { allDiscounts } = useAdminStore();
+
+const drawerPromoCode = ref("");
+const drawerPromoMsg = ref("");
+const drawerPromoSuccess = ref(false);
+
+const handleApplyPromo = () => {
+  const result = applyPromo(drawerPromoCode.value, allDiscounts.value);
+  drawerPromoMsg.value = result.message;
+  drawerPromoSuccess.value = result.success;
+  if (result.success) {
+    success("Promo Applied!", result.message);
+    drawerPromoCode.value = "";
+  } else {
+    error("Invalid Promo Code", result.message);
+  }
+};
 
 const shippingFee = computed(() => {
   if (subtotal.value === 0) return 0;
   return subtotal.value >= 120 ? 0 : 5;
 });
 
-const total = computed(() => subtotal.value + shippingFee.value);
+const total = computed(() => {
+  return Math.max(0, subtotal.value + shippingFee.value - discountAmount.value);
+});
 
 const recommendedAddons = [
   {

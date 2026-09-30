@@ -339,6 +339,10 @@
                 <span>Subtotal</span>
                 <span class="font-bold text-white">${{ itemsSubtotal.toFixed(2) }}</span>
               </div>
+              <div v-if="discountAmount > 0" class="flex justify-between text-lime-400 font-bold">
+                <span>Promo Discount ({{ discountLabel }})</span>
+                <span>-${{ discountAmount.toFixed(2) }}</span>
+              </div>
               <div class="flex justify-between text-gray-300">
                 <span>Shipping</span>
                 <span class="font-bold text-white">
@@ -362,6 +366,57 @@
                     </span>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Promo Code Input in Checkout -->
+            <div class="mt-4 rounded-2xl border border-white/15 bg-white/[0.04] p-3.5">
+              <div v-if="appliedDiscount" class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black text-[10px] font-black">✓</span>
+                  <div class="min-w-0">
+                    <p class="text-xs font-black uppercase text-white truncate">
+                      {{ appliedPromoCode }} <span class="text-lime-400">(-{{ discountLabel }})</span>
+                    </p>
+                    <p class="text-[10px] text-gray-400">Coupon applied</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  @click="removePromo"
+                  class="shrink-0 rounded-lg bg-red-500/15 px-2.5 py-1 text-[11px] font-bold text-red-400 hover:bg-red-500/25 transition active:scale-95"
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div v-else class="space-y-1.5">
+                <label class="block text-[10px] font-black uppercase tracking-wider text-gray-300">
+                  Have a Promo Code?
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    v-model="orderPromoCode"
+                    type="text"
+                    placeholder="e.g. 168 or SPORT10"
+                    @keydown.enter.prevent="handleApplyOrderPromo"
+                    class="w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs uppercase font-mono tracking-wider text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:ring-1 focus:ring-lime-400"
+                  />
+                  <button
+                    type="button"
+                    @click="handleApplyOrderPromo"
+                    class="shrink-0 rounded-xl bg-lime-400 px-3.5 py-2 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 active:scale-95 shadow-[0_0_10px_rgba(183,243,74,0.3)]"
+                  >
+                    Apply
+                  </button>
+                </div>
+                <p
+                  v-if="orderPromoMsg"
+                  class="text-[11px] font-bold"
+                  :class="orderPromoSuccess ? 'text-lime-400' : 'text-red-400'"
+                >
+                  {{ orderPromoMsg }}
+                </p>
               </div>
             </div>
 
@@ -416,6 +471,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useCart } from "~/composables/useCart";
+import { useAdminStore } from "~/composables/useAdminStore";
 import { useToast } from "~/composables/useToast";
 import { navigateTo } from "#app/composables/router";
 import { products as fallbackProducts } from "~/data/product";
@@ -424,8 +480,36 @@ definePageMeta({
   layout: "user",
 });
 
-const { cart, subtotal: cartSubtotal, clearCart } = useCart();
+const {
+  cart,
+  subtotal: cartSubtotal,
+  clearCart,
+  appliedDiscount,
+  appliedPromoCode,
+  discountAmount,
+  discountLabel,
+  applyPromo,
+  removePromo,
+} = useCart();
+
+const { allDiscounts } = useAdminStore();
 const { success, error } = useToast();
+
+const orderPromoCode = ref("");
+const orderPromoMsg = ref("");
+const orderPromoSuccess = ref(false);
+
+const handleApplyOrderPromo = () => {
+  const result = applyPromo(orderPromoCode.value, allDiscounts.value);
+  orderPromoMsg.value = result.message;
+  orderPromoSuccess.value = result.success;
+  if (result.success) {
+    success("Promo Applied!", result.message);
+    orderPromoCode.value = "";
+  } else {
+    error("Invalid Promo Code", result.message);
+  }
+};
 
 // Shipping Information
 const shippingInfo = ref({
@@ -477,7 +561,7 @@ const shippingCost = computed(() => {
 });
 
 const finalTotal = computed(() => {
-  return itemsSubtotal.value + shippingCost.value;
+  return Math.max(0, itemsSubtotal.value + shippingCost.value - discountAmount.value);
 });
 
 // Form Validation
@@ -530,6 +614,8 @@ const handleCompleteOrder = () => {
       city: shippingInfo.value.city,
       items: checkoutItems.value,
       subtotal: itemsSubtotal.value,
+      discount: discountAmount.value,
+      promoCode: appliedPromoCode.value || "",
       shipping: shippingCost.value,
       total: finalTotal.value,
       khrTotal: Math.round(finalTotal.value * 4100),

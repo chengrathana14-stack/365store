@@ -164,9 +164,9 @@
                   {{ shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}` }}
                 </span>
               </div>
-              <div v-if="discount > 0" class="flex justify-between text-emerald-400 font-bold">
-                <span>Promo Discount ({{ promoDiscountLabel }})</span>
-                <span>-${{ discount.toFixed(2) }}</span>
+              <div v-if="discountAmount > 0" class="flex justify-between text-emerald-400 font-bold">
+                <span>Promo Discount ({{ discountLabel }})</span>
+                <span>-${{ discountAmount.toFixed(2) }}</span>
               </div>
 
               <div class="border-t border-white/10 pt-3">
@@ -186,31 +186,53 @@
 
             <!-- Promo Code Input -->
             <div class="mt-6 border-t border-white/10 pt-5">
-              <label class="block text-[11px] font-black uppercase tracking-wider text-gray-300 mb-1.5">
-                Promo Code
-              </label>
-              <div class="flex gap-2">
-                <input
-                  v-model="promoCode"
-                  type="text"
-                  placeholder="Try: SPORT10"
-                  class="w-full rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-xs uppercase font-mono tracking-wider text-white focus:border-lime-400 focus:outline-none"
-                />
+              <div v-if="appliedDiscount" class="flex items-center justify-between rounded-xl bg-lime-400/10 border border-lime-400/30 p-3">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black text-[10px] font-black">✓</span>
+                  <div class="min-w-0">
+                    <p class="text-xs font-black uppercase text-white truncate">
+                      {{ appliedPromoCode }} <span class="text-lime-400">(-{{ discountLabel }})</span>
+                    </p>
+                    <p class="text-[10px] text-gray-400">Coupon applied</p>
+                  </div>
+                </div>
                 <button
                   type="button"
-                  @click="applyPromo"
-                  class="rounded-xl bg-lime-400 px-4 text-xs font-black uppercase text-black hover:bg-lime-300 transition"
+                  @click="removePromo"
+                  class="shrink-0 rounded-lg bg-red-500/15 px-2.5 py-1 text-[11px] font-bold text-red-400 hover:bg-red-500/25 transition active:scale-95"
                 >
-                  Apply
+                  Remove
                 </button>
               </div>
-              <p
-                v-if="promoMessage"
-                class="mt-1.5 text-xs font-bold"
-                :class="promoApplied ? 'text-emerald-400' : 'text-red-400'"
-              >
-                {{ promoMessage }}
-              </p>
+
+              <div v-else class="space-y-1.5">
+                <label class="block text-[11px] font-black uppercase tracking-wider text-gray-300">
+                  Promo Code
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    v-model="cartPromoInput"
+                    type="text"
+                    placeholder="Try: 168 or SPORT10"
+                    @keydown.enter.prevent="handleApplyPromo"
+                    class="w-full rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-xs uppercase font-mono tracking-wider text-white focus:border-lime-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    @click="handleApplyPromo"
+                    class="rounded-xl bg-lime-400 px-4 text-xs font-black uppercase text-black hover:bg-lime-300 transition"
+                  >
+                    Apply
+                  </button>
+                </div>
+                <p
+                  v-if="cartPromoMsg"
+                  class="mt-1.5 text-xs font-bold"
+                  :class="cartPromoSuccess ? 'text-emerald-400' : 'text-red-400'"
+                >
+                  {{ cartPromoMsg }}
+                </p>
+              </div>
             </div>
 
             <!-- PRIMARY ACTION 1: INSTANT BUY NOW (CARD OR QR) -->
@@ -253,7 +275,6 @@ import { useCart } from "~/composables/useCart";
 import { useQrPayment } from "~/composables/useQrPayment";
 import { useAdminStore } from "~/composables/useAdminStore";
 import { useToast } from "~/composables/useToast";
-import type { Discount } from "~/type/product";
 import RecentlyViewed from "~/components/RecentlyViewed.vue";
 
 definePageMeta({
@@ -264,6 +285,12 @@ const {
   cart,
   cartCount,
   subtotal,
+  appliedDiscount,
+  appliedPromoCode,
+  discountAmount,
+  discountLabel,
+  applyPromo,
+  removePromo,
   increaseQuantity,
   decreaseQuantity,
   removeFromCart,
@@ -279,95 +306,23 @@ const shipping = computed(() => {
   return subtotal.value >= 120 ? 0 : 5;
 });
 
-const promoCode = ref("");
-const promoApplied = ref(false);
-const promoMessage = ref("");
-const appliedDiscount = ref<Discount | null>(null);
-
-const promoDiscountLabel = computed(() => {
-  if (!appliedDiscount.value) return "10%";
-  if (appliedDiscount.value.type === "Percentage") {
-    return `${appliedDiscount.value.value}%`;
-  }
-  return `$${appliedDiscount.value.value}`;
-});
-
-const discount = computed(() => {
-  if (!promoApplied.value) return 0;
-  if (!appliedDiscount.value) return subtotal.value * 0.1;
-
-  if (appliedDiscount.value.type === "Percentage") {
-    return (subtotal.value * appliedDiscount.value.value) / 100;
-  }
-  return Math.min(subtotal.value, appliedDiscount.value.value);
-});
+const cartPromoInput = ref("");
+const cartPromoMsg = ref("");
+const cartPromoSuccess = ref(false);
 
 const total = computed(() => {
-  return Math.max(0, subtotal.value + shipping.value - discount.value);
+  return Math.max(0, subtotal.value + shipping.value - discountAmount.value);
 });
 
-const applyPromo = () => {
-  const code = promoCode.value.trim().toUpperCase();
-  if (!code) {
-    promoApplied.value = false;
-    appliedDiscount.value = null;
-    promoMessage.value = "";
-    return;
-  }
-
-  // 1. Search in Admin Store Discounts (includes custom saved codes like 168)
-  const match = allDiscounts.value.find(
-    (d) => String(d.code).trim().toUpperCase() === code
-  );
-
-  if (match) {
-    if (match.status === "Expired" || match.status === "Inactive") {
-      promoApplied.value = false;
-      appliedDiscount.value = null;
-      promoMessage.value = `Promo code "${code}" is currently inactive or expired.`;
-      error("Code Inactive", `Coupon ${code} is ${match.status.toLowerCase()}.`);
-      return;
-    }
-
-    if (match.minPurchase && subtotal.value < match.minPurchase) {
-      promoApplied.value = false;
-      appliedDiscount.value = null;
-      promoMessage.value = `Minimum order of $${match.minPurchase} required for code "${code}".`;
-      error("Minimum Not Met", `Spend at least $${match.minPurchase} to use this coupon.`);
-      return;
-    }
-
-    appliedDiscount.value = match;
-    promoApplied.value = true;
-    const label = match.type === "Percentage" ? `${match.value}%` : `$${match.value}`;
-    promoMessage.value = `✓ Code ${code} applied: ${label} discount!`;
-    success("Promo Applied!", `You got ${label} off your entire order.`);
-    return;
-  }
-
-  // 2. Fallback built-in demo codes
-  if (code === "SPORT10" || code === "WELCOME365" || code === "WELCOME10") {
-    appliedDiscount.value = {
-      id: 9999,
-      code,
-      description: "Welcome Discount",
-      type: "Percentage",
-      value: 10,
-      used: 0,
-      usageLimit: 1000,
-      startDate: "",
-      endDate: "",
-      status: "Active",
-      products: 0,
-    };
-    promoApplied.value = true;
-    promoMessage.value = `✓ ${code} applied: 10% discount!`;
-    success("Promo applied", "10% off your entire order!");
+const handleApplyPromo = () => {
+  const result = applyPromo(cartPromoInput.value, allDiscounts.value);
+  cartPromoMsg.value = result.message;
+  cartPromoSuccess.value = result.success;
+  if (result.success) {
+    success("Promo Applied!", result.message);
+    cartPromoInput.value = "";
   } else {
-    promoApplied.value = false;
-    appliedDiscount.value = null;
-    promoMessage.value = `Invalid code "${code}". Please check your code.`;
-    error("Invalid Code", "Please check your promo code and try again.");
+    error("Invalid Promo Code", result.message);
   }
 };
 
