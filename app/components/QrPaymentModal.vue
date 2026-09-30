@@ -557,11 +557,13 @@ import { ref, computed, watch, onUnmounted } from "vue";
 import { useQrPayment } from "~/composables/useQrPayment";
 import { useToast } from "~/composables/useToast";
 import { useCart } from "~/composables/useCart";
+import { useTelegramBot } from "~/composables/useTelegramBot";
 import { navigateTo } from "#app/composables/router";
 
 const { isQrOpen, currentQrPayload, closeQrPayment } = useQrPayment();
 const { success, error } = useToast();
 const { clearCart } = useCart();
+const { sendNewOrderAlert } = useTelegramBot();
 
 // Flow Steps: 1 = Customer Details, 2 = Payment Method (Card or QR)
 const step = ref<1 | 2>(1);
@@ -823,6 +825,11 @@ const processPayment = (method: "khqr" | "card") => {
         console.error("Storage error:", e);
       }
     }
+
+    // Always dispatch real-time Telegram Bot notification to Admin
+    sendNewOrderAlert(orderRecord).catch((err) => {
+      console.warn("[Telegram QR Order Alert Error]:", err);
+    });
 
     // Clear cart if items matched
     clearCart();

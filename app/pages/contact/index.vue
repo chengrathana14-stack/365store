@@ -391,12 +391,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useToast } from "~/composables/useToast";
+import { useTelegramBot } from "~/composables/useTelegramBot";
 
 definePageMeta({
   layout: "user",
 });
 
 const { success, error } = useToast();
+const { sendContactAlert } = useTelegramBot();
 
 const form = ref({
   name: "",
@@ -429,15 +431,28 @@ const submitForm = () => {
 
   loading.value = true;
 
+  const contactData = {
+    name: form.value.name.trim(),
+    email: form.value.email.trim(),
+    phone: form.value.phone.trim(),
+    subject: form.value.subject,
+    message: form.value.message.trim(),
+  };
+
+  // Always send real-time Telegram notification to Admin
+  sendContactAlert(contactData).catch((err) => {
+    console.warn("[Telegram Contact Alert Error]:", err);
+  });
+
   setTimeout(() => {
     loading.value = false;
     submitted.value = true;
     ticketId.value = Math.random().toString(36).substring(2, 7).toUpperCase();
-    lastSubmittedName.value = form.value.name;
-    lastSubmittedPhone.value = form.value.phone;
-    lastSubmittedSubject.value = form.value.subject;
+    lastSubmittedName.value = contactData.name;
+    lastSubmittedPhone.value = contactData.phone;
+    lastSubmittedSubject.value = contactData.subject;
 
-    success("Message Transmitted!", "Our athlete support team will contact you shortly.");
+    success("Message Transmitted!", "Our athlete support team will contact you shortly via Telegram / phone.");
 
     form.value = {
       name: "",

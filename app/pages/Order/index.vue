@@ -473,12 +473,15 @@ import { ref, computed } from "vue";
 import { useCart } from "~/composables/useCart";
 import { useAdminStore } from "~/composables/useAdminStore";
 import { useToast } from "~/composables/useToast";
+import { useTelegramBot } from "~/composables/useTelegramBot";
 import { navigateTo } from "#app/composables/router";
 import { products as fallbackProducts } from "~/data/product";
 
 definePageMeta({
   layout: "user",
 });
+
+const { sendNewOrderAlert } = useTelegramBot();
 
 const {
   cart,
@@ -642,6 +645,11 @@ const handleCompleteOrder = () => {
         console.error("Order storage err:", err);
       }
     }
+
+    // Always dispatch real-time Telegram Bot notification to Admin
+    sendNewOrderAlert(orderRecord).catch((err) => {
+      console.warn("[Telegram Order Alert Error]:", err);
+    });
 
     clearCart();
     success("Order Confirmed! 🎉", `Order ID: ${orderId}. View your receipt.`);
