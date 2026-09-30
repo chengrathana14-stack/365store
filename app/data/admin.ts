@@ -147,6 +147,20 @@ export const categorySeedData: Category[] = [
 
 export const discountSeedData: Discount[] = [
   {
+    id: 168,
+    code: "168",
+    description: "Special Mega Sale 90% OFF",
+    type: "Percentage",
+    value: 90,
+    used: 1,
+    usageLimit: 99999,
+    startDate: "2026-01-01",
+    endDate: "2026-12-31",
+    status: "Active",
+    products: 999,
+    minPurchase: 0,
+  },
+  {
     id: 1,
     code: "SUMMER20",
     description: "Summer sale promotion",

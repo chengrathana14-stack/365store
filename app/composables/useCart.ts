@@ -163,7 +163,27 @@ export const useCart = () => {
       return { success: true, message: `✓ Code ${clean} applied: ${label} OFF!` };
     }
 
-    // Default demo fallback codes
+    // Fallback & Special promo codes
+    if (clean === "168") {
+      appliedDiscount.value = {
+        id: 168,
+        code: "168",
+        description: "Special Mega Sale 90% OFF",
+        type: "Percentage",
+        value: 90,
+        used: 1,
+        usageLimit: 99999,
+        startDate: "2026-01-01",
+        endDate: "2026-12-31",
+        status: "Active",
+        products: 999,
+        minPurchase: 0,
+      };
+      appliedPromoCode.value = "168";
+      savePromoToStorage();
+      return { success: true, message: "✓ Code 168 applied: 90% OFF!" };
+    }
+
     if (clean === "SPORT10" || clean === "WELCOME365" || clean === "WELCOME10") {
       appliedDiscount.value = {
         id: 9999,
