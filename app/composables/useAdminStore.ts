@@ -1,4 +1,5 @@
 import { ref, computed } from "vue";
+import { useState } from "#app";
 import { orderSeedData, discountSeedData, userSeedData } from "~/data/admin";
 import { products as fallbackProducts } from "~/data/product";
 import type { Order, OrderStatus, PaymentStatus, Discount, User, Product } from "~/type/product";
@@ -17,8 +18,8 @@ export const useAdminStore = () => {
   /* =========================================================
      1. ORDERS STATE & SYNC WITH STOREFRONT (365_orders)
      ========================================================= */
-  const customOrders = ref<CustomOrder[]>([]);
-  const isOrdersLoaded = ref(false);
+  const customOrders = useState<CustomOrder[]>("admin_custom_orders", () => []);
+  const isOrdersLoaded = useState<boolean>("admin_orders_loaded", () => false);
 
   const loadOrders = () => {
     if (typeof window === "undefined") return;
@@ -127,9 +128,9 @@ export const useAdminStore = () => {
   /* =========================================================
      2. DISCOUNTS STATE & PERSISTENCE (365_admin_discounts)
      ========================================================= */
-  const customDiscounts = ref<Discount[]>([]);
+  const customDiscounts = useState<Discount[]>("admin_custom_discounts", () => []);
 
-  const loadDiscounts = () => {
+  const loadDiscounts = async () => {
     if (typeof window === "undefined") return;
     try {
       const stored = localStorage.getItem("365_admin_discounts");
@@ -138,6 +139,28 @@ export const useAdminStore = () => {
         if (Array.isArray(parsed)) {
           customDiscounts.value = parsed;
         }
+      }
+
+      // Silently fetch server discounts
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch("/api/discounts", { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const serverDiscounts: Discount[] = await res.json();
+          if (Array.isArray(serverDiscounts)) {
+            const existingCodes = new Set(customDiscounts.value.map((d) => String(d.code).toUpperCase()));
+            const newDiscounts = serverDiscounts.filter(
+              (d) => !existingCodes.has(String(d.code).toUpperCase())
+            );
+            if (newDiscounts.length > 0) {
+              customDiscounts.value = [...customDiscounts.value, ...newDiscounts];
+            }
+          }
+        }
+      } catch {
+        // Fallback silently without throwing
       }
     } catch (e) {
       console.error("Failed to load discounts from localStorage:", e);
@@ -185,7 +208,7 @@ export const useAdminStore = () => {
   /* =========================================================
      3. USERS STATE & PERSISTENCE (365_admin_users)
      ========================================================= */
-  const customUsers = ref<User[]>([]);
+  const customUsers = useState<User[]>("admin_custom_users", () => []);
 
   const loadUsers = () => {
     if (typeof window === "undefined") return;
@@ -243,8 +266,8 @@ export const useAdminStore = () => {
   /* =========================================================
      4. PRODUCTS STATE & PERSISTENCE (365_custom_products & 365_product_overrides)
      ========================================================= */
-  const customProducts = ref<Product[]>([]);
-  const productOverrides = ref<Record<number, Partial<Product>>>({});
+  const customProducts = useState<Product[]>("admin_custom_products", () => []);
+  const productOverrides = useState<Record<number, Partial<Product>>>("admin_product_overrides", () => ({}));
 
   const loadProductOverrides = () => {
     if (typeof window === "undefined") return;
