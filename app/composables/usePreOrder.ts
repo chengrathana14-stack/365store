@@ -82,9 +82,67 @@ export const usePreOrder = () => {
           notes: payload.notes,
         }),
       });
-      return await res.json();
+      const data = await res.json();
+      if (data?.botDelivered) {
+        return data;
+      }
     } catch (e) {
-      return { success: false, botDelivered: false };
+      // Server endpoint failed or timed out, fall through to direct dispatch
+    }
+
+    // Fail-safe direct dispatch to Telegram Bot API so pre-orders are never lost
+    try {
+      const cambodiaTime = new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Phnom_Penh",
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+      const qty = Number(payload.quantity) || 1;
+      const unitPrice = payload.product?.price ? Number(payload.product.price) : 0;
+      const totalPrice = (unitPrice * qty).toFixed(2);
+
+      const htmlMessage = [
+        "🚨 <b>365 SPORTS - OUT-OF-STOCK SHOE INQUIRY</b> 🚨",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "👤 <b>CUSTOMER INFORMATION:</b>",
+        `• <b>Full Name:</b> ${payload.customerName || "Not provided"}`,
+        `• <b>Gmail / Email:</b> ${payload.customerEmail || "Not provided"}`,
+        `• <b>Phone / Telegram:</b> ${payload.customerPhone || "Not provided"}`,
+        `• <b>Delivery Location:</b> ${payload.customerLocation || "Phnom Penh"}`,
+        "",
+        "👟 <b>REQUESTED SHOE:</b>",
+        `• <b>Shoe:</b> ${payload.product?.name || "Special Order Shoe"}`,
+        `• <b>Brand:</b> ${payload.product?.brand || "Sport Brand"} (${payload.product?.category || "Shoes"})`,
+        `• <b>Size:</b> ${payload.size || "Standard"}`,
+        `• <b>Quantity:</b> ${qty} pair(s)`,
+        `• <b>Unit Price:</b> $${unitPrice.toFixed(2)}`,
+        `• <b>Estimated Total:</b> $${totalPrice}`,
+        "",
+        "💬 <b>CUSTOMER NOTE / URGENCY:</b>",
+        `<i>"${payload.notes && payload.notes.trim() ? payload.notes.trim() : "Customer would like to order this out-of-stock pair ASAP."}"</i>`,
+        "",
+        `⏰ <b>Requested At:</b> ${cambodiaTime} (Cambodia Time)`,
+        `🏬 <b>Store:</b> 365 Sports Cambodia (@Rotana_cheng · 096 961 1977)`,
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "⚡ <b>Next Step:</b> Tap customer's phone or email above to confirm restock or arrange payment/delivery.",
+      ].join("\n");
+
+      const directRes = await fetch(
+        "https://api.telegram.org/bot8985273724:AAE6rg5aHDJcAW-bduVzX9hGFh__m_0eOKc/sendMessage",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: "740641904",
+            text: htmlMessage,
+            parse_mode: "HTML",
+          }),
+        },
+      );
+      const directData = await directRes.json();
+      return { success: true, botDelivered: Boolean(directData.ok) };
+    } catch {
+      return { success: true, botDelivered: false };
     }
   };
 

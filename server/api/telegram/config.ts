@@ -4,6 +4,9 @@ import path from "path";
 
 const CONFIG_PATH = path.resolve(process.cwd(), ".data/telegram_config.json");
 
+const DEFAULT_BOT_TOKEN = "8985273724:AAE6rg5aHDJcAW-bduVzX9hGFh__m_0eOKc";
+const DEFAULT_CHAT_ID = "740641904";
+
 export const getTelegramConfig = async () => {
   let fileConfig: { botToken?: string; chatId?: string; botUsername?: string } = {};
   try {
@@ -12,8 +15,8 @@ export const getTelegramConfig = async () => {
     }
   } catch {}
 
-  const botToken = fileConfig.botToken || process.env.TELEGRAM_BOT_TOKEN || "";
-  let chatId = fileConfig.chatId || process.env.TELEGRAM_CHAT_ID || process.env.TELEGRAM_ADMIN_CHAT_ID || "";
+  const botToken = fileConfig.botToken || process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
+  let chatId = fileConfig.chatId || process.env.TELEGRAM_CHAT_ID || process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_CHAT_ID;
 
   // Auto-detect Chat ID if token exists but chatId is empty
   if (botToken && !chatId) {

@@ -80,6 +80,37 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  const newRecord = {
+    id: Date.now(),
+    customerName,
+    customerEmail,
+    customerPhone,
+    customerLocation,
+    notes,
+    product: {
+      name: product?.name,
+      brand: product?.brand,
+      category: product?.category,
+      price: unitPrice,
+      image: product?.image,
+    },
+    size,
+    quantity: qty,
+    totalPrice,
+    botDelivered,
+    telegramError,
+    createdAt: new Date().toISOString(),
+  };
+
+  const globalStore = globalThis as any;
+  if (!globalStore.__365_PREORDERS__) {
+    globalStore.__365_PREORDERS__ = [];
+  }
+  globalStore.__365_PREORDERS__.unshift(newRecord);
+  if (globalStore.__365_PREORDERS__.length > 100) {
+    globalStore.__365_PREORDERS__.length = 100;
+  }
+
   // Server record log
   console.log("[365 Sports Telegram Bot Dispatch]:", {
     customerName,
