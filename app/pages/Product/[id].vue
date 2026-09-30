@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen py-8 sm:py-12">
+  <div class="min-h-screen pt-10 pb-24 sm:pt-8 sm:pb-16 lg:py-12">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Back Navigation & Breadcrumb -->
-      <div class="mb-6 flex items-center justify-between">
+      <div class="mb-5 sm:mb-6 flex items-center justify-between">
         <NuxtLink
           to="/Product"
           class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-400 transition hover:-translate-x-1 hover:text-white"
@@ -23,7 +23,7 @@
       <!-- Main Product Container -->
       <div
         v-if="product"
-        class="overflow-hidden rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl shadow-2xl text-white"
+        class="mt-3 mb-14 sm:mt-0 sm:mb-12 overflow-hidden rounded-3xl border border-white/10 bg-[#0d1017]/85 backdrop-blur-2xl shadow-2xl text-white"
       >
         <div class="grid grid-cols-1 lg:grid-cols-12">
           <!-- LEFT: Interactive Image Gallery (6 cols) -->
@@ -118,7 +118,7 @@
           </div>
 
           <!-- RIGHT: Product Info & Buy/QR Panel (6 cols) -->
-          <div class="lg:col-span-6 flex flex-col justify-between p-6 sm:p-10">
+          <div class="lg:col-span-6 flex flex-col justify-between p-6 pt-8 pb-10 sm:p-10">
             <div>
               <!-- Brand & Stock Status -->
               <div class="flex items-center justify-between">
@@ -467,7 +467,9 @@
         </div>
       </div>
       <!-- Recently Viewed Gear Section -->
-      <RecentlyViewed />
+      <div class="mt-10 sm:mt-6">
+        <RecentlyViewed />
+      </div>
     </div>
 
     <!-- FULLSCREEN INTERACTIVE IMAGE ZOOM LIGHTBOX (Mobile Pinch/Tap Zoomable) -->

@@ -6,7 +6,7 @@
       @click.self="closeQuickDetail"
     >
       <div
-        class="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/15 bg-[#0d1017]/95 text-white shadow-2xl backdrop-blur-2xl transition-all duration-300"
+        class="relative w-full max-w-2xl my-8 sm:my-auto overflow-hidden rounded-3xl border border-white/15 bg-[#0d1017]/95 text-white shadow-2xl backdrop-blur-2xl transition-all duration-300"
       >
         <!-- Close Button -->
         <button
