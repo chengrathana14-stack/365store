@@ -7,6 +7,16 @@ export default defineNuxtConfig({
   experimental: {
     appManifest: false,
   },
+  app: {
+    head: {
+      meta: [
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+        },
+      ],
+    },
+  },
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     public: {

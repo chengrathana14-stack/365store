@@ -29,7 +29,11 @@
           <!-- LEFT: Interactive Image Gallery (6 cols) -->
           <div class="lg:col-span-6 p-6 sm:p-10 bg-black/40 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10">
             <!-- Main Zoomable Image -->
-            <div class="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 shadow-xl group">
+            <div
+              @click="openZoom"
+              class="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 shadow-xl group cursor-zoom-in select-none"
+              title="Click or tap to zoom image"
+            >
               <!-- Discount Badge -->
               <span
                 v-if="product.discount"
@@ -45,6 +49,18 @@
               >
                 NEW GEAR
               </span>
+
+              <!-- Tap to Zoom Hint Button -->
+              <button
+                type="button"
+                @click.stop="openZoom"
+                class="absolute bottom-3.5 right-3.5 z-10 flex items-center gap-1.5 rounded-xl border border-white/20 bg-black/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md transition hover:bg-lime-400 hover:text-black hover:border-lime-400 shadow-lg active:scale-95"
+              >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                </svg>
+                <span>Tap to Zoom</span>
+              </button>
 
               <img
                 :src="selectedImage || product.image"
@@ -453,11 +469,160 @@
       <!-- Recently Viewed Gear Section -->
       <RecentlyViewed />
     </div>
+
+    <!-- FULLSCREEN INTERACTIVE IMAGE ZOOM LIGHTBOX (Mobile Pinch/Tap Zoomable) -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="isZoomOpen"
+          class="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-xl text-white select-none touch-none"
+        >
+          <!-- Top Header Bar -->
+          <div class="flex items-center justify-between border-b border-white/10 px-4 sm:px-6 py-3.5 bg-black/60">
+            <div class="flex items-center gap-3">
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-lime-400 text-black font-black text-xs shadow-[0_0_10px_#b7f34a]">
+                🔍
+              </span>
+              <div>
+                <h3 class="text-xs sm:text-sm font-black uppercase text-white truncate max-w-[180px] sm:max-w-md">
+                  {{ product?.name }}
+                </h3>
+                <p class="text-[10px] sm:text-[11px] text-gray-400">
+                  Pinch or double-tap to zoom · Drag to pan
+                </p>
+              </div>
+            </div>
+
+            <!-- Controls: Zoom Out (-), Scale %, Zoom In (+), Reset (1x), Close (✕) -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                @click="zoomOut"
+                :disabled="zoomScale <= 1"
+                class="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-sm font-bold transition hover:bg-white/15 disabled:opacity-30 active:scale-95"
+                title="Zoom Out"
+              >
+                −
+              </button>
+
+              <span class="min-w-12 sm:min-w-14 text-center font-mono text-xs font-black text-lime-400">
+                {{ Math.round(zoomScale * 100) }}%
+              </span>
+
+              <button
+                type="button"
+                @click="zoomIn"
+                :disabled="zoomScale >= 4"
+                class="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-sm font-bold transition hover:bg-white/15 disabled:opacity-30 active:scale-95"
+                title="Zoom In"
+              >
+                +
+              </button>
+
+              <button
+                type="button"
+                @click="resetZoom"
+                class="rounded-xl border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-bold text-gray-300 hover:text-white transition active:scale-95"
+                title="Reset zoom"
+              >
+                1x
+              </button>
+
+              <button
+                type="button"
+                @click="closeZoom"
+                class="ml-2 flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-gray-300 hover:bg-red-500 hover:text-white transition active:scale-95"
+                title="Close Zoom"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <!-- Zoom Canvas (Middle) -->
+          <div
+            class="relative flex-1 overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing"
+            @touchstart="handleTouchStart"
+            @touchmove="handleTouchMove"
+            @touchend="handleTouchEnd"
+            @mousedown="handleMouseDown"
+            @mousemove="handleMouseMove"
+            @mouseup="handleMouseUp"
+            @mouseleave="handleMouseUp"
+            @dblclick="toggleDoubleTapZoom"
+          >
+            <div
+              class="transition-transform duration-75 ease-out will-change-transform flex items-center justify-center"
+              :style="{
+                transform: `translate3d(${panX}px, ${panY}px, 0) scale(${zoomScale})`,
+              }"
+            >
+              <img
+                :src="selectedImage || product?.image"
+                :alt="product?.name"
+                class="max-h-[70vh] max-w-[90vw] object-contain pointer-events-none select-none rounded-xl shadow-2xl"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- Bottom Thumbnails Strip (Switch angles while zoomed) -->
+          <div
+            v-if="product"
+            class="border-t border-white/10 bg-black/80 px-4 py-3 flex items-center justify-center gap-3 overflow-x-auto custom-scrollbar"
+          >
+            <button
+              type="button"
+              @click="switchZoomImage(product.image)"
+              class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 transition duration-200"
+              :class="
+                (selectedImage || product.image) === product.image
+                  ? 'border-lime-400 ring-2 ring-lime-400/40'
+                  : 'border-white/15 opacity-60 hover:opacity-100'
+              "
+            >
+              <img :src="product.image" :alt="product.name" class="h-full w-full object-cover" />
+            </button>
+
+            <button
+              v-if="product.hoverimg"
+              type="button"
+              @click="switchZoomImage(product.hoverimg)"
+              class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 transition duration-200"
+              :class="
+                selectedImage === product.hoverimg
+                  ? 'border-lime-400 ring-2 ring-lime-400/40'
+                  : 'border-white/15 opacity-60 hover:opacity-100'
+              "
+            >
+              <img :src="product.hoverimg" :alt="product.name" class="h-full w-full object-cover" />
+            </button>
+
+            <template v-if="product.images && product.images.length">
+              <button
+                v-for="(img, idx) in product.images"
+                :key="idx"
+                type="button"
+                @click="switchZoomImage(img)"
+                class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 transition duration-200"
+                :class="
+                  selectedImage === img
+                    ? 'border-lime-400 ring-2 ring-lime-400/40'
+                    : 'border-white/15 opacity-60 hover:opacity-100'
+                "
+              >
+                <img :src="img" :alt="product.name" class="h-full w-full object-cover" />
+              </button>
+            </template>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useWishlist } from "~/composables/useWishlist";
 import { useCart } from "~/composables/useCart";
@@ -597,4 +762,160 @@ const handleBuyNow = () => {
     total: total,
   });
 };
+
+// =====================================================
+// FULLSCREEN INTERACTIVE IMAGE ZOOM VIEWER (Mobile Touch & Pinch)
+// =====================================================
+const isZoomOpen = ref(false);
+const zoomScale = ref(1);
+const panX = ref(0);
+const panY = ref(0);
+
+let lastTouchDist = 0;
+let lastTapTime = 0;
+let isPanning = false;
+let startTouchX = 0;
+let startTouchY = 0;
+let initialPanX = 0;
+let initialPanY = 0;
+
+const openZoom = () => {
+  isZoomOpen.value = true;
+  zoomScale.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+  if (typeof window !== "undefined") {
+    window.addEventListener("keydown", handleKeydown);
+  }
+};
+
+const closeZoom = () => {
+  isZoomOpen.value = false;
+  zoomScale.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+  if (typeof window !== "undefined") {
+    window.removeEventListener("keydown", handleKeydown);
+  }
+};
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === "Escape") closeZoom();
+};
+
+const zoomIn = () => {
+  zoomScale.value = Math.min(4, Number((zoomScale.value + 0.5).toFixed(1)));
+};
+
+const zoomOut = () => {
+  zoomScale.value = Math.max(1, Number((zoomScale.value - 0.5).toFixed(1)));
+  if (zoomScale.value === 1) {
+    panX.value = 0;
+    panY.value = 0;
+  }
+};
+
+const resetZoom = () => {
+  zoomScale.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+};
+
+const toggleDoubleTapZoom = () => {
+  if (zoomScale.value > 1.2) {
+    resetZoom();
+  } else {
+    zoomScale.value = 2.2;
+  }
+};
+
+const switchZoomImage = (img: string) => {
+  selectedImage.value = img;
+  resetZoom();
+};
+
+// Touch Gestures: Pinch & Pan
+const handleTouchStart = (e: TouchEvent) => {
+  if (e.touches.length === 2) {
+    // Pinch to zoom start
+    lastTouchDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+  } else if (e.touches.length === 1) {
+    // Double tap check
+    const now = Date.now();
+    if (now - lastTapTime < 300) {
+      toggleDoubleTapZoom();
+      lastTapTime = 0;
+      return;
+    }
+    lastTapTime = now;
+
+    // Pan start
+    isPanning = true;
+    startTouchX = e.touches[0].clientX;
+    startTouchY = e.touches[0].clientY;
+    initialPanX = panX.value;
+    initialPanY = panY.value;
+  }
+};
+
+const handleTouchMove = (e: TouchEvent) => {
+  if (e.touches.length === 2) {
+    // Pinch to zoom move
+    const currentDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    if (lastTouchDist > 0) {
+      const delta = (currentDist - lastTouchDist) * 0.008;
+      zoomScale.value = Math.min(4, Math.max(1, zoomScale.value + delta));
+    }
+    lastTouchDist = currentDist;
+  } else if (e.touches.length === 1 && isPanning && zoomScale.value > 1) {
+    // 1-finger pan move when zoomed
+    const deltaX = e.touches[0].clientX - startTouchX;
+    const deltaY = e.touches[0].clientY - startTouchY;
+    panX.value = initialPanX + deltaX;
+    panY.value = initialPanY + deltaY;
+  }
+};
+
+const handleTouchEnd = () => {
+  isPanning = false;
+  lastTouchDist = 0;
+  if (zoomScale.value <= 1) {
+    panX.value = 0;
+    panY.value = 0;
+  }
+};
+
+// Mouse Drag
+const handleMouseDown = (e: MouseEvent) => {
+  if (zoomScale.value <= 1) return;
+  isPanning = true;
+  startTouchX = e.clientX;
+  startTouchY = e.clientY;
+  initialPanX = panX.value;
+  initialPanY = panY.value;
+};
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (!isPanning || zoomScale.value <= 1) return;
+  const deltaX = e.clientX - startTouchX;
+  const deltaY = e.clientY - startTouchY;
+  panX.value = initialPanX + deltaX;
+  panY.value = initialPanY + deltaY;
+};
+
+const handleMouseUp = () => {
+  isPanning = false;
+};
+
+onUnmounted(() => {
+  if (typeof window !== "undefined") {
+    window.removeEventListener("keydown", handleKeydown);
+  }
+});
 </script>

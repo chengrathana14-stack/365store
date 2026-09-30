@@ -154,5 +154,13 @@ a {
   .animate-aurora {
     animation-duration: 45s;
   }
+
+  /* Prevent iOS Safari / Android from auto-zooming in when tapping form inputs during checkout */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
+
 
