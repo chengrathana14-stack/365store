@@ -18,36 +18,37 @@
     <!-- MULTI-COLOR VIBRANT AURORA ORBS -->
     <!-- Orb 1: Electric Hyper-Lime (Top-Left) -->
     <div
-      class="aurora-orb orb-lime absolute -top-40 -left-40 h-[550px] w-[550px] rounded-full bg-linear-to-tr from-[#b7f34a]/30 via-[#10b981]/25 to-transparent blur-[120px]"
+      class="aurora-orb orb-lime absolute -top-40 -left-40 h-[380px] w-[380px] md:h-[550px] md:w-[550px] rounded-full bg-gradient-to-tr from-[#b7f34a]/30 via-[#10b981]/25 to-transparent blur-[60px] md:blur-[120px] will-change-transform"
       :style="limeStyle"
     ></div>
 
     <!-- Orb 2: Vivid Cyber Cyan (Top-Right) -->
     <div
-      class="aurora-orb orb-cyan absolute top-10 -right-40 h-[600px] w-[600px] rounded-full bg-linear-to-bl from-[#00f0ff]/30 via-[#3b82f6]/20 to-transparent blur-[130px]"
+      class="aurora-orb orb-cyan absolute top-10 -right-40 h-[400px] w-[400px] md:h-[600px] md:w-[600px] rounded-full bg-gradient-to-bl from-[#00f0ff]/30 via-[#3b82f6]/20 to-transparent blur-[65px] md:blur-[130px] will-change-transform"
       :style="cyanStyle"
     ></div>
 
     <!-- Orb 3: Cosmic Electric Purple (Center-Bottom) -->
     <div
-      class="aurora-orb orb-purple absolute -bottom-40 left-1/4 h-[650px] w-[650px] rounded-full bg-linear-to-t from-[#a855f7]/30 via-[#6366f1]/25 to-transparent blur-[140px]"
+      class="aurora-orb orb-purple hidden sm:block absolute -bottom-40 left-1/4 h-[650px] w-[650px] rounded-full bg-gradient-to-t from-[#a855f7]/30 via-[#6366f1]/25 to-transparent blur-[70px] md:blur-[140px] will-change-transform"
       :style="purpleStyle"
     ></div>
 
     <!-- Orb 4: Hot Sunset Neon Magenta (Center-Right Floating) -->
     <div
-      class="aurora-orb orb-magenta absolute top-1/2 -right-20 h-[480px] w-[480px] rounded-full bg-linear-to-l from-[#f43f5e]/25 via-[#ec4899]/20 to-transparent blur-[120px]"
+      class="aurora-orb orb-magenta hidden sm:block absolute top-1/2 -right-20 h-[480px] w-[480px] rounded-full bg-gradient-to-l from-[#f43f5e]/25 via-[#ec4899]/20 to-transparent blur-[60px] md:blur-[120px] will-change-transform"
       :style="magentaStyle"
     ></div>
 
     <!-- Interactive HTML5 Particle Network Canvas -->
     <canvas
       ref="canvasRef"
-      class="absolute inset-0 h-full w-full opacity-60"
+      class="absolute inset-0 h-full w-full opacity-60 pointer-events-none"
     ></canvas>
 
-    <!-- Cursor Follower Ambient Spotlight -->
+    <!-- Cursor Follower Ambient Spotlight (Desktop Only) -->
     <div
+      v-if="!isTouchDevice && mousePos.x > 0"
       class="pointer-events-none absolute h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-radial from-[#b7f34a]/12 via-[#00f0ff]/06 to-transparent blur-3xl transition-transform duration-300 ease-out"
       :style="{
         left: `${mousePos.x}px`,
@@ -64,31 +65,32 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const mousePos = ref({ x: -500, y: -500 });
 const rawX = ref(0);
 const rawY = ref(0);
+const isTouchDevice = ref(false);
 
 const handleMouseMove = (e: MouseEvent) => {
   mousePos.value = { x: e.clientX, y: e.clientY };
-  rawX.value = (e.clientX / window.innerWidth - 0.5) * 50;
-  rawY.value = (e.clientY / window.innerHeight - 0.5) * 50;
+  rawX.value = (e.clientX / window.innerWidth - 0.5) * 40;
+  rawY.value = (e.clientY / window.innerHeight - 0.5) * 40;
 };
 
 // Parallax Styles for Aurora Orbs
 const limeStyle = computed(() => ({
-  transform: `translate(${rawX.value * 0.6}px, ${rawY.value * 0.6}px)`,
+  transform: `translate3d(${rawX.value * 0.5}px, ${rawY.value * 0.5}px, 0)`,
   transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
 const cyanStyle = computed(() => ({
-  transform: `translate(${-rawX.value * 0.7}px, ${-rawY.value * 0.7}px)`,
+  transform: `translate3d(${-rawX.value * 0.5}px, ${-rawY.value * 0.5}px, 0)`,
   transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
 const purpleStyle = computed(() => ({
-  transform: `translate(${rawX.value * 0.5}px, ${-rawY.value * 0.5}px)`,
+  transform: `translate3d(${rawX.value * 0.4}px, ${-rawY.value * 0.4}px, 0)`,
   transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
 const magentaStyle = computed(() => ({
-  transform: `translate(${-rawX.value * 0.4}px, ${rawY.value * 0.4}px)`,
+  transform: `translate3d(${-rawX.value * 0.3}px, ${rawY.value * 0.3}px, 0)`,
   transition: "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
@@ -114,22 +116,26 @@ const initCanvas = () => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768);
+  isTouchDevice.value = isTouch;
+
   const resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   };
   resize();
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", resize, { passive: true });
 
-  // Generate 45 glowing kinetic particles
-  particles = Array.from({ length: 45 }, () => ({
+  // Mobile uses 16 lightweight particles; Desktop uses 36
+  const count = isTouch ? 16 : 36;
+  particles = Array.from({ length: count }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.55,
-    vy: (Math.random() - 0.5) * 0.55,
-    radius: Math.random() * 2 + 1,
+    vx: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
+    vy: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
+    radius: Math.random() * 1.8 + 1,
     color: colors[Math.floor(Math.random() * colors.length)],
-    alpha: Math.random() * 0.6 + 0.2,
+    alpha: Math.random() * 0.5 + 0.2,
   }));
 
   const render = () => {
@@ -146,52 +152,57 @@ const initCanvas = () => {
       if (p.y < 0) p.y = canvas.height;
       if (p.y > canvas.height) p.y = 0;
 
-      // Draw particle
+      // Draw particle (omit expensive shadowBlur on mobile for buttery 60fps)
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.globalAlpha = p.alpha;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = p.color;
+      if (!isTouch) {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.color;
+      }
       ctx.fill();
 
-      // Connect nearby particles with subtle glowing lines
+      // Connect nearby particles with subtle lines
+      const maxDist = isTouch ? 85 : 105;
       for (let j = i + 1; j < particles.length; j++) {
         const p2 = particles[j];
         const dx = p.x - p2.x;
         const dy = p.y - p2.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 110) {
+        if (dist < maxDist) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.strokeStyle = p.color;
-          ctx.globalAlpha = (1 - dist / 110) * 0.18;
-          ctx.lineWidth = 0.8;
+          ctx.globalAlpha = (1 - dist / maxDist) * 0.15;
+          ctx.lineWidth = 0.7;
           ctx.stroke();
         }
       }
 
-      // React to mouse proximity
-      if (mousePos.value.x > 0) {
+      // React to mouse proximity on desktop only
+      if (!isTouch && mousePos.value.x > 0) {
         const mdx = p.x - mousePos.value.x;
         const mdy = p.y - mousePos.value.y;
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < 140) {
+        if (mdist < 130) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mousePos.value.x, mousePos.value.y);
           ctx.strokeStyle = "#b7f34a";
-          ctx.globalAlpha = (1 - mdist / 140) * 0.25;
-          ctx.lineWidth = 1;
+          ctx.globalAlpha = (1 - mdist / 130) * 0.22;
+          ctx.lineWidth = 0.9;
           ctx.stroke();
         }
       }
     }
 
     ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
+    if (!isTouch) {
+      ctx.shadowBlur = 0;
+    }
     animationId = requestAnimationFrame(render);
   };
 
@@ -200,7 +211,11 @@ const initCanvas = () => {
 
 onMounted(() => {
   if (typeof window !== "undefined") {
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768;
+    isTouchDevice.value = isTouch;
+    if (!isTouch) {
+      window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    }
     initCanvas();
   }
 });

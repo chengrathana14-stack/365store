@@ -13,6 +13,9 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -20,11 +23,17 @@ body {
   color: #f9fafb;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Fast tap response without 300ms mobile click delay */
 button,
-a {
+a,
+input,
+select,
+textarea {
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* Silky Smooth Accordion Animations */
