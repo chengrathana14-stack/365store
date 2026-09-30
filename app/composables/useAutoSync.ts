@@ -15,7 +15,7 @@ import { useCart } from "~/composables/useCart";
 export const useAutoSync = () => {
   if (typeof window === "undefined") return;
 
-  const { loadOrders, loadDiscounts, loadProducts, loadProductOverrides, allDiscounts } = useAdminStore();
+  const { loadOrders, loadDiscounts, loadProducts, allDiscounts } = useAdminStore();
   const { appliedDiscount, appliedPromoCode, applyPromo } = useCart();
 
   let syncTimer: ReturnType<typeof setInterval> | null = null;
@@ -32,8 +32,7 @@ export const useAutoSync = () => {
       // 1. Silently sync orders from localStorage / storage events
       loadOrders();
 
-      // 2. Silently sync product overrides & custom products
-      loadProductOverrides();
+      // 2. Silently sync products and overrides
       loadProducts();
 
       // 3. Silently sync discounts from server / storage

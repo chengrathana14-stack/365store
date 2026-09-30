@@ -45,7 +45,7 @@ watch([search, selectedBrand, selectedCategory, selectedStatus, selectedSort], (
 const brands = computed<string[]>(() => {
   return [
     "All",
-    ...new Set(products.map((product) => product.brand)),
+    ...Array.from(new Set(products.value.map((product) => product.brand))),
   ];
 });
 
@@ -56,7 +56,7 @@ const brands = computed<string[]>(() => {
 const categories = computed<string[]>(() => {
   return [
     "All",
-    ...new Set(products.map((product) => product.category)),
+    ...Array.from(new Set(products.value.map((product) => product.category))),
   ];
 });
 
@@ -81,7 +81,7 @@ const getProductStatus = (stock: number): ProductStatus => {
 ========================================= */
 
 const filteredProducts = computed(() => {
-  let result = [...products];
+  let result = [...products.value];
 
   /* Search */
   if (search.value.trim()) {
@@ -164,26 +164,26 @@ const paginationEnd = computed(() => {
    STATISTICS & BADGE COUNTS
 ========================================= */
 
-const totalProducts = computed(() => products.length);
+const totalProducts = computed(() => products.value.length);
 
 const inStockCount = computed(() => {
-  return products.filter((p) => getProductStatus(p.stock) === "In Stock").length;
+  return products.value.filter((p) => getProductStatus(p.stock) === "In Stock").length;
 });
 
 const lowStockCount = computed(() => {
-  return products.filter((p) => getProductStatus(p.stock) === "Low Stock").length;
+  return products.value.filter((p) => getProductStatus(p.stock) === "Low Stock").length;
 });
 
 const outOfStockCount = computed(() => {
-  return products.filter((p) => getProductStatus(p.stock) === "Out of Stock").length;
+  return products.value.filter((p) => getProductStatus(p.stock) === "Out of Stock").length;
 });
 
 const totalStock = computed(() => {
-  return products.reduce((total, product) => total + product.stock, 0);
+  return products.value.reduce((total, product) => total + product.stock, 0);
 });
 
 const totalInventoryValue = computed(() => {
-  return products.reduce(
+  return products.value.reduce(
     (total, product) => total + product.price * product.stock,
     0,
   );

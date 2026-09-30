@@ -268,13 +268,13 @@ const colSpanClass = computed(() => {
 const lowestPriceId = computed(() => {
   if (comparedProducts.value.length === 0) return null;
   const sorted = [...comparedProducts.value].sort((a, b) => a.price - b.price);
-  return sorted[0].id;
+  return sorted[0]?.id || null;
 });
 
 const highestRatingId = computed(() => {
   if (comparedProducts.value.length === 0) return null;
   const sorted = [...comparedProducts.value].sort((a, b) => b.rating - a.rating);
-  return sorted[0].id;
+  return sorted[0]?.id || null;
 });
 
 const handleAddToCart = (product: Product) => {

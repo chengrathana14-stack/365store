@@ -321,14 +321,14 @@
                 class="flex gap-3 text-xs"
               >
                 <img
-                  :src="item.product.image"
-                  :alt="item.product.name"
+                  :src="item.product?.image"
+                  :alt="item.product?.name || 'Product'"
                   class="h-14 w-14 rounded-xl object-cover border border-white/10 shrink-0"
                 />
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-bold text-white truncate">{{ item.product.name }}</h4>
+                  <h4 class="font-bold text-white truncate">{{ item.product?.name }}</h4>
                   <p class="text-[11px] text-gray-400">Size: {{ item.size || 'Standard' }} | Qty: {{ item.quantity }}</p>
-                  <p class="font-black text-lime-400 mt-0.5">${{ (item.product.price * item.quantity).toFixed(2) }}</p>
+                  <p class="font-black text-lime-400 mt-0.5">${{ ((item.product?.price || 0) * item.quantity).toFixed(2) }}</p>
                 </div>
               </div>
             </div>
@@ -543,18 +543,19 @@ const checkoutItems = computed(() => {
   if (cart.value.length > 0) {
     return cart.value;
   }
+  const defaultProduct = fallbackProducts[0];
   return [
     {
-      product: fallbackProducts[0],
+      product: defaultProduct,
       quantity: 1,
-      size: fallbackProducts[0].size[0] || "8",
+      size: defaultProduct?.size?.[0] || "8",
     },
   ];
 });
 
 const itemsSubtotal = computed(() => {
   return checkoutItems.value.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
+    (acc, item) => acc + (item.product?.price || 0) * item.quantity,
     0
   );
 });

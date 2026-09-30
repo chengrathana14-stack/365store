@@ -838,13 +838,15 @@ const switchZoomImage = (img: string) => {
 
 // Touch Gestures: Pinch & Pan
 const handleTouchStart = (e: TouchEvent) => {
-  if (e.touches.length === 2) {
+  const t0 = e.touches[0];
+  const t1 = e.touches[1];
+  if (e.touches.length === 2 && t0 && t1) {
     // Pinch to zoom start
     lastTouchDist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
+      t0.clientX - t1.clientX,
+      t0.clientY - t1.clientY
     );
-  } else if (e.touches.length === 1) {
+  } else if (e.touches.length === 1 && t0) {
     // Double tap check
     const now = Date.now();
     if (now - lastTapTime < 300) {
@@ -856,29 +858,31 @@ const handleTouchStart = (e: TouchEvent) => {
 
     // Pan start
     isPanning = true;
-    startTouchX = e.touches[0].clientX;
-    startTouchY = e.touches[0].clientY;
+    startTouchX = t0.clientX;
+    startTouchY = t0.clientY;
     initialPanX = panX.value;
     initialPanY = panY.value;
   }
 };
 
 const handleTouchMove = (e: TouchEvent) => {
-  if (e.touches.length === 2) {
+  const t0 = e.touches[0];
+  const t1 = e.touches[1];
+  if (e.touches.length === 2 && t0 && t1) {
     // Pinch to zoom move
     const currentDist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
+      t0.clientX - t1.clientX,
+      t0.clientY - t1.clientY
     );
     if (lastTouchDist > 0) {
       const delta = (currentDist - lastTouchDist) * 0.008;
       zoomScale.value = Math.min(4, Math.max(1, zoomScale.value + delta));
     }
     lastTouchDist = currentDist;
-  } else if (e.touches.length === 1 && isPanning && zoomScale.value > 1) {
+  } else if (e.touches.length === 1 && t0 && isPanning && zoomScale.value > 1) {
     // 1-finger pan move when zoomed
-    const deltaX = e.touches[0].clientX - startTouchX;
-    const deltaY = e.touches[0].clientY - startTouchY;
+    const deltaX = t0.clientX - startTouchX;
+    const deltaY = t0.clientY - startTouchY;
     panX.value = initialPanX + deltaX;
     panY.value = initialPanY + deltaY;
   }

@@ -46,7 +46,8 @@ const isActive = (path: string) => {
   if (path === "/") {
     return route.path === "/";
   }
-  return route.path.toLowerCase().startsWith(path.toLowerCase().split("?")[0]);
+  const cleanPath = path.toLowerCase().split("?")[0] || "";
+  return route.path.toLowerCase().startsWith(cleanPath);
 };
 
 onMounted(loadUser);

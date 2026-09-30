@@ -74,7 +74,7 @@ const saveDiscount = () => {
     type: discountType.value === "percentage" ? "Percentage" : "Fixed",
     value: discountValue.value,
     status: active.value ? "Active" : "Scheduled",
-    startDate: startDate.value || new Date().toISOString().split("T")[0],
+    startDate: startDate.value || new Date().toISOString().split("T")[0] || "2026-01-01",
     endDate: endDate.value || "2026-12-31",
     minPurchase: minPurchase.value || 0,
     usageLimit: usageLimit.value || 100,

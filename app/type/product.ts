@@ -4,18 +4,18 @@ export interface Product {
   price: number;
   image: string;
   hoverimg: string;
-  images: string[];
+  images?: string[];
   description: string;
   category: string;
   brand: string;
   gender: string;
-  color: string;
+  color?: string;
   size: string[];
   discount: number;
   rating: number;
   reviews: number;
   stock: number;
-  featured: boolean;
+  featured?: boolean;
   isNew: boolean;
   popular?: boolean;
 }
@@ -46,6 +46,7 @@ export interface Discount {
   endDate: string;
   status: "Active" | "Expired" | "Scheduled" | "Inactive";
   products: number;
+  minPurchase?: number;
 }
 export interface InventoryProduct {
   id: number;
@@ -104,4 +105,5 @@ export interface User {
   spent: number;
   joined: string;
   avatar: string;
+  lastOrder?: string;
 }

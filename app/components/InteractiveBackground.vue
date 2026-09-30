@@ -134,7 +134,7 @@ const initCanvas = () => {
     vx: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
     vy: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
     radius: Math.random() * 1.8 + 1,
-    color: colors[Math.floor(Math.random() * colors.length)],
+    color: colors[Math.floor(Math.random() * colors.length)] || "#b7f34a",
     alpha: Math.random() * 0.5 + 0.2,
   }));
 
@@ -143,6 +143,7 @@ const initCanvas = () => {
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
+      if (!p) continue;
       p.x += p.vx;
       p.y += p.vy;
 
@@ -167,6 +168,7 @@ const initCanvas = () => {
       const maxDist = isTouch ? 85 : 105;
       for (let j = i + 1; j < particles.length; j++) {
         const p2 = particles[j];
+        if (!p2) continue;
         const dx = p.x - p2.x;
         const dy = p.y - p2.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
