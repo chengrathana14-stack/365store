@@ -23,7 +23,10 @@ const unlockedCoupon = ref<string | null>(null);
 
 const loadProducts = async () => {
   try {
-    const res = await fetch(`${apiBase}/products`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`${apiBase}/products`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -33,15 +36,10 @@ const loadProducts = async () => {
             id: Number(p.id),
           }))
         );
-      } else {
-        products.value = applyOverrides(fallbackProducts);
       }
-    } else {
-      products.value = applyOverrides(fallbackProducts);
     }
-  } catch (error) {
-    console.error("Failed to fetch products from frontend:", error);
-    products.value = applyOverrides(fallbackProducts);
+  } catch {
+    // products already pre-populated synchronously with fallbackProducts
   } finally {
     isLoading.value = false;
   }

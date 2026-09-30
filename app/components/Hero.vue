@@ -13,6 +13,9 @@
         :alt="slide.title"
         class="h-full w-full object-cover transition-transform duration-10000 ease-out"
         :class="currentSlide === index ? 'scale-110' : 'scale-100'"
+        :loading="index === 0 ? 'eager' : 'lazy'"
+        :fetchpriority="index === 0 ? 'high' : 'auto'"
+        decoding="async"
       />
 
       <!-- Cyber Dark Gradient Overlay with Neon Atmosphere -->
@@ -108,7 +111,10 @@ const currentSlide = ref(0);
 
 const fetchSlides = async () => {
   try {
-    const res = await fetch(`${apiBase}/heroSlides`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`${apiBase}/heroSlides`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -116,7 +122,7 @@ const fetchSlides = async () => {
       }
     }
   } catch (error) {
-    console.error("Failed to fetch slides from frontend:", error);
+    // slides already initialized with heroSlideSeedData
   }
 };
 

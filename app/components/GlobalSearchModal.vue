@@ -323,7 +323,10 @@ const trendingQueries = [
 
 const loadProducts = async () => {
   try {
-    const res = await fetch(`${apiBase}/products`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`${apiBase}/products`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {

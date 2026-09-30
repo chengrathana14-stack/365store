@@ -138,3 +138,21 @@ a {
 .animate-aurora {
   animation: aurora-spin 25s linear infinite;
 }
+
+/* High-performance mobile rendering & 60fps scrolling */
+.product-card-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 380px;
+  transform: translateZ(0);
+}
+
+@media (max-width: 768px) {
+  /* On mobile phones, skip non-visible layouts & reduce GPU compositor load */
+  .shimmer-effect::after {
+    display: none;
+  }
+  .animate-aurora {
+    animation-duration: 45s;
+  }
+}
+

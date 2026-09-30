@@ -17,7 +17,10 @@ const allProducts = ref<Product[]>(applyOverrides(fallbackProducts));
 
 const loadProducts = async () => {
   try {
-    const res = await fetch(`${apiBase}/products`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`${apiBase}/products`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -27,15 +30,10 @@ const loadProducts = async () => {
             id: Number(p.id),
           }))
         );
-      } else {
-        allProducts.value = applyOverrides(fallbackProducts);
       }
-    } else {
-      allProducts.value = applyOverrides(fallbackProducts);
     }
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    allProducts.value = applyOverrides(fallbackProducts);
+  } catch {
+    // allProducts already pre-populated synchronously with fallbackProducts
   }
 };
 

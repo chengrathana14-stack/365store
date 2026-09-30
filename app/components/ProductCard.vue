@@ -1,6 +1,6 @@
 <template>
   <div
-    class="group relative flex flex-col w-full overflow-hidden rounded-2xl bg-[#0d1017]/85 backdrop-blur-xl border border-white/10 shadow-xl transition-all duration-300 hover:shadow-[0_0_35px_rgba(183,243,74,0.2)] hover:-translate-y-1.5 hover:border-lime-400/60 shimmer-effect"
+    class="product-card-container group relative flex flex-col w-full overflow-hidden rounded-2xl bg-[#0d1017] sm:bg-[#0d1017]/85 sm:backdrop-blur-md border border-white/10 shadow-lg transition-all duration-200 hover:shadow-[0_0_30px_rgba(183,243,74,0.2)] hover:-translate-y-1 hover:border-lime-400/60 shimmer-effect"
   >
     <!-- Top Image Container -->
     <div class="relative block w-full aspect-square overflow-hidden bg-neutral-900/70 rounded-t-2xl">
@@ -73,8 +73,9 @@
         <img
           :src="isHovered && product.hoverimg ? product.hoverimg : product.image"
           :alt="product.name"
-          class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+          class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
       </NuxtLink>
 
