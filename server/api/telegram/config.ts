@@ -1,6 +1,9 @@
 import { defineEventHandler, readBody, getQuery } from "h3";
 import fs from "fs";
 import path from "path";
+import { requireAdmin } from "../../utils/auth";
+import { checkRateLimit } from "../../utils/rateLimit";
+import { encryptSecret, decryptSecret } from "../../utils/crypto";
 
 const CONFIG_PATH = path.resolve(process.cwd(), ".data/telegram_config.json");
 
@@ -11,7 +14,16 @@ export const getTelegramConfig = async () => {
   let fileConfig: { botToken?: string; chatId?: string; botUsername?: string } = {};
   try {
     if (fs.existsSync(CONFIG_PATH)) {
-      fileConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+      const raw = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+      if (raw.isEncrypted) {
+        fileConfig = {
+          botToken: decryptSecret(raw.botToken),
+          chatId: decryptSecret(raw.chatId),
+          botUsername: raw.botUsername,
+        };
+      } else {
+        fileConfig = raw;
+      }
     }
   } catch {}
 
@@ -30,7 +42,21 @@ export const getTelegramConfig = async () => {
           chatId = String(detectedId);
           fileConfig.chatId = chatId;
           fileConfig.botToken = botToken;
-          fs.writeFileSync(CONFIG_PATH, JSON.stringify(fileConfig, null, 2), "utf-8");
+          fs.writeFileSync(
+            CONFIG_PATH,
+            JSON.stringify(
+              {
+                isEncrypted: true,
+                botToken: encryptSecret(botToken),
+                chatId: encryptSecret(chatId),
+                botUsername: "Rotana_365days_Sport_bot",
+                updatedAt: new Date().toISOString(),
+              },
+              null,
+              2
+            ),
+            "utf-8"
+          );
           console.log("[Telegram Bot] Auto-detected Chat ID:", chatId);
         }
       }
@@ -46,35 +72,42 @@ export default defineEventHandler(async (event) => {
   const method = event.node.req.method;
 
   if (method === "GET") {
-    const { botToken, chatId } = await getTelegramConfig();
     const query = getQuery(event);
 
-    // If query ?test=1, send a test ping to the bot
-    if (query.test && botToken && chatId) {
-      try {
-        const testRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: "✅ *365 SPORTS BOT TEST PING* 👟\n\nYour 365 Sports Telegram Bot (@Rotana_365days_Sport_bot) is successfully connected and ready to receive shoe pre-orders!",
-            parse_mode: "Markdown",
-          }),
-        });
-        const data = await testRes.json();
-        return {
-          configured: true,
-          testSent: Boolean(data.ok),
-          telegramResponse: data,
-        };
-      } catch (err: any) {
-        return {
-          configured: true,
-          testSent: false,
-          error: err.message,
-        };
+    // If query ?test=1, send a test ping to the bot (requires admin authentication)
+    if (query.test) {
+      requireAdmin(event);
+      checkRateLimit(event, { key: "telegram_test", maxRequests: 5, windowMs: 60000 });
+
+      const { botToken, chatId } = await getTelegramConfig();
+      if (botToken && chatId) {
+        try {
+          const testRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: "✅ *365 SPORTS BOT TEST PING* 👟\n\nYour 365 Sports Telegram Bot (@Rotana_365days_Sport_bot) is successfully connected and ready to receive shoe pre-orders!",
+              parse_mode: "Markdown",
+            }),
+          });
+          const data = await testRes.json();
+          return {
+            configured: true,
+            testSent: Boolean(data.ok),
+            telegramResponse: data,
+          };
+        } catch (err: any) {
+          return {
+            configured: true,
+            testSent: false,
+            error: err.message,
+          };
+        }
       }
     }
+
+    const { botToken, chatId } = await getTelegramConfig();
 
     return {
       configured: Boolean(botToken && chatId),
@@ -89,12 +122,17 @@ export default defineEventHandler(async (event) => {
   }
 
   if (method === "POST") {
-    const body = await readBody(event);
-    const { botToken, chatId } = body || {};
+    // Only authorized administrators can configure Telegram credentials
+    requireAdmin(event);
+    checkRateLimit(event, { key: "telegram_config", maxRequests: 10, windowMs: 60000 });
+
+    const rawToken = (botToken || "").trim();
+    const rawChatId = (chatId || "").trim();
 
     const updated = {
-      botToken: (botToken || "").trim(),
-      chatId: (chatId || "").trim(),
+      isEncrypted: true,
+      botToken: encryptSecret(rawToken),
+      chatId: encryptSecret(rawChatId),
       botUsername: "Rotana_365days_Sport_bot",
       updatedAt: new Date().toISOString(),
     };

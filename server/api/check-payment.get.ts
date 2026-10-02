@@ -1,12 +1,16 @@
+import { checkRateLimit } from "../utils/rateLimit";
+import { getBakongTransaction } from "../utils/bakongTransactions";
+
 export default defineEventHandler((event) => {
+  // Rate limit status polling (max 120 polls per minute per client)
+  checkRateLimit(event, { key: "check_payment", maxRequests: 120, windowMs: 60000 });
+
   const query = getQuery(event);
   const md5 = String(query.md5 || "");
   const expectedAmount = query.amount !== undefined ? Number(query.amount) : undefined;
   const expectedCurrency = query.currency ? String(query.currency).toUpperCase() : undefined;
 
-  const globalStore = globalThis as any;
-  const transactions = globalStore.__BAKONG_TRANSACTIONS__ || new Map();
-  const tx = transactions.get(md5);
+  const tx = getBakongTransaction(md5);
 
   if (!tx) {
     return {

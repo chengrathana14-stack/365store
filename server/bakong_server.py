@@ -1,13 +1,18 @@
+import os
+import uuid
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import uuid
 from bakong_khqr import KHQR
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize KHQR
-khqr = KHQR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiOWJhN2VkM2IzZWNiNGQ4YiJ9LCJpYXQiOjE3ODg4MzU3NTMsImV4cCI6MTc5NjYxMTc1M30.oFNDF9HT8gYLGp7XxOzkKdUMrQ4zK-6jCZXZiyevfl0")
+# Initialize KHQR with environment variable or fallback
+BAKONG_TOKEN = os.environ.get(
+    "BAKONG_TOKEN",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiOWJhN2VkM2IzZWNiNGQ4YiJ9LCJpYXQiOjE3ODg4MzU3NTMsImV4cCI6MTc5NjYxMTc1M30.oFNDF9HT8gYLGp7XxOzkKdUMrQ4zK-6jCZXZiyevfl0"
+)
+khqr = KHQR(BAKONG_TOKEN)
 
 # In-memory storage for transactions
 TRANSACTIONS = {}

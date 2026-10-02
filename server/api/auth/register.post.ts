@@ -1,5 +1,6 @@
 import { randomBytes, scryptSync } from "node:crypto";
 import database from "../../utils/database";
+import { checkRateLimit } from "../../utils/rateLimit";
 
 interface RegisterBody {
   name?: string;
@@ -15,9 +16,12 @@ const hashPassword = (password: string) => {
 };
 
 export default defineEventHandler(async (event) => {
+  // Prevent automated account creation spam (max 5 registers per 10 minutes per IP)
+  checkRateLimit(event, { key: "auth_register", maxRequests: 5, windowMs: 600000 });
+
   const body = await readBody<RegisterBody>(event);
-  const name = body.name?.trim() ?? "";
-  const email = body.email?.trim().toLowerCase() ?? "";
+  const name = body.name?.trim().slice(0, 100) ?? "";
+  const email = body.email?.trim().toLowerCase().slice(0, 150) ?? "";
   const password = body.password ?? "";
 
   if (!name || !email || !password) {

@@ -67,10 +67,22 @@ const rawX = ref(0);
 const rawY = ref(0);
 const isTouchDevice = ref(false);
 
+let rafMousePending = false;
+let latestMouseEvent: MouseEvent | null = null;
+
 const handleMouseMove = (e: MouseEvent) => {
-  mousePos.value = { x: e.clientX, y: e.clientY };
-  rawX.value = (e.clientX / window.innerWidth - 0.5) * 40;
-  rawY.value = (e.clientY / window.innerHeight - 0.5) * 40;
+  latestMouseEvent = e;
+  if (!rafMousePending) {
+    rafMousePending = true;
+    requestAnimationFrame(() => {
+      if (latestMouseEvent) {
+        mousePos.value = { x: latestMouseEvent.clientX, y: latestMouseEvent.clientY };
+        rawX.value = (latestMouseEvent.clientX / window.innerWidth - 0.5) * 40;
+        rawY.value = (latestMouseEvent.clientY / window.innerHeight - 0.5) * 40;
+      }
+      rafMousePending = false;
+    });
+  }
 };
 
 // Parallax Styles for Aurora Orbs
@@ -95,6 +107,7 @@ const magentaStyle = computed(() => ({
 }));
 
 // Floating Particle System on HTML5 Canvas
+// Floating Particle System on HTML5 Canvas (Optimized for 100-120 FPS High Refresh Rates)
 interface Particle {
   x: number;
   y: number;
@@ -105,110 +118,173 @@ interface Particle {
   alpha: number;
 }
 
-let animationId: number;
+let animationId: number = 0;
+let isAnimationRunning = false;
+let lastTimestamp: number = 0;
 let particles: Particle[] = [];
 
 const colors = ["#b7f34a", "#00f0ff", "#a855f7", "#ffffff", "#f43f5e"];
 
-const initCanvas = () => {
+const handleResize = () => {
+  const canvas = canvasRef.value;
+  if (!canvas) return;
+  const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.resetTransform?.();
+    ctx.scale(dpr, dpr);
+  }
+};
+
+const renderLoop = (timestamp: number) => {
+  if (!isAnimationRunning) return;
+
+  // Ultra-precise delta-time calculation for consistent physics at 60Hz, 90Hz, 120Hz & 144Hz
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  const elapsedMs = timestamp - lastTimestamp;
+  lastTimestamp = timestamp;
+
+  // Normalize dt to 60fps baseline (1.0 = 16.67ms frame, 0.5 = 8.33ms at 120fps)
+  const dt = Math.min(Math.max(elapsedMs / 16.667, 0.1), 3.0);
+
   const canvas = canvasRef.value;
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768);
+  const isTouch = isTouchDevice.value;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const maxDist = isTouch ? 75 : 95;
+  const maxDistSq = maxDist * maxDist;
+
+  // Update and draw particles with batched operations (keeps frame times under 3ms)
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (!p) continue;
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+
+    // Boundary wrapping
+    if (p.x < 0) p.x = w;
+    if (p.x > w) p.x = 0;
+    if (p.y < 0) p.y = h;
+    if (p.y > h) p.y = 0;
+
+    // Draw particle circle
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+
+    // Fast squared-distance proximity checking for line connections
+    for (let j = i + 1; j < particles.length; j++) {
+      const p2 = particles[j];
+      if (!p2) continue;
+      const dx = p.x - p2.x;
+      const dy = p.y - p2.y;
+      const distSq = dx * dx + dy * dy;
+
+      if (distSq < maxDistSq) {
+        const dist = Math.sqrt(distSq);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = (1 - dist / maxDist) * 0.12;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+    }
+
+    // Cursor proximity interaction on 120Hz desktop displays
+    if (!isTouch && mousePos.value.x > 0) {
+      const mdx = p.x - mousePos.value.x;
+      const mdy = p.y - mousePos.value.y;
+      const mdistSq = mdx * mdx + mdy * mdy;
+      if (mdistSq < 14400) { // 120^2
+        const mdist = Math.sqrt(mdistSq);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mousePos.value.x, mousePos.value.y);
+        ctx.strokeStyle = "#b7f34a";
+        ctx.globalAlpha = (1 - mdist / 120) * 0.18;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+  }
+
+  ctx.globalAlpha = 1;
+
+  if (isAnimationRunning) {
+    animationId = requestAnimationFrame(renderLoop);
+  }
+};
+
+const startAnimation = () => {
+  if (isAnimationRunning) return;
+  isAnimationRunning = true;
+  lastTimestamp = performance.now();
+  animationId = requestAnimationFrame(renderLoop);
+};
+
+const stopAnimation = () => {
+  isAnimationRunning = false;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = 0;
+  }
+  lastTimestamp = 0;
+};
+
+const handleVisibilityChange = () => {
+  if (document.hidden) {
+    stopAnimation();
+  } else {
+    startAnimation();
+  }
+};
+
+const initCanvas = () => {
+  const canvas = canvasRef.value;
+  if (!canvas) return;
+
+  const isTouch =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768);
   isTouchDevice.value = isTouch;
 
-  const resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  };
-  resize();
-  window.addEventListener("resize", resize, { passive: true });
+  handleResize();
 
-  // Mobile uses 16 lightweight particles; Desktop uses 36
-  const count = isTouch ? 16 : 36;
+  // Particle pool tuned for 120 FPS high refresh rates with low memory footprint
+  const count = isTouch ? 12 : 26;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
   particles = Array.from({ length: count }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
+    x: Math.random() * w,
+    y: Math.random() * h,
     vx: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
     vy: (Math.random() - 0.5) * (isTouch ? 0.35 : 0.5),
-    radius: Math.random() * 1.8 + 1,
+    radius: Math.random() * 1.5 + 1,
     color: colors[Math.floor(Math.random() * colors.length)] || "#b7f34a",
-    alpha: Math.random() * 0.5 + 0.2,
+    alpha: Math.random() * 0.4 + 0.2,
   }));
 
-  const render = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      if (!p) continue;
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // Wrap edges
-      if (p.x < 0) p.x = canvas.width;
-      if (p.x > canvas.width) p.x = 0;
-      if (p.y < 0) p.y = canvas.height;
-      if (p.y > canvas.height) p.y = 0;
-
-      // Draw particle (omit expensive shadowBlur on mobile for buttery 60fps)
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = p.alpha;
-      if (!isTouch) {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
-      }
-      ctx.fill();
-
-      // Connect nearby particles with subtle lines
-      const maxDist = isTouch ? 85 : 105;
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        if (!p2) continue;
-        const dx = p.x - p2.x;
-        const dy = p.y - p2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < maxDist) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = p.color;
-          ctx.globalAlpha = (1 - dist / maxDist) * 0.15;
-          ctx.lineWidth = 0.7;
-          ctx.stroke();
-        }
-      }
-
-      // React to mouse proximity on desktop only
-      if (!isTouch && mousePos.value.x > 0) {
-        const mdx = p.x - mousePos.value.x;
-        const mdy = p.y - mousePos.value.y;
-        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < 130) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mousePos.value.x, mousePos.value.y);
-          ctx.strokeStyle = "#b7f34a";
-          ctx.globalAlpha = (1 - mdist / 130) * 0.22;
-          ctx.lineWidth = 0.9;
-          ctx.stroke();
-        }
-      }
-    }
-
-    ctx.globalAlpha = 1;
-    if (!isTouch) {
-      ctx.shadowBlur = 0;
-    }
-    animationId = requestAnimationFrame(render);
-  };
-
-  render();
+  startAnimation();
 };
 
 onMounted(() => {
@@ -218,6 +294,9 @@ onMounted(() => {
     if (!isTouch) {
       window.addEventListener("mousemove", handleMouseMove, { passive: true });
     }
+    window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
+
     initCanvas();
   }
 });
@@ -225,7 +304,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (typeof window !== "undefined") {
     window.removeEventListener("mousemove", handleMouseMove);
-    cancelAnimationFrame(animationId);
+    window.removeEventListener("resize", handleResize);
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    stopAnimation();
   }
 });
 </script>

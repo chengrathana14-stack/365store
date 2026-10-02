@@ -126,7 +126,29 @@ const fetchSlides = async () => {
   }
 };
 
-let slideInterval: ReturnType<typeof setInterval>;
+let slideInterval: ReturnType<typeof setInterval> | null = null;
+
+const startSlideTimer = () => {
+  if (slideInterval) return;
+  slideInterval = setInterval(() => {
+    nextSlide();
+  }, 4500);
+};
+
+const stopSlideTimer = () => {
+  if (slideInterval) {
+    clearInterval(slideInterval);
+    slideInterval = null;
+  }
+};
+
+const handleVisibilityChange = () => {
+  if (document.hidden) {
+    stopSlideTimer();
+  } else {
+    startSlideTimer();
+  }
+};
 
 const nextSlide = () => {
   if (slides.value.length === 0) return;
@@ -144,12 +166,16 @@ const goToSlide = (index: number) => {
 
 onMounted(() => {
   fetchSlides();
-  slideInterval = setInterval(() => {
-    nextSlide();
-  }, 4500);
+  startSlideTimer();
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
+  }
 });
 
 onUnmounted(() => {
-  clearInterval(slideInterval);
+  stopSlideTimer();
+  if (typeof document !== "undefined") {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }
 });
 </script>

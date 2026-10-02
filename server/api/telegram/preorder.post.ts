@@ -1,7 +1,13 @@
 import { defineEventHandler, readBody } from "h3";
 import { getTelegramConfig } from "./config";
+import { checkRateLimit } from "../../utils/rateLimit";
+import { escapeHtml, sanitizeText } from "../../utils/security";
+import { maskEmail, maskPhone } from "../../utils/crypto";
 
 export default defineEventHandler(async (event) => {
+  // Prevent spamming customer inquiries (max 5 per minute per IP)
+  checkRateLimit(event, { key: "telegram_preorder", maxRequests: 5, windowMs: 60000 });
+
   const body = await readBody(event);
   const {
     product,
@@ -14,8 +20,14 @@ export default defineEventHandler(async (event) => {
     notes,
   } = body || {};
 
-  const qty = Number(quantity) || 1;
-  const unitPrice = product?.price ? Number(product.price) : 0;
+  const cleanName = sanitizeText(customerName, 100);
+  const cleanEmail = sanitizeText(customerEmail, 120);
+  const cleanPhone = sanitizeText(customerPhone, 50);
+  const cleanLocation = sanitizeText(customerLocation, 120);
+  const cleanNotes = sanitizeText(notes, 500);
+
+  const qty = Math.max(1, Math.min(50, Number(quantity) || 1));
+  const unitPrice = product?.price ? Math.max(0, Number(product.price)) : 0;
   const totalPrice = (unitPrice * qty).toFixed(2);
   const cambodiaTime = new Date().toLocaleString("en-US", {
     timeZone: "Asia/Phnom_Penh",
@@ -27,21 +39,21 @@ export default defineEventHandler(async (event) => {
     "🚨 <b>365 SPORTS - OUT-OF-STOCK SHOE INQUIRY</b> 🚨",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "👤 <b>CUSTOMER INFORMATION:</b>",
-    `• <b>Full Name:</b> ${customerName || "Not provided"}`,
-    `• <b>Gmail / Email:</b> ${customerEmail || "Not provided"}`,
-    `• <b>Phone / Telegram:</b> ${customerPhone || "Not provided"}`,
-    `• <b>Delivery Location:</b> ${customerLocation || "Phnom Penh"}`,
+    `• <b>Full Name:</b> ${escapeHtml(cleanName) || "Not provided"}`,
+    `• <b>Gmail / Email:</b> ${escapeHtml(cleanEmail) || "Not provided"}`,
+    `• <b>Phone / Telegram:</b> ${escapeHtml(cleanPhone) || "Not provided"}`,
+    `• <b>Delivery Location:</b> ${escapeHtml(cleanLocation) || "Phnom Penh"}`,
     "",
     "👟 <b>REQUESTED SHOE:</b>",
-    `• <b>Shoe:</b> ${product?.name || "Special Order Shoe"}`,
-    `• <b>Brand:</b> ${product?.brand || "Sport Brand"} (${product?.category || "Shoes"})`,
-    `• <b>Size:</b> ${size || "Standard"}`,
+    `• <b>Shoe:</b> ${escapeHtml(product?.name || "Special Order Shoe")}`,
+    `• <b>Brand:</b> ${escapeHtml(product?.brand || "Sport Brand")} (${escapeHtml(product?.category || "Shoes")})`,
+    `• <b>Size:</b> ${escapeHtml(size || "Standard")}`,
     `• <b>Quantity:</b> ${qty} pair(s)`,
     `• <b>Unit Price:</b> $${unitPrice.toFixed(2)}`,
     `• <b>Estimated Total:</b> $${totalPrice}`,
     "",
     "💬 <b>CUSTOMER NOTE / URGENCY:</b>",
-    `<i>"${notes && notes.trim() ? notes.trim() : "Customer would like to order this out-of-stock pair ASAP."}"</i>`,
+    `<i>"${escapeHtml(cleanNotes || "Customer would like to order this out-of-stock pair ASAP.")}"</i>`,
     "",
     `⏰ <b>Requested At:</b> ${cambodiaTime} (Cambodia Time)`,
     `🏬 <b>Store:</b> 365 Sports Cambodia (@Rotana_cheng · 096 961 1977)`,
@@ -111,11 +123,11 @@ export default defineEventHandler(async (event) => {
     globalStore.__365_PREORDERS__.length = 100;
   }
 
-  // Server record log
+  // Server record log with masked PII for privacy and compliance
   console.log("[365 Sports Telegram Bot Dispatch]:", {
-    customerName,
-    customerEmail,
-    customerPhone,
+    customerName: cleanName,
+    customerEmail: maskEmail(cleanEmail),
+    customerPhone: maskPhone(cleanPhone),
     product: product?.name,
     size,
     qty,

@@ -1,5 +1,4 @@
-export const TELEGRAM_BOT_TOKEN = "8985273724:AAE6rg5aHDJcAW-bduVzX9hGFh__m_0eOKc";
-export const TELEGRAM_CHAT_ID = "740641904";
+// Public store contact metadata
 export const TELEGRAM_BOT_USERNAME = "Rotana_365days_Sport_bot";
 export const TELEGRAM_ADMIN_USERNAME = "Rotana_cheng";
 export const TELEGRAM_ADMIN_PHONE = "0969611977";
@@ -44,12 +43,10 @@ export const useTelegramBot = () => {
   };
 
   /**
-   * Dual-layer sender:
-   * 1. Try server endpoint /api/telegram/send
-   * 2. Fall back to direct browser fetch to api.telegram.org
+   * Secure Server-Side Dispatcher
+   * Secrets are kept strictly on the backend and never exposed to the client.
    */
   const sendTelegramNotification = async (htmlMessage: string): Promise<boolean> => {
-    // Attempt 1: Server endpoint
     try {
       const res = await fetch("/api/telegram/send", {
         method: "POST",
@@ -58,32 +55,11 @@ export const useTelegramBot = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data?.botDelivered) {
-          return true;
-        }
+        return Boolean(data?.botDelivered || data?.success);
       }
-    } catch {
-      // Server unreachable or static hosting, proceed to client fallback
-    }
-
-    // Attempt 2: Direct browser client dispatch to Telegram Bot API
-    try {
-      const directRes = await fetch(
-        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: htmlMessage,
-            parse_mode: "HTML",
-          }),
-        }
-      );
-      const directData = await directRes.json();
-      return Boolean(directData.ok);
-    } catch (e) {
-      console.error("[Telegram Direct Dispatch Error]:", e);
+      return false;
+    } catch (err) {
+      console.warn("[Telegram Dispatch Error]:", err);
       return false;
     }
   };

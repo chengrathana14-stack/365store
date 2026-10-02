@@ -1,13 +1,20 @@
 import { defineEventHandler, readBody } from "h3";
 import { getTelegramConfig } from "./config";
+import { checkRateLimit } from "../../utils/rateLimit";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const { text, parse_mode = "HTML" } = body || {};
+  // Prevent Telegram notification spam / flooding (max 10 notifications per minute per IP)
+  checkRateLimit(event, { key: "telegram_send", maxRequests: 10, windowMs: 60000 });
 
-  if (!text) {
+  const body = await readBody(event);
+  const rawText = String(body?.text || "").trim();
+  const parse_mode = body?.parse_mode === "Markdown" ? "Markdown" : "HTML";
+
+  // Prevent memory/API abuse with oversized payloads (max 4096 chars per Telegram API limit)
+  if (!rawText) {
     return { success: false, error: "Missing message text" };
   }
+  const text = rawText.slice(0, 4096);
 
   const { botToken, chatId } = await getTelegramConfig();
 

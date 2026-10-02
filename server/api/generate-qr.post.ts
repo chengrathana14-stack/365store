@@ -1,5 +1,8 @@
 import QRCode from "qrcode";
 import { createHash, randomBytes } from "node:crypto";
+import { checkRateLimit } from "../utils/rateLimit";
+import { saveBakongTransaction } from "../utils/bakongTransactions";
+import { sanitizeText } from "../utils/security";
 
 const formatTag = (id: string, value: string): string => {
   const len = value.length.toString().padStart(2, "0");
@@ -22,11 +25,15 @@ const crc16 = (data: string): string => {
 };
 
 export default defineEventHandler(async (event) => {
+  // Prevent QR flood DoS attacks (max 30 QR generations per minute per client)
+  checkRateLimit(event, { key: "generate_qr", maxRequests: 30, windowMs: 60000 });
+
   try {
     const body = await readBody(event);
-    const amountFloat = Number(body?.amount || 0);
-    const currency = String(body?.currency || "USD").toUpperCase();
-    const description = body?.description || "Order Payment";
+    const amountFloat = Math.max(0, Number(body?.amount || 0));
+    const rawCurrency = String(body?.currency || "USD").toUpperCase();
+    const currency = rawCurrency === "KHR" ? "KHR" : "USD";
+    const description = sanitizeText(body?.description || "Order Payment", 120);
 
     // Format amount based on currency
     // USD: 2 decimal places (e.g. "25.00")
@@ -115,17 +122,13 @@ export default defineEventHandler(async (event) => {
       )}`;
     }
 
-    // Store in global memory for payment status polling
-    const globalStore = globalThis as any;
-    globalStore.__BAKONG_TRANSACTIONS__ =
-      globalStore.__BAKONG_TRANSACTIONS__ || new Map();
-    globalStore.__BAKONG_TRANSACTIONS__.set(md5, {
+    // Store with automatic TTL cleanup to prevent memory leaks
+    saveBakongTransaction(md5, {
       bill_number: billNumber,
       amount: amountFloat,
       currency,
       description,
       status: "UNPAID",
-      created_at: Date.now(),
     });
 
     return {

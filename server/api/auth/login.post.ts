@@ -5,6 +5,7 @@ import {
   timingSafeEqual,
 } from "node:crypto";
 import database from "../../utils/database";
+import { checkRateLimit } from "../../utils/rateLimit";
 
 interface LoginBody {
   email?: string;
@@ -29,6 +30,9 @@ const passwordMatches = (password: string, storedPassword: string) => {
 };
 
 export default defineEventHandler(async (event) => {
+  // Prevent credential brute-forcing: max 10 login attempts per minute per IP
+  checkRateLimit(event, { key: "auth_login", maxRequests: 10, windowMs: 60000 });
+
   const body = await readBody<LoginBody>(event);
   const email = body.email?.trim().toLowerCase() ?? "";
   const password = body.password ?? "";

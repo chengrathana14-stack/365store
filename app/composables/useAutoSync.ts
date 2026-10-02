@@ -20,14 +20,22 @@ export const useAutoSync = () => {
 
   let syncTimer: ReturnType<typeof setInterval> | null = null;
   let isSyncing = false;
+  let lastSyncTime = 0;
 
-  const performSilentSync = async () => {
+  const performSilentSync = async (force = false) => {
     // Avoid overlapping sync runs
     if (isSyncing) return;
+
+    // Minimum 5-second debounce between rapid focus/resume events
+    const now = Date.now();
+    if (!force && now - lastSyncTime < 5000) return;
+
     // Don't waste battery/CPU if phone screen is locked or tab is hidden
     if (typeof document !== "undefined" && document.hidden) return;
 
     isSyncing = true;
+    lastSyncTime = now;
+
     try {
       // 1. Silently sync orders from localStorage / storage events
       loadOrders();
@@ -50,7 +58,7 @@ export const useAutoSync = () => {
   };
 
   const handleVisibilityChange = () => {
-    if (!document.hidden) {
+    if (typeof document !== "undefined" && !document.hidden) {
       // Immediate silent refresh when user switches back to this tab or unlocks phone
       performSilentSync();
     }
@@ -61,22 +69,25 @@ export const useAutoSync = () => {
   };
 
   const handleOnline = () => {
-    performSilentSync();
+    performSilentSync(true);
   };
 
   const startAutoSync = () => {
     // Initial sync
-    performSilentSync();
+    performSilentSync(true);
 
-    // Periodic heartbeat (every 20 seconds)
+    // Heartbeat every 60 seconds (gentle on mobile battery, memory, and bandwidth)
     if (!syncTimer) {
-      syncTimer = setInterval(performSilentSync, 20000);
+      syncTimer = setInterval(() => performSilentSync(false), 60000);
     }
 
-    // Event listeners for mobile/desktop tab switching and network reconnection
-    window.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
-    window.addEventListener("focus", handleFocus, { passive: true });
-    window.addEventListener("online", handleOnline, { passive: true });
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
+    }
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", handleFocus, { passive: true });
+      window.addEventListener("online", handleOnline, { passive: true });
+    }
   };
 
   const stopAutoSync = () => {
@@ -84,9 +95,13 @@ export const useAutoSync = () => {
       clearInterval(syncTimer);
       syncTimer = null;
     }
-    window.removeEventListener("visibilitychange", handleVisibilityChange);
-    window.removeEventListener("focus", handleFocus);
-    window.removeEventListener("online", handleOnline);
+    if (typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
+    if (typeof window !== "undefined") {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("online", handleOnline);
+    }
   };
 
   onMounted(() => {

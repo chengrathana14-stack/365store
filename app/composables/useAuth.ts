@@ -58,8 +58,6 @@ export const useAuth = () => {
   };
 
   const loadUser = async () => {
-    if (isLoading.value) return;
-
     // Check localStorage first
     if (import.meta.client && !user.value) {
       try {
@@ -70,18 +68,21 @@ export const useAuth = () => {
       } catch {}
     }
 
+    if (isLoading.value) return user.value;
     isLoading.value = true;
 
     try {
       const serverUser = await $fetch<AuthUser>("/api/auth/me");
       if (serverUser) {
         setUser(serverUser);
+        return serverUser;
       }
     } catch {
       // Don't wipe the user if serverless session cold-starts
     } finally {
       isLoading.value = false;
     }
+    return user.value;
   };
 
   const logout = async () => {
