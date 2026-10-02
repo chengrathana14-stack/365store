@@ -308,7 +308,7 @@ const activeFilterCount = computed(() => {
                   v-if="hasActiveFilters"
                   type="button"
                   @click="clearFilters"
-                  class="text-xs font-bold text-gray-500 transition hover:text-black"
+                  class="text-xs font-bold text-gray-400 transition hover:text-lime-400"
                 >
                   Clear All
                 </button>
@@ -317,7 +317,7 @@ const activeFilterCount = computed(() => {
                 <button
                   type="button"
                   @click="isMobileSidebarOpen = false"
-                  class="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-black lg:hidden"
+                  class="flex h-7 w-7 items-center justify-center rounded-md border border-white/10 text-gray-400 hover:bg-white/5 hover:text-white lg:hidden"
                   aria-label="Close sidebar"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -328,14 +328,14 @@ const activeFilterCount = computed(() => {
             </div>
 
             <!-- 1. PRODUCT TYPE (COLLAPSIBLE) -->
-            <div class="border-b border-gray-100 py-3.5">
+            <div class="border-b border-white/10 py-3.5">
               <button
                 type="button"
                 @click="toggleSection('type')"
                 class="flex w-full items-center justify-between text-left group select-none"
               >
                 <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-white transition-colors">
                     Product Type
                   </span>
                   <span
@@ -346,7 +346,7 @@ const activeFilterCount = computed(() => {
                   </span>
                 </div>
                 <svg
-                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-gray-900"
+                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-white"
                   :class="openSections.type ? 'rotate-180' : 'rotate-0'"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -366,7 +366,7 @@ const activeFilterCount = computed(() => {
                     <label
                       v-for="type in productTypes"
                       :key="type"
-                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-50 select-none"
+                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/5 select-none"
                       @click.prevent="toggleFilter(selectedTypes, type)"
                     >
                       <div class="flex items-center gap-2.5">
@@ -374,8 +374,8 @@ const activeFilterCount = computed(() => {
                           class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-all duration-150"
                           :class="
                             selectedTypes.includes(type)
-                              ? 'border-black bg-black text-lime-400 shadow-xs'
-                              : 'border-gray-300 bg-white group-hover:border-gray-400'
+                              ? 'border-lime-400 bg-lime-400 text-black shadow-[0_0_8px_rgba(183,243,74,0.4)]'
+                              : 'border-white/20 bg-white/5 group-hover:border-lime-400/50'
                           "
                         >
                           <svg
@@ -390,7 +390,7 @@ const activeFilterCount = computed(() => {
                         </div>
                         <span
                           class="transition-colors"
-                          :class="selectedTypes.includes(type) ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'"
+                          :class="selectedTypes.includes(type) ? 'font-bold text-white' : 'text-gray-400 group-hover:text-white'"
                         >
                           {{ type }}
                         </span>
@@ -398,7 +398,7 @@ const activeFilterCount = computed(() => {
 
                       <span
                         class="text-[10px] font-medium transition-colors px-1.5 py-0.5 rounded"
-                        :class="selectedTypes.includes(type) ? 'bg-lime-100 text-lime-800 font-bold' : 'text-gray-400 bg-gray-50 group-hover:bg-gray-100 group-hover:text-gray-600'"
+                        :class="selectedTypes.includes(type) ? 'bg-lime-400/20 text-lime-400 font-bold' : 'text-gray-500 bg-white/5 group-hover:bg-white/10 group-hover:text-gray-300'"
                       >
                         {{ getTypeCount(type) }}
                       </span>
@@ -409,14 +409,14 @@ const activeFilterCount = computed(() => {
             </div>
 
             <!-- 2. CATEGORY (COLLAPSIBLE) -->
-            <div class="border-b border-gray-100 py-3.5">
+            <div class="border-b border-white/10 py-3.5">
               <button
                 type="button"
                 @click="toggleSection('category')"
                 class="flex w-full items-center justify-between text-left group select-none"
               >
                 <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-white transition-colors">
                     Category
                   </span>
                   <span
@@ -427,7 +427,7 @@ const activeFilterCount = computed(() => {
                   </span>
                 </div>
                 <svg
-                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-gray-900"
+                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-white"
                   :class="openSections.category ? 'rotate-180' : 'rotate-0'"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -447,7 +447,7 @@ const activeFilterCount = computed(() => {
                     <label
                       v-for="category in categories"
                       :key="category"
-                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-50 select-none"
+                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/5 select-none"
                       @click.prevent="toggleFilter(selectedCategories, category)"
                     >
                       <div class="flex items-center gap-2.5">
@@ -455,8 +455,8 @@ const activeFilterCount = computed(() => {
                           class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-all duration-150"
                           :class="
                             selectedCategories.includes(category)
-                              ? 'border-black bg-black text-lime-400 shadow-xs'
-                              : 'border-gray-300 bg-white group-hover:border-gray-400'
+                              ? 'border-lime-400 bg-lime-400 text-black shadow-[0_0_8px_rgba(183,243,74,0.4)]'
+                              : 'border-white/20 bg-white/5 group-hover:border-lime-400/50'
                           "
                         >
                           <svg
@@ -471,7 +471,7 @@ const activeFilterCount = computed(() => {
                         </div>
                         <span
                           class="transition-colors"
-                          :class="selectedCategories.includes(category) ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'"
+                          :class="selectedCategories.includes(category) ? 'font-bold text-white' : 'text-gray-400 group-hover:text-white'"
                         >
                           {{ category }}
                         </span>
@@ -479,7 +479,7 @@ const activeFilterCount = computed(() => {
 
                       <span
                         class="text-[10px] font-medium transition-colors px-1.5 py-0.5 rounded"
-                        :class="selectedCategories.includes(category) ? 'bg-lime-100 text-lime-800 font-bold' : 'text-gray-400 bg-gray-50 group-hover:bg-gray-100 group-hover:text-gray-600'"
+                        :class="selectedCategories.includes(category) ? 'bg-lime-400/20 text-lime-400 font-bold' : 'text-gray-500 bg-white/5 group-hover:bg-white/10 group-hover:text-gray-300'"
                       >
                         {{ getCategoryCount(category) }}
                       </span>
@@ -490,14 +490,14 @@ const activeFilterCount = computed(() => {
             </div>
 
             <!-- 3. BRAND (COLLAPSIBLE) -->
-            <div class="border-b border-gray-100 py-3.5">
+            <div class="border-b border-white/10 py-3.5">
               <button
                 type="button"
                 @click="toggleSection('brand')"
                 class="flex w-full items-center justify-between text-left group select-none"
               >
                 <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-white transition-colors">
                     Brand
                   </span>
                   <span
@@ -508,7 +508,7 @@ const activeFilterCount = computed(() => {
                   </span>
                 </div>
                 <svg
-                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-gray-900"
+                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-white"
                   :class="openSections.brand ? 'rotate-180' : 'rotate-0'"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -528,7 +528,7 @@ const activeFilterCount = computed(() => {
                     <label
                       v-for="brand in brands"
                       :key="brand"
-                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-50 select-none"
+                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/5 select-none"
                       @click.prevent="toggleFilter(selectedBrands, brand)"
                     >
                       <div class="flex items-center gap-2.5">
@@ -536,8 +536,8 @@ const activeFilterCount = computed(() => {
                           class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-all duration-150"
                           :class="
                             selectedBrands.includes(brand)
-                              ? 'border-black bg-black text-lime-400 shadow-xs'
-                              : 'border-gray-300 bg-white group-hover:border-gray-400'
+                              ? 'border-lime-400 bg-lime-400 text-black shadow-[0_0_8px_rgba(183,243,74,0.4)]'
+                              : 'border-white/20 bg-white/5 group-hover:border-lime-400/50'
                           "
                         >
                           <svg
@@ -552,7 +552,7 @@ const activeFilterCount = computed(() => {
                         </div>
                         <span
                           class="transition-colors"
-                          :class="selectedBrands.includes(brand) ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'"
+                          :class="selectedBrands.includes(brand) ? 'font-bold text-white' : 'text-gray-400 group-hover:text-white'"
                         >
                           {{ brand }}
                         </span>
@@ -560,7 +560,7 @@ const activeFilterCount = computed(() => {
 
                       <span
                         class="text-[10px] font-medium transition-colors px-1.5 py-0.5 rounded"
-                        :class="selectedBrands.includes(brand) ? 'bg-lime-100 text-lime-800 font-bold' : 'text-gray-400 bg-gray-50 group-hover:bg-gray-100 group-hover:text-gray-600'"
+                        :class="selectedBrands.includes(brand) ? 'bg-lime-400/20 text-lime-400 font-bold' : 'text-gray-500 bg-white/5 group-hover:bg-white/10 group-hover:text-gray-300'"
                       >
                         {{ getBrandCount(brand) }}
                       </span>
@@ -571,14 +571,14 @@ const activeFilterCount = computed(() => {
             </div>
 
             <!-- 4. GENDER (COLLAPSIBLE) -->
-            <div class="border-b border-gray-100 py-3.5">
+            <div class="border-b border-white/10 py-3.5">
               <button
                 type="button"
                 @click="toggleSection('gender')"
                 class="flex w-full items-center justify-between text-left group select-none"
               >
                 <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-white transition-colors">
                     Gender
                   </span>
                   <span
@@ -589,7 +589,7 @@ const activeFilterCount = computed(() => {
                   </span>
                 </div>
                 <svg
-                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-gray-900"
+                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-white"
                   :class="openSections.gender ? 'rotate-180' : 'rotate-0'"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -609,7 +609,7 @@ const activeFilterCount = computed(() => {
                     <label
                       v-for="gender in genders"
                       :key="gender"
-                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-gray-50 select-none"
+                      class="group flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/5 select-none"
                       @click.prevent="toggleFilter(selectedGenders, gender)"
                     >
                       <div class="flex items-center gap-2.5">
@@ -617,8 +617,8 @@ const activeFilterCount = computed(() => {
                           class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-all duration-150"
                           :class="
                             selectedGenders.includes(gender)
-                              ? 'border-black bg-black text-lime-400 shadow-xs'
-                              : 'border-gray-300 bg-white group-hover:border-gray-400'
+                              ? 'border-lime-400 bg-lime-400 text-black shadow-[0_0_8px_rgba(183,243,74,0.4)]'
+                              : 'border-white/20 bg-white/5 group-hover:border-lime-400/50'
                           "
                         >
                           <svg
@@ -633,7 +633,7 @@ const activeFilterCount = computed(() => {
                         </div>
                         <span
                           class="transition-colors"
-                          :class="selectedGenders.includes(gender) ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'"
+                          :class="selectedGenders.includes(gender) ? 'font-bold text-white' : 'text-gray-400 group-hover:text-white'"
                         >
                           {{ gender }}
                         </span>
@@ -641,7 +641,7 @@ const activeFilterCount = computed(() => {
 
                       <span
                         class="text-[10px] font-medium transition-colors px-1.5 py-0.5 rounded"
-                        :class="selectedGenders.includes(gender) ? 'bg-lime-100 text-lime-800 font-bold' : 'text-gray-400 bg-gray-50 group-hover:bg-gray-100 group-hover:text-gray-600'"
+                        :class="selectedGenders.includes(gender) ? 'bg-lime-400/20 text-lime-400 font-bold' : 'text-gray-500 bg-white/5 group-hover:bg-white/10 group-hover:text-gray-300'"
                       >
                         {{ getGenderCount(gender) }}
                       </span>
@@ -659,7 +659,7 @@ const activeFilterCount = computed(() => {
                 class="flex w-full items-center justify-between text-left group select-none"
               >
                 <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-white transition-colors">
                     Price Range
                   </span>
                   <span
@@ -670,7 +670,7 @@ const activeFilterCount = computed(() => {
                   </span>
                 </div>
                 <svg
-                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-gray-900"
+                  class="h-4 w-4 text-gray-400 transition-transform duration-300 ease-out group-hover:text-white"
                   :class="openSections.price ? 'rotate-180' : 'rotate-0'"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -689,24 +689,24 @@ const activeFilterCount = computed(() => {
                   <div class="pt-2">
                     <div class="flex items-center gap-2">
                       <div class="relative flex-1">
-                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">$</span>
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-500">$</span>
                         <input
                           v-model.number="minPrice"
                           type="number"
                           min="0"
                           placeholder="Min"
-                          class="w-full rounded-md border border-gray-200 bg-gray-50/50 py-1.5 pl-6 pr-2 text-xs outline-none focus:border-black"
+                          class="w-full rounded-md border border-white/15 bg-white/5 py-1.5 pl-6 pr-2 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:bg-white/10"
                         />
                       </div>
-                      <span class="text-xs text-gray-400">&mdash;</span>
+                      <span class="text-xs text-gray-500">&mdash;</span>
                       <div class="relative flex-1">
-                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">$</span>
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-500">$</span>
                         <input
                           v-model.number="maxPrice"
                           type="number"
                           min="0"
                           placeholder="Max"
-                          class="w-full rounded-md border border-gray-200 bg-gray-50/50 py-1.5 pl-6 pr-2 text-xs outline-none focus:border-black"
+                          class="w-full rounded-md border border-white/15 bg-white/5 py-1.5 pl-6 pr-2 text-xs text-white placeholder-gray-500 outline-none transition focus:border-lime-400 focus:bg-white/10"
                         />
                       </div>
                     </div>
@@ -719,17 +719,17 @@ const activeFilterCount = computed(() => {
             <button
               type="button"
               @click="clearFilters"
-              class="mt-2 w-full rounded-md bg-black py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-400 hover:text-black active:scale-95"
+              class="mt-2 w-full rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-300 transition hover:border-lime-400 hover:bg-lime-400 hover:text-black active:scale-95"
             >
               Reset Filters
             </button>
 
             <!-- Mobile Apply & Close Button -->
-            <div class="mt-3 pt-3 border-t border-gray-100 lg:hidden">
+            <div class="mt-3 pt-3 border-t border-white/10 lg:hidden">
               <button
                 type="button"
                 @click="isMobileSidebarOpen = false"
-                class="w-full rounded-md bg-black py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-400 hover:text-black active:scale-95"
+                class="w-full rounded-xl bg-lime-400 py-2.5 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 shadow-[0_0_15px_rgba(183,243,74,0.3)] active:scale-95"
               >
                 Apply &amp; View ({{ filteredProducts.length }})
               </button>
@@ -744,10 +744,10 @@ const activeFilterCount = computed(() => {
             <button
               type="button"
               @click="isMobileSidebarOpen = true"
-              class="pointer-events-auto inline-flex items-center gap-2 rounded-md border border-gray-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-gray-800 shadow-md transition-all hover:bg-gray-50 active:scale-95"
+              class="pointer-events-auto inline-flex items-center gap-2 rounded-xl border border-white/15 bg-[#0d1017]/95 px-3.5 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-md transition-all hover:border-lime-400/50 hover:bg-[#111420] active:scale-95"
             >
               <svg
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-lime-400"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -775,10 +775,10 @@ const activeFilterCount = computed(() => {
               :key="'tag-t-' + t"
               type="button"
               @click="toggleFilter(selectedTypes, t)"
-              class="group inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-xs hover:border-black hover:bg-black hover:text-white transition-all"
+              class="group inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-xs hover:border-lime-400 hover:bg-lime-400/10 hover:text-lime-300 transition-all"
             >
               <span>{{ t }}</span>
-              <svg class="h-3 w-3 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3 w-3 text-gray-400 group-hover:text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -789,10 +789,10 @@ const activeFilterCount = computed(() => {
               :key="'tag-c-' + c"
               type="button"
               @click="toggleFilter(selectedCategories, c)"
-              class="group inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-xs hover:border-black hover:bg-black hover:text-white transition-all"
+              class="group inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-xs hover:border-lime-400 hover:bg-lime-400/10 hover:text-lime-300 transition-all"
             >
               <span>{{ c }}</span>
-              <svg class="h-3 w-3 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3 w-3 text-gray-400 group-hover:text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -803,10 +803,10 @@ const activeFilterCount = computed(() => {
               :key="'tag-b-' + b"
               type="button"
               @click="toggleFilter(selectedBrands, b)"
-              class="group inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-xs hover:border-black hover:bg-black hover:text-white transition-all"
+              class="group inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-xs hover:border-lime-400 hover:bg-lime-400/10 hover:text-lime-300 transition-all"
             >
               <span>{{ b }}</span>
-              <svg class="h-3 w-3 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3 w-3 text-gray-400 group-hover:text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -817,10 +817,10 @@ const activeFilterCount = computed(() => {
               :key="'tag-g-' + g"
               type="button"
               @click="toggleFilter(selectedGenders, g)"
-              class="group inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-xs hover:border-black hover:bg-black hover:text-white transition-all"
+              class="group inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-xs hover:border-lime-400 hover:bg-lime-400/10 hover:text-lime-300 transition-all"
             >
               <span>{{ g }}</span>
-              <svg class="h-3 w-3 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3 w-3 text-gray-400 group-hover:text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -830,10 +830,10 @@ const activeFilterCount = computed(() => {
               v-if="minPrice > 0 || maxPrice < 1000"
               type="button"
               @click="minPrice = 0; maxPrice = 1000;"
-              class="group inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-xs hover:border-black hover:bg-black hover:text-white transition-all"
+              class="group inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-xs hover:border-lime-400 hover:bg-lime-400/10 hover:text-lime-300 transition-all"
             >
               <span>${{ minPrice }} - ${{ maxPrice }}</span>
-              <svg class="h-3 w-3 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <svg class="h-3 w-3 text-gray-400 group-hover:text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -842,7 +842,7 @@ const activeFilterCount = computed(() => {
             <button
               type="button"
               @click="clearFilters"
-              class="text-xs font-semibold text-gray-400 hover:text-black underline ml-1"
+              class="text-xs font-semibold text-gray-400 hover:text-lime-400 underline ml-1 transition-colors"
             >
               Clear All 
             </button>
@@ -850,9 +850,9 @@ const activeFilterCount = computed(() => {
 
           <div class="mb-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span class="h-5 w-1 rounded-full bg-lime-500"></span>
+              <span class="h-5 w-1 rounded-full bg-lime-400 shadow-[0_0_8px_#b7f34a]"></span>
               <div>
-                <h1 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+                <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">
                   {{
                     selectedCategories.length === 1
                       ? selectedCategories[0]
@@ -861,7 +861,7 @@ const activeFilterCount = computed(() => {
                         : "All Products"
                   }}
                 </h1>
-                <p class="text-xs text-gray-500">
+                <p class="text-xs text-gray-400">
                   {{ filteredProducts.length }} products found
                 </p>
               </div>
@@ -882,19 +882,19 @@ const activeFilterCount = computed(() => {
           <!-- EMPTY STATE -->
           <div
             v-else
-            class="flex min-h-80 items-center justify-center rounded-md border border-gray-200 bg-white p-8 text-center shadow-xs"
+            class="flex min-h-80 items-center justify-center rounded-2xl border border-white/10 bg-[#0d1017]/80 backdrop-blur-xl p-8 text-center shadow-xl"
           >
             <div>
-              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/5 border border-white/10 text-lime-400">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h2 class="mt-4 text-sm font-bold text-gray-900">No products found</h2>
-              <p class="mt-1 text-xs text-gray-500">Try adjusting your filters or search terms.</p>
+              <h2 class="mt-4 text-sm font-bold text-white">No products found</h2>
+              <p class="mt-1 text-xs text-gray-400">Try adjusting your filters or search terms.</p>
               <button
                 @click="clearFilters"
-                class="mt-4 rounded-md bg-black px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-lime-400 hover:text-black"
+                class="mt-4 rounded-xl bg-lime-400 px-4 py-2 text-xs font-black uppercase tracking-wider text-black transition hover:bg-lime-300 shadow-[0_0_15px_rgba(183,243,74,0.3)]"
               >
                 Clear All Filters 
               </button>
