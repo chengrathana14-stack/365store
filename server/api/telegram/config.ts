@@ -27,8 +27,13 @@ export const getTelegramConfig = async () => {
     }
   } catch {}
 
-  const botToken = fileConfig.botToken || process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
-  let chatId = fileConfig.chatId || process.env.TELEGRAM_CHAT_ID || process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_CHAT_ID;
+  let runtimeConf: any = {};
+  try {
+    runtimeConf = useRuntimeConfig();
+  } catch {}
+
+  const botToken = fileConfig.botToken || process.env.TELEGRAM_BOT_TOKEN || runtimeConf?.telegramBotToken || DEFAULT_BOT_TOKEN;
+  let chatId = fileConfig.chatId || process.env.TELEGRAM_CHAT_ID || process.env.TELEGRAM_ADMIN_CHAT_ID || runtimeConf?.telegramChatId || DEFAULT_CHAT_ID;
 
   // Auto-detect Chat ID if token exists but chatId is empty
   if (botToken && !chatId) {
@@ -125,6 +130,9 @@ export default defineEventHandler(async (event) => {
     // Only authorized administrators can configure Telegram credentials
     requireAdmin(event);
     checkRateLimit(event, { key: "telegram_config", maxRequests: 10, windowMs: 60000 });
+
+    const body = await readBody(event);
+    const { botToken, chatId } = body || {};
 
     const rawToken = (botToken || "").trim();
     const rawChatId = (chatId || "").trim();

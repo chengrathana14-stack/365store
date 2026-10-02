@@ -52,8 +52,13 @@ export default defineNuxtConfig({
   },
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "8985273724:AAE6rg5aHDJcAW-bduVzX9hGFh__m_0eOKc",
+    telegramChatId: process.env.TELEGRAM_CHAT_ID || "740641904",
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "",
+      telegramBotUsername: "Rotana_365days_Sport_bot",
+      telegramAdminUsername: "Rotana_cheng",
+      telegramAdminPhone: "0969611977",
     },
   },
   typescript: {
